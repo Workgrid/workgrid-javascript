@@ -1,0 +1,11 @@
+# Use a global .gitignore to exclude system files
+# git config --global core.excludesfile ~/.gitignore
+
+coverage-integration/
+node_modules/
+test-reports/
+coverage/
+dist/
+
+*.log
+/.idea/
