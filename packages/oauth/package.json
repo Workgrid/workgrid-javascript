@@ -1,0 +1,17 @@
+{
+  "name": "@workgrid/oauth",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest --coverage"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/jsonwebtoken": "^8.3.2",
+    "@types/lodash": "^4.14.134"
+  }
+}
