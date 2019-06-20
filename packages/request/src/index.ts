@@ -1,2 +1,3 @@
-var hw: string = 'Hello World';
-console.log(hw);
+import { greeter } from "./greet"
+var hw: string = 'Jason';
+console.log(greeter(hw));
