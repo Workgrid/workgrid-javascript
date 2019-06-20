@@ -362,6 +362,23 @@
   dependencies:
     "@types/jest-diff" "*"
 
+"@types/jsonwebtoken@^8.3.2":
+  version "8.3.2"
+  resolved "https://repo.forge.lmig.com/api/npm/npm/@types/jsonwebtoken/-/jsonwebtoken-8.3.2.tgz#e3d5245197152346fae7ee87d5541aa5a92d0362"
+  integrity sha1-49UkUZcVI0b65+6H1VQapaktA2I=
+  dependencies:
+    "@types/node" "*"
+
+"@types/lodash@^4.14.134":
+  version "4.14.134"
+  resolved "https://repo.forge.lmig.com/api/npm/npm/@types/lodash/-/lodash-4.14.134.tgz#9032b440122db3a2a56200e91191996161dde5b9"
+  integrity sha1-kDK0QBIts6KlYgDpEZGZYWHd5bk=
+
+"@types/node@*":
+  version "12.0.8"
+  resolved "https://repo.forge.lmig.com/api/npm/npm/@types/node/-/node-12.0.8.tgz#551466be11b2adc3f3d47156758f610bd9f6b1d8"
+  integrity sha1-VRRmvhGyrcPz1HFWdY9hC9n2sdg=
+
 "@types/node@^12.0.2":
   version "12.0.2"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.0.2.tgz#3452a24edf9fea138b48fad4a0a028a683da1e40"

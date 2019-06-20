@@ -11,6 +11,13 @@
       "node",
       "jest"
     ],
+    "baseUrl":".",
+    "paths": {            
+      "utils/*": [ "packages/utils/*" ],                     
+      "logger": [ "packages/utils/logger" ],
+      "utils": [ "packages/utils" ],  
+      "client" : ["packages/client/src/client"]
+    },
     "esModuleInterop": true,
     "inlineSourceMap": true,
     "resolveJsonModule": true
