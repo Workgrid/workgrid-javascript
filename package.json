@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --coverage",
-    "build": "yarn workspaces run build",
+    "build": "yarn workspaces run build && api-extractor run --local --verbose",
     "watch": "yarn workspaces tsc -w"
   },
   "repository": {
@@ -17,7 +17,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^12.0.2"
+    "@microsoft/api-extractor": "^7.2.1",
+    "@types/node": "^12.0.2",
+    "axios": "^0.19.0"
   },
   "workspaces": [
     "packages/*"

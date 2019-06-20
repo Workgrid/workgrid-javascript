@@ -2,17 +2,26 @@
   "compilerOptions": {
     "target": "ES2017",
     "module": "commonjs",
+    "declaration": true,
     "outDir": "./dist",
     "strict": true,
     "typeRoots": [
       "node_modules/@types"
     ],
+    "esModuleInterop": true,
+    "inlineSourceMap": true,
+    "resolveJsonModule": true,
     "types": [
       "node",
       "jest"
-    ],
-    "esModuleInterop": true,
-    "inlineSourceMap": true,
-    "resolveJsonModule": true
-  }
+    ]
+  },
+  "include": [
+    "packages/**/*.ts"
+  ],
+  "exclude": [
+    "packages/**/*.test.ts",
+    "dist",
+    "**/*.api.md"
+  ]
 }

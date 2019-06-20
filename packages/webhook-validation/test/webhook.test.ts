@@ -1,25 +1,24 @@
 import { Webhook, generateHmacDigest } from "../src/webhook";
-import { Client } from "../../client/src/client";
 
-describe("testing webhook", () => {
-    let client : Client;
+describe("Testing Webhook", () => {
     let body : string;
     let digest : string;
+    let webhook : Webhook;
 
     beforeEach(() => {
-        client = new Client('beans');
+        webhook = new Webhook("beans");
         body = JSON.stringify({ id : 27 });
         digest = generateHmacDigest('beans', body);
     })
 
     describe("isValid()", () => {
         test('should return true if the digest matches', async () => {
-            expect(client.webhook.isValid(body, digest)).toBe(true);
+            expect(webhook.isValid(body, digest)).toBe(true);
         })
 
         test('should return false if the digest does not match',  async () => {
             let body = JSON.stringify({ id : 72 });
-            expect(client.webhook.isValid(body, digest)).toBe(false);
+            expect(webhook.isValid(body, digest)).toBe(false);
         })
     })
 })
