@@ -6,6 +6,6 @@ node_modules/
 test-reports/
 coverage/
 dist/
-
+temp/
 *.log
 /.idea/
