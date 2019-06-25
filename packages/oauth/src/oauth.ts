@@ -2,6 +2,11 @@ import { decode } from 'jsonwebtoken'
 import { omit } from 'lodash'
 
 
+/**
+ * The OAuth class is for retrieving OAuth 2.0 tokens.
+ * 
+ * @beta
+ */
 export class OAuth{
 
   logger : any

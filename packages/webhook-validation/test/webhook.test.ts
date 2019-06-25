@@ -1,11 +1,12 @@
-import { Webhook, generateHmacDigest } from "../src/webhook";
+
+import { Webhook, generateHmacDigest } from "../src/webhook"
 
 describe("Testing Webhook", () => {
     let body : string;
     let digest : string;
     let webhook : Webhook;
 
-    beforeEach(() => {
+    beforeAll(() => {
         webhook = new Webhook("beans");
         body = JSON.stringify({ id : 27 });
         digest = generateHmacDigest('beans', body);

@@ -11,3 +11,4 @@ temp/
 /.idea/
 .vscode/
 .DS_Store
+tsdoc-metadata.json
