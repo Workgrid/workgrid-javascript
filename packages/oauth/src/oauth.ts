@@ -55,7 +55,7 @@ export class OAuth{
    */
   
   async getAccessToken() {
-    this.logger.trace('getAccessToken()')
+    //this.logger.trace('getAccessToken()')
 
     const auth = { username: this.clientId, password: this.clientSecret }
     const params = { grant_type: 'client_credentials', clientId: this.clientId, scope: this.scope }
@@ -63,10 +63,10 @@ export class OAuth{
     try {
       const response = await this.request({ method: 'post', url : this.tokenUrl, auth, params })
       const { access_token } = response.data
-      this.logger.trace('%O', { access_token })
+      //this.logger.trace('%O', { access_token })
       return access_token
     } catch (err) {
-      this.logger.trace('Error retrieveing access_token: %s', err.message)
+      //this.logger.trace('Error retrieveing access_token: %s', err.message)
       throw omit(err, ['config', 'request', 'toJSON']) // may include sensitive data
     }
   }
