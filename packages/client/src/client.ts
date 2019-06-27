@@ -91,7 +91,7 @@ export class Client {
             if (options.request) {
                 response = await options.request(merge({ headers, baseURL }, { headers : { 'user-agent': `${pkg.name.replace('/', ':')}/${pkg.version}`}}))
             } else {
-                await axios(merge({ method : 'post', headers, baseURL }, { headers : { 'user-agent': `${pkg.name.replace('/', ':')}/${pkg.version}`}}, options, { data : {} }))
+                await axios(merge({ method : 'post', headers, baseURL }, { headers : { 'user-agent': `${pkg.name.replace('/', ':')}/${pkg.version}`}}))
             }
             if (response.data && response.data.status == "success") {
                 return response.data
