@@ -7,7 +7,7 @@ describe("Testing Client", () => {
         let options : any
     
         beforeAll(() => {
-            client = new Client("67mqrnch63j22q5t1rrfl9ud2h", "122beof502vn7gi9asltu07ejupoat12lkgb7hphotssq2v5dcnu", "https://workgridsoftware.dev.workgrid.com/")
+            client = new Client("will", "secret", "workgridsoftware")
             successfulRequest = jest.fn(() => ({ data : { status : "Success" }}))
             options = { params : null, request : successfulRequest, url : "" }
         })
