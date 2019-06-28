@@ -5,59 +5,10 @@
 ```ts
 
 // @beta
-export class Client {
-    constructor(id: string, secret: string, baseUrl: string);
-    baseUrl: string;
-    callApi(options: {
-        params: any | null;
-        request: any | null;
-        url: string;
-    }): Promise<any>;
-    ensureToken(): string;
-    getEvent(params: {
-        eventId: string;
-    }, request: any | null): Promise<any>;
-    getEvents(params: {
-        limit: number | null;
-        cursor: string;
-        eventStatus: string;
-        eventType: string;
-    }, request: any | null): Promise<any>;
-    id: string;
-    secret: string;
-    token: string;
-}
-
-// @beta
-export class OAuth {
-    constructor(params: {
-        logger: any;
-        request: any;
-        clientId: string;
-        clientSecret: string;
-        scope: string;
-        tokenUrl: string;
-    });
-    // (undocumented)
-    clientId: string;
-    // (undocumented)
-    clientSecret: string;
-    getAccessToken(): Promise<any>;
-    isExpired(token: string): boolean;
-    // (undocumented)
-    logger: any;
-    // (undocumented)
-    request: any;
-    // (undocumented)
-    scope: string;
-    // (undocumented)
-    tokenUrl: string;
-}
-
-// @beta
 export class Webhook {
-    constructor(secret: string);
+    constructor(secret: string, logger?: any);
     isValid(body: string, digest: string): boolean;
+    logger: any;
     secret: string;
 }
 
