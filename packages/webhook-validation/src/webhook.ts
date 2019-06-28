@@ -1,4 +1,5 @@
 import { createHmac } from 'crypto';
+import { runInThisContext } from 'vm';
 
 /** 
 * The Webhook class provides functionality to determine the validity of a webhook.
@@ -11,11 +12,18 @@ export class Webhook {
      */
     secret : string
 
+    /**
+     * Optional: Logger to send trace to
+     * Default: console
+     */
+    logger : any = console
+
     /** 
     * Configures the Webhook with the provided secret.
     */
-    constructor(secret: string) {
+    constructor(secret: string, logger?: any) {
         this.secret = secret;
+        if(logger){this.logger = logger}
     }
 
     /**
@@ -25,7 +33,7 @@ export class Webhook {
     * @param  digest - the post-hash to be compared against.
     */
     isValid(body : string, digest : string) {
-        console.log("Checking body matches digest: %s", digest);
+        this.logger.trace("Checking body matches digest: %s", digest);
         return generateHmacDigest(this.secret, body) == digest;
     }
 
