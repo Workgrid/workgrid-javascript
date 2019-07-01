@@ -1,3 +1,7 @@
-import { Webhook } from "./webhook-validation/src/webhook"
+/**
+ * @packageDocumentation - This package is used to determine whether a given webhook is valid.
+ */
 
-export { Webhook }
+import { isValid } from "./webhook-validation/src/webhook"
+
+export { isValid }

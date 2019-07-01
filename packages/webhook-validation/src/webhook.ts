@@ -1,42 +1,15 @@
 import { createHmac } from 'crypto';
-import { runInThisContext } from 'vm';
 
-/** 
-* The Webhook class provides functionality to determine the validity of a webhook.
+/**
+* Determines whether the webhook is valid.
+*
+* @param  body - the message body sent.
+* @param  digest - the post-hash to be compared against.
+*
 * @beta
 */
-export class Webhook {
-
-    /**
-     * The secret shared for this webhook.
-     */
-    secret : string
-
-    /**
-     * Optional: Logger to send trace to
-     * Default: console
-     */
-    logger : any = console
-
-    /** 
-    * Configures the Webhook with the provided secret.
-    */
-    constructor(secret: string, logger?: any) {
-        this.secret = secret;
-        if(logger){this.logger = logger}
-    }
-
-    /**
-    * Determines whether the webhook is valid.
-    *
-    * @param  body - the message body sent.
-    * @param  digest - the post-hash to be compared against.
-    */
-    isValid(body : string, digest : string) {
-        this.logger.trace("Checking body matches digest: %s", digest);
-        return generateHmacDigest(this.secret, body) == digest;
-    }
-
+export function isValid(secret : string, body : string, digest : string) {
+    return generateHmacDigest(secret, body) == digest;
 }
 
 /**

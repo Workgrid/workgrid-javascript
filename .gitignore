@@ -7,6 +7,7 @@ test-reports/
 coverage/
 dist/
 temp/
+etc/
 *.log
 /.idea/
 .vscode/
