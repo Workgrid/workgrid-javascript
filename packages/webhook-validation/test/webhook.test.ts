@@ -1,7 +1,7 @@
 
 import { isValid, generateHmacDigest } from "../src/webhook"
 
-describe("@workgrid/webhook", () => {
+describe("@workgrid/webhook-validation", () => {
     
     let secret : string;
     let body : string;
