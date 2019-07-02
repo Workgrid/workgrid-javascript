@@ -5,9 +5,6 @@ coverage-integration/
 node_modules/
 test-reports/
 coverage/
-dist/
-temp/
-etc/
 *.log
 /.idea/
 .vscode/
