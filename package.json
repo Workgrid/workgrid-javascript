@@ -7,7 +7,6 @@
   "scripts": {
     "test": "jest --coverage",
     "build": "yarn workspaces run build",
-    "postbuild": "api-extractor run --local --verbose",
     "watch": "yarn workspaces tsc -w"
   },
   "repository": {

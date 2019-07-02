@@ -2,10 +2,11 @@
     "name": "@workgrid/webhook-validation",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
+    "main": "dist/webhook.js",
     "scripts": {
       "build": "tsc",
-      "test": "jest --coverage"
+      "test": "jest --coverage",
+      "postbuild": "api-extractor run --local --verbose && rm -rf temp"
     },
     "keywords": [],
     "author": "",
