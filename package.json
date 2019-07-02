@@ -13,8 +13,6 @@
     "type": "git",
     "url": "https://git.forge.lmig.com/scm/ws1/workgrid-javascript.git"
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
   "dependencies": {
     "@microsoft/api-extractor": "^7.2.1",

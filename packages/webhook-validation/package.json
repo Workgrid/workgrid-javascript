@@ -5,13 +5,7 @@
     "main": "dist/webhook.js",
     "scripts": {
       "build": "tsc",
-      "test": "jest --coverage",
       "postbuild": "api-extractor run --local --verbose && rm -rf temp"
     },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "devDependencies": {
-      "@types/crypto-js": "^3.1.43"
-    }
+    "license": "ISC"
   }
