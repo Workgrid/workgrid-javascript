@@ -13,3 +13,4 @@ etc/
 .vscode/
 .DS_Store
 tsdoc-metadata.json
+**/*.api.md
