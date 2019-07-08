@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --coverage",
     "build": "yarn workspaces run build",
     "watch": "yarn workspaces tsc -w"
   },
@@ -13,13 +13,18 @@
     "type": "git",
     "url": "https://git.forge.lmig.com/scm/ws1/workgrid-javascript.git"
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
   "dependencies": {
+    "@microsoft/api-extractor": "^7.2.1",
     "@types/node": "^12.0.2"
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "devDependencies": {
+    "@types/jest": "^24.0.15",
+    "jest": "^24.8.0",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.5.2"
+  }
 }

@@ -6,6 +6,9 @@ node_modules/
 test-reports/
 coverage/
 dist/
-
 *.log
 /.idea/
+.vscode/
+.DS_Store
+tsdoc-metadata.json
+**/*.api.md
