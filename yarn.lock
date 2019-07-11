@@ -376,11 +376,20 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> ETSWORK-921 Configure eslint and prettier (jest doesn't seem to be working though)
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
   resolved "https://repo.forge.lmig.com/api/npm/npm/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"
   integrity sha1-HuMNeVRMqE1o1LPNsK9PIFZj3S0=
 
+<<<<<<< HEAD
+=======
+>>>>>>> ETSWORK-921 Configure eslint and prettier (jest doesn't seem to be working though)
+>>>>>>> ETSWORK-921 Configure eslint and prettier (jest doesn't seem to be working though)
 "@types/fs-extra@5.0.4":
   version "5.0.4"
   resolved "https://repo.forge.lmig.com/api/npm/npm/@types/fs-extra/-/fs-extra-5.0.4.tgz#b971134d162cc0497d221adde3dbb67502225599"
@@ -1444,11 +1453,27 @@ find-up@^3.0.0:
   dependencies:
     locate-path "^3.0.0"
 
+<<<<<<< HEAD
 flat-cache@^2.0.1:
   version "2.0.1"
   resolved "https://repo.forge.lmig.com/api/npm/npm/flat-cache/-/flat-cache-2.0.1.tgz#5d296d6f04bda44a4630a301413bdbc2ec085ec0"
   integrity sha1-XSltbwS9pEpGMKMBQTvbwuwIXsA=
   dependencies:
+=======
+<<<<<<< HEAD
+follow-redirects@1.5.10:
+  version "1.5.10"
+  resolved "https://repo.forge.lmig.com/api/npm/npm/follow-redirects/-/follow-redirects-1.5.10.tgz#7b7a9f9aea2fdff36786a94ff643ed07f4ff5e2a"
+  integrity sha1-e3qfmuov3/NnhqlP9kPtB/T/Xio=
+  dependencies:
+    debug "=3.1.0"
+=======
+flat-cache@^2.0.1:
+  version "2.0.1"
+  resolved "https://repo.forge.lmig.com/api/npm/npm/flat-cache/-/flat-cache-2.0.1.tgz#5d296d6f04bda44a4630a301413bdbc2ec085ec0"
+  integrity sha1-XSltbwS9pEpGMKMBQTvbwuwIXsA=
+  dependencies:
+>>>>>>> ETSWORK-921 Configure eslint and prettier (jest doesn't seem to be working though)
     flatted "^2.0.0"
     rimraf "2.6.3"
     write "1.0.3"
@@ -1457,6 +1482,10 @@ flatted@^2.0.0:
   version "2.0.1"
   resolved "https://repo.forge.lmig.com/api/npm/npm/flatted/-/flatted-2.0.1.tgz#69e57caa8f0eacbc281d2e2cb458d46fdb449e08"
   integrity sha1-aeV8qo8OrLwoHS4stFjUb9tEngg=
+<<<<<<< HEAD
+=======
+>>>>>>> ETSWORK-921 Configure eslint and prettier (jest doesn't seem to be working though)
+>>>>>>> ETSWORK-921 Configure eslint and prettier (jest doesn't seem to be working though)
 
 for-in@^1.0.2:
   version "1.0.2"
