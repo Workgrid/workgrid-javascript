@@ -1,7 +1,18 @@
-jest.mock('crypto')
-
 import isValid from '../src/webhook'
-import { createHmac } from 'crypto'
+
+jest.mock('crypto', () => ({
+  createHmac: jest.fn((algorithm: string, secret: string) => ({
+    update: jest.fn((body: string) => ({
+      digest: jest.fn(() => {
+        if (secret == 'secret' && body == 'body' && algorithm == 'sha256') {
+          return 'digest'
+        } else {
+          return 'notDigest'
+        }
+      })
+    }))
+  }))
+}))
 
 describe('@workgrid/webhook-validation', () => {
   let secret: string
@@ -11,11 +22,7 @@ describe('@workgrid/webhook-validation', () => {
   beforeAll(() => {
     secret = 'secret'
     body = 'body'
-    digest = 'digest'
-
-    const mockDigest = jest.fn(() => digest)
-    const mockUpdate = jest.fn(() => ({ digest: mockDigest }))
-    createHmac.mockImplementation(() => ({ update: mockUpdate }))
+    digest = 'sha256=digest'
   })
 
   describe('isValid()', () => {
@@ -24,7 +31,8 @@ describe('@workgrid/webhook-validation', () => {
     })
 
     test('should return false if the digest does not match', async () => {
-      const body = JSON.stringify({ id: 72 })
+      secret = 'notSecret'
+      body = 'notBody'
       expect(isValid(secret, body, digest)).toBe(false)
     })
   })
