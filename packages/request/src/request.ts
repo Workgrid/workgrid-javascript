@@ -74,10 +74,12 @@ export interface APIOptions {
  */
 const createInstance = mem((oauthOptions: OAuthOptions): any => {
   const instance: any = axios.create()
+  /* eslint-disable @typescript-eslint/camelcase */
   const oauthClient: any = oauth.client(axios.create(), {
-    granttype: 'client_credentials',
+    grant_type: 'client_credentials',
     ...oauthOptions
   })
+  /* eslint-enable @typescript-eslint/camelcase */
   const interceptor: any = oauth.interceptor(tokenProvider, oauthClient)
   instance.interceptors.request.use(interceptor)
   return instance
