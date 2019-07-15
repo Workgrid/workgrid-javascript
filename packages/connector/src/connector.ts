@@ -1,4 +1,4 @@
-//import { request } from "../../request"";
+import request from "../../request/src/request";
 
 export default class Connector{
     client_id : string
@@ -11,7 +11,7 @@ export default class Connector{
         this.client_id = client_id
         this.client_secret = client_secret
         this.companyCode = companyCode
-        this.token_url = 'https://auth.'+companyCode+'.workgrid.com/oauth2/token'
+        this.token_url = `https://auth.${this.companyCode}.workgrid.com/oauth2/token`
     }
 
    /**
@@ -28,7 +28,7 @@ export default class Connector{
                 scope: this.scope
             },
             method:'post',
-            url:'https://acme.workgrid.com/v2/jobs',
+            url:`https://${this.companyCode}.workgrid.com/v2/jobs`,
             data: jobs
         })
     }
@@ -56,7 +56,7 @@ export default class Connector{
                 scope: this.scope
             },
             method:'get',
-            url:'https://acme.workgrid.com/v2/jobs/'+jobId
+            url:`https://${this.companyCode}.workgrid.com/v2/jobs/${jobId}`
         })
     }
     
@@ -68,7 +68,7 @@ export default class Connector{
    * @param {string} eventType - Event type to filter by
    * @return {Promise<object>} - response from API
    */
-    async getEvents(limit:number,cursor:string,eventStatus:string,eventType:string) : Promise<object>{
+    async getEvents(eventOptions : { limit : number, cursor : string, eventStatus : string, eventType : string }) : Promise<object>{
         return await request({
             oauthOptions : {
                 client_id : this.client_id,
@@ -77,13 +77,8 @@ export default class Connector{
                 scope: this.scope
             },
             method:'get',
-            url:'https://acme.workgrid.com/v2/events',
-            data:{
-                limit,
-                cursor,
-                eventStatus,
-                eventType
-            }
+            url:`https://${this.companyCode}.workgrid.com/v2/events`,
+            data: eventOptions
         })
     }
 
@@ -101,7 +96,7 @@ export default class Connector{
                 scope: this.scope
             },
             method:'get',
-            url:'https://acme.workgrid.com/v2/events/'+eventId
+            url:`https://${this.companyCode}.workgrid.com/v2/events/${eventId}`
         })
     }
 
@@ -119,7 +114,7 @@ export default class Connector{
                 scope: this.scope
             },
             method:'put',
-            url:'https://acme.workgrid.com/v2/events/{'+eventId+'}/status',
+            url:`https://${this.companyCode}.workgrid.com/v2/events/${eventId}/status`,
             data:{
                 status:'processed'
             }
@@ -197,9 +192,5 @@ export interface OAuthOptions {
      */
     additionalOptions?: object
   }
-  
 
-async function request(apiOptions: APIOptions): Promise<object> {
-    return {test:'plaaceholder'}
-  }
   
