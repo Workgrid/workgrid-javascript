@@ -2,11 +2,7 @@
   "extends": "./packages/typescript/tsconfig.json",
   "compilerOptions": {
     "baseUrl": "packages",
-<<<<<<< HEAD
     "types": ["node","jest"],
-=======
-    "types": ["node"],
->>>>>>> ETSWORK-921 Configure eslint and prettier (jest doesn't seem to be working though)
     "paths": {
       "@workgrid/*": ["*/src"]
     }
