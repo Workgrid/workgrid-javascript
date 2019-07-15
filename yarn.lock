@@ -377,19 +377,25 @@
     "@babel/types" "^7.3.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 =======
 >>>>>>> ETSWORK-921 Configure eslint and prettier (jest doesn't seem to be working though)
+=======
+>>>>>>> ETSWORK-4158 - resolved yarn.lock merge conflict
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
   resolved "https://repo.forge.lmig.com/api/npm/npm/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"
   integrity sha1-HuMNeVRMqE1o1LPNsK9PIFZj3S0=
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> ETSWORK-921 Configure eslint and prettier (jest doesn't seem to be working though)
 >>>>>>> ETSWORK-921 Configure eslint and prettier (jest doesn't seem to be working though)
+=======
+>>>>>>> ETSWORK-4158 - resolved yarn.lock merge conflict
 "@types/fs-extra@5.0.4":
   version "5.0.4"
   resolved "https://repo.forge.lmig.com/api/npm/npm/@types/fs-extra/-/fs-extra-5.0.4.tgz#b971134d162cc0497d221adde3dbb67502225599"
