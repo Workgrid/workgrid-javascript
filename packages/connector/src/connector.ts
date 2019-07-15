@@ -28,6 +28,10 @@ export default class Connector{
         })
     }
 
+    async createJob(job:object) : Promise<object>{
+        return await this.createJobs([job])
+    }
+
     async getJob(jobId : string) : Promise<object>{
         return await request({
             oauthOptions : {
