@@ -1,4 +1,4 @@
-//import { request } from "https";
+//import { request } from "../../request"";
 
 export default class Connector{
     client_id : string
@@ -14,6 +14,11 @@ export default class Connector{
         this.token_url = 'https://auth.'+companyCode+'.workgrid.com/oauth2/token'
     }
 
+   /**
+   * Submit one or more job requests
+   * @param {Array<object>} jobs 
+   * @return {Promise<object>} - response from API
+   */
     async createJobs (jobs:Array<object>) : Promise<object>{
         return await request({
             oauthOptions : {
@@ -28,10 +33,20 @@ export default class Connector{
         })
     }
 
+    /**
+   * Submit a single job request
+   * @param {object} job 
+   * @return {Promise<object>} - response from API
+   */
     async createJob(job:object) : Promise<object>{
         return await this.createJobs([job])
     }
 
+   /**
+   * Get the job and its current status
+   * @param {string} jobId - jobId of job to get 
+   * @return {Promise<object>} - response from API
+   */
     async getJob(jobId : string) : Promise<object>{
         return await request({
             oauthOptions : {
@@ -44,8 +59,16 @@ export default class Connector{
             url:'https://acme.workgrid.com/v2/jobs/'+jobId
         })
     }
-    //how to pass query params?
-    async getEvents(limit:number,cursor:string,eventStatus:string,eventType:string){
+    
+   /**
+   * Get the job and its current status
+   * @param {number} limit - How many items to return
+   * @param {string} cursor - An opaque cursor used for pagination
+   * @param {string} event Status - Eventstatus to filter by
+   * @param {string} eventType - Event type to filter by
+   * @return {Promise<object>} - response from API
+   */
+    async getEvents(limit:number,cursor:string,eventStatus:string,eventType:string) : Promise<object>{
         return await request({
             oauthOptions : {
                 client_id : this.client_id,
@@ -64,7 +87,12 @@ export default class Connector{
         })
     }
 
-    async getEvent(eventId:string){
+    /**
+   * Get the event and its current status
+   * @param {string} eventId - jobId of job to get 
+   * @return {Promise<object>} - response from API
+   */
+    async getEvent(eventId:string) : Promise<object>{
         return await request({
             oauthOptions : {
                 client_id : this.client_id,
@@ -77,7 +105,12 @@ export default class Connector{
         })
     }
 
-    async updateEventStatus(eventId:string){
+    /**
+    * Update the status of the event to 'processed'
+    * @param {string} eventId - Event to update the status of 
+    * @return {Promise<object>} - response from API
+    */
+    async updateEventStatus(eventId:string) : Promise<object>{
         return await request({
             oauthOptions : {
                 client_id : this.client_id,
@@ -94,7 +127,14 @@ export default class Connector{
     }
 }
 
-export function createClient(client_id : string, client_secret : string, companyCode : string){
+/**
+    * create a new Connector object
+    * @param {string} client_id - Connector client ID
+    * @param {string} client_secret - Connector client secret
+    * @param {string} companyCode -  
+    * @return {Promise<object>} - response from API
+    */
+export function createConnector(client_id : string, client_secret : string, companyCode : string) : Connector{
     return new Connector(client_id, client_secret, companyCode)
 }
 
