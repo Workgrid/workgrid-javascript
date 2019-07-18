@@ -25,7 +25,7 @@ export interface OAuthOptions {
   url: string
 
   /**
-   * The scope the token is for, with each array element joined together by a /
+   * An array of scopes that the token is for
    */
   scopes: string[]
 
@@ -84,7 +84,7 @@ const createInstance = mem((oauthOptions: OAuthOptions): any => {
     client_id: oauthOptions.clientId,
     client_secret: oauthOptions.clientSecret,
     url: oauthOptions.url,
-    scope: oauthOptions.scopes.join('/'),
+    scope: oauthOptions.scopes.join(),
     grant_type: oauthOptions.grantType
   })
   /* eslint-enable @typescript-eslint/camelcase */

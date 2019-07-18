@@ -38,7 +38,7 @@ describe('@workgrid/request', () => {
     oauthOptions = {
       clientId: 'will',
       clientSecret: 'secret',
-      scopes: ['com.workgrid.api', 'notifications.all'],
+      scopes: ['com.workgrid.api/notifications.all'],
       url: 'https://auth.code.workgrid.com/oauth2/token',
       grantType: 'client_credentials'
     }
@@ -60,7 +60,7 @@ describe('@workgrid/request', () => {
       const newOAuthOptions: OAuthOptions = {
         clientId: 'notWill',
         clientSecret: 'notSecret',
-        scopes: ['com.workgrid.api', 'notifications.all'],
+        scopes: ['com.workgrid.api/notifications.all'],
         url: 'https://auth.code.workgrid.com/oauth2/token',
         grantType: 'client_credentials'
       }
