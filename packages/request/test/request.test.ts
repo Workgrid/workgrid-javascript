@@ -10,8 +10,8 @@ mock.onAny().reply((config: any) => {
   if (config.url == 'https://auth.code.workgrid.com/oauth2/token') {
     tokenInvoked = true
     const data: string[] = config.data.split('&')
-    const id: string = data[1].split('=')[1]
-    const secret: string = data[2].split('=')[1]
+    const id: string = data[0].split('=')[1]
+    const secret: string = data[1].split('=')[1]
     if (id == 'will' && secret == 'secret') {
       /* eslint-disable-next-line @typescript-eslint/camelcase */
       return [200, { access_token: '24', expires_in: '5000' }]
@@ -36,10 +36,11 @@ describe('@workgrid/request', () => {
   beforeAll(() => {
     /* eslint-disable @typescript-eslint/camelcase */
     oauthOptions = {
-      client_id: 'will',
-      client_secret: 'secret',
-      scope: '',
-      url: 'https://auth.code.workgrid.com/oauth2/token'
+      clientId: 'will',
+      clientSecret: 'secret',
+      scopes: ['com.workgrid.api', 'notifications.all'],
+      url: 'https://auth.code.workgrid.com/oauth2/token',
+      grantType: 'client_credentials'
     }
     /* eslint-enable @typescript-eslint/camelcase */
     apiOptions = { oauthOptions: oauthOptions, url: 'https://code.workgrid.com/v2/jobs', method: 'post' }
@@ -57,10 +58,11 @@ describe('@workgrid/request', () => {
     test('should throw an error on unsuccessful API call', async () => {
       /* eslint-disable @typescript-eslint/camelcase */
       const newOAuthOptions: OAuthOptions = {
-        client_id: 'notWill',
-        client_secret: 'notSecret',
-        scope: '',
-        url: 'https://auth.code.workgrid.com/oauth2/token'
+        clientId: 'notWill',
+        clientSecret: 'notSecret',
+        scopes: ['com.workgrid.api', 'notifications.all'],
+        url: 'https://auth.code.workgrid.com/oauth2/token',
+        grantType: 'client_credentials'
       }
       /* eslint-enable @typescript-eslint/camelcase */
       const newAPIOptions: APIOptions = {

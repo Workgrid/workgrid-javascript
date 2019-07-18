@@ -12,12 +12,12 @@ export interface OAuthOptions {
   /**
    * The client's id
    */
-  client_id: string
+  clientId: string
 
   /**
    * The client's secret
    */
-  client_secret: string
+  clientSecret: string
 
   /**
    * The url to get the token from
@@ -25,9 +25,14 @@ export interface OAuthOptions {
   url: string
 
   /**
-   * The scope the token is for
+   * The scope the token is for, with each array element joined together by a /
    */
-  scope: string
+  scopes: string[]
+
+  /**
+   * The grant type the token is for
+   */
+  grantType: string
 }
 
 /**
@@ -76,8 +81,11 @@ const createInstance = mem((oauthOptions: OAuthOptions): any => {
   const instance: any = axios.create()
   /* eslint-disable @typescript-eslint/camelcase */
   const oauthClient: any = oauth.client(axios.create(), {
-    grant_type: 'client_credentials',
-    ...oauthOptions
+    client_id: oauthOptions.clientId,
+    client_secret: oauthOptions.clientSecret,
+    url: oauthOptions.url,
+    scope: oauthOptions.scopes.join('/'),
+    grant_type: oauthOptions.grantType
   })
   /* eslint-enable @typescript-eslint/camelcase */
   const interceptor: any = oauth.interceptor(tokenProvider, oauthClient)
