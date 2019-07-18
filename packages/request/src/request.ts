@@ -84,7 +84,7 @@ const createInstance = mem((oauthOptions: OAuthOptions): any => {
     client_id: oauthOptions.clientId,
     client_secret: oauthOptions.clientSecret,
     url: oauthOptions.url,
-    scope: oauthOptions.scopes.join(),
+    scope: oauthOptions.scopes.join(' '),
     grant_type: oauthOptions.grantType
   })
   /* eslint-enable @typescript-eslint/camelcase */
