@@ -1,5 +1,5 @@
 {
-    "name": "@workgrid/webhook-validation",
+    "name": "@workgrid/connector",
     "version": "1.0.0",
     "description": "",
     "main": "dist/webhook.js",

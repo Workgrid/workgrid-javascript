@@ -111,4 +111,5 @@ export default async function request(apiOptions: APIOptions): Promise<any> {
   })
   const response: object = await instance(options)
   return response
+
 }
