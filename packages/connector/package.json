@@ -2,7 +2,7 @@
     "name": "@workgrid/connector",
     "version": "1.0.0",
     "description": "",
-    "main": "dist/webhook.js",
+    "main": "dist/connector.js",
     "scripts": {
       "build": "tsc",
       "postbuild": "api-extractor run --local --verbose && rm -rf temp"

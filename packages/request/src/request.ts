@@ -1,5 +1,7 @@
 import axios from 'axios'
+// @ts-ignore
 import * as oauth from 'axios-oauth-client'
+// @ts-ignore
 import * as tokenProvider from 'axios-token-interceptor'
 import mem from 'mem'
 
@@ -111,5 +113,4 @@ export default async function request(apiOptions: APIOptions): Promise<any> {
   })
   const response: object = await instance(options)
   return response
-
 }
