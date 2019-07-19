@@ -1,0 +1,19 @@
+{
+    "name": "@workgrid/request",
+    "version": "1.0.0",
+    "description": "",
+    "main": "dist/request.js",
+    "scripts": {
+      "build": "tsc",
+      "postbuild": "api-extractor run --local --verbose && rm -rf temp"
+    },
+    "license": "ISC",
+    "dependencies": {
+      "axios": "^0.18.0",
+      "axios-oauth-client": "^1.1.1",
+      "axios-token-interceptor": "^0.1.0"
+    },
+    "devDependencies": {
+      "axios-mock-adapter": "^1.17.0"
+    }
+  }

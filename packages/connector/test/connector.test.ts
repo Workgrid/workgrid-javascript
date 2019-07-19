@@ -1,4 +1,5 @@
-import Connector, { OAuthOptions, createConnector } from "../src/connector"
+import Connector from "../src/connector"
+import { OAuthOptions } from "../../request/src/request"
 
 const request = require("../../request/src/request")
 request.default = jest.fn().mockImplementation((options) : Promise<object> => {
@@ -7,21 +8,24 @@ request.default = jest.fn().mockImplementation((options) : Promise<object> => {
 
 describe("@connector", () => {
 
-    let successfulConnector : Connector
+    let connector : Connector
     let oauthOptions : OAuthOptions
+    let id : string
 
     beforeAll(() => {
-        successfulConnector = new Connector('will', 'secret', 'code')
+        connector = new Connector('will', 'secret', 'code', 'client_credentials', ['com.workgrid.api/notifications.all'])
         oauthOptions = {
-            client_id : 'will',
-            client_secret : 'secret',
+            clientId : 'will',
+            clientSecret : 'secret',
             url : 'https://auth.code.workgrid.com/oauth2/token',
-            scope: 'com.workgrid.api/notifications.all'
+            scopes: ['com.workgrid.api/notifications.all'],
+            grantType: 'client_credentials'
         }
+        id = '1'
     })
 
     test("createJobs forms correct options on call", async () => {
-        const createJobsOutput = await successfulConnector.createJobs([{}])
+        const createJobsOutput = await connector.createJobs([{}])
         expect(createJobsOutput).toEqual({
             oauthOptions : oauthOptions,
             method: 'post',
@@ -31,28 +35,28 @@ describe("@connector", () => {
     })
 
     test("createJob is equivalent to createJobs when given a single job", async () => {
-        const createJobOutput = await successfulConnector.createJob({})
-        const createJobsOutput = await successfulConnector.createJobs([{}])
+        const createJobOutput = await connector.createJob({})
+        const createJobsOutput = await connector.createJobs([{}])
         expect(createJobOutput).toEqual(createJobsOutput)
     })
 
     test("getJob forms correct options on call", async () => {
-        const getJobOutput = await successfulConnector.getJob('1')
+        const getJobOutput = await connector.getJob(id)
         expect(getJobOutput).toEqual({
             oauthOptions : oauthOptions,
             method : 'get',
-            url:`https://code.workgrid.com/v2/jobs/1`
+            url:`https://code.workgrid.com/v2/jobs/${id}`
         })
     })
 
     test("getEvents forms correct options on call", async () => {
         const eventsOptions = {
             limit : 50,
-            cursor : "",
-            eventStatus : "processed",
-            eventType : "Notification.Action"
+            cursor : '',
+            eventStatus : 'processed',
+            eventType : 'Notification.Action'
         }
-        const getEventsOutput = await successfulConnector.getEvents(eventsOptions)
+        const getEventsOutput = await connector.getEvents(eventsOptions)
         expect(getEventsOutput).toEqual({
             oauthOptions : oauthOptions,
             method : 'get',
@@ -62,20 +66,20 @@ describe("@connector", () => {
     })
 
     test("getEvent forms correct options on call", async () => {
-        const getEventOutput = await successfulConnector.getEvent('1')
+        const getEventOutput = await connector.getEvent(id)
         expect(getEventOutput).toEqual({
             oauthOptions : oauthOptions,
             method : 'get',
-            url : `https://code.workgrid.com/v2/events/1`
+            url : `https://code.workgrid.com/v2/events/${id}`
         })
     })
 
     test("updateEventStatus forms correct options on call", async () => {
-        const updateEventStatusOutput = await successfulConnector.updateEventStatus('1')
+        const updateEventStatusOutput = await connector.updateEventStatus(id)
         expect(updateEventStatusOutput).toEqual({
             oauthOptions : oauthOptions,
             method : 'put',
-            url : `https://code.workgrid.com/v2/events/1/status`,
+            url : `https://code.workgrid.com/v2/events/${id}/status`,
             data : {
                 status : 'processed'
             }
