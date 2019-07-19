@@ -1,5 +1,5 @@
 import Connector from '../src/connector'
-import { OAuthOptions } from '../../request/src/request'
+import { OAuthOptions } from '@workgrid/request/src/request'
 
 jest.mock('@workgrid/request/src/request', () => {
   return {
@@ -15,19 +15,19 @@ describe('@connector', (): void => {
   let id: string
 
   beforeAll(() => {
-    connector = new Connector({
+    const options = {
       clientId: 'will',
       clientSecret: 'secret',
-      companyCode: 'code',
       grantType: 'client_credentials',
       scopes: ['com.workgrid.api/notifications.all']
+    }
+    connector = new Connector({
+      companyCode: 'code',
+      ...options
     })
     oauthOptions = {
-      clientId: 'will',
-      clientSecret: 'secret',
       url: 'https://auth.code.workgrid.com/oauth2/token',
-      scopes: ['com.workgrid.api/notifications.all'],
-      grantType: 'client_credentials'
+      ...options
     }
     id = '1'
   })
