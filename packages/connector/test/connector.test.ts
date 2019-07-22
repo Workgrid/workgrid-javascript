@@ -47,7 +47,7 @@ describe('@connector', (): void => {
       oauthOptions: oauthOptions,
       method: 'post',
       url: 'https://code.workgrid.com/v2/jobs',
-      data: [{}]
+      data: [jobData]
     })
   })
 
