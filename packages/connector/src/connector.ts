@@ -35,13 +35,15 @@ export default class Connector {
 
   /**
    * Submit one or more job requests
-   * @param {Array<object>} jobs
+   * @param {Array<object>} jobs - the jobs to be created by the Workgrid API
+   * @param {object} params - the URL parameters to be supplied in the API call
+   * @param {object} additionalOptions - extra options to be supplied to axios
    * @return {Promise<object>} - response from API
    *
    * @beta
    */
-  public async createJobs(options: { jobs: object[]; params?: object; additionalOptions?: object }): Promise<object> {
-    return await request({
+  public createJobs(options: { jobs: object[]; params?: object; additionalOptions?: object }): Promise<object> {
+    return request({
       oauthOptions: this.oauthOptions,
       method: 'post',
       url: this.apiBaseURL.concat(`v2/jobs`),
@@ -53,13 +55,15 @@ export default class Connector {
 
   /**
    * Submit a single job request
-   * @param {object} job
+   * @param {object} job - the job to be created by the Workgrid API
+   * @param {object} params - the URL parameters to be supplied in the API call
+   * @param {object} additionalOptions - extra options to be supplied to axios
    * @return {Promise<object>} - response from API
    *
    * @beta
    */
-  public async createJob(options: { job: object; params?: object; additionalOptions?: object }): Promise<object> {
-    return await this.createJobs({
+  public createJob(options: { job: object; params?: object; additionalOptions?: object }): Promise<object> {
+    return this.createJobs({
       jobs: [options.job],
       params: options.params,
       additionalOptions: options.additionalOptions
@@ -69,12 +73,14 @@ export default class Connector {
   /**
    * Get the job and its current status
    * @param {string} jobId - jobId of job to get
+   * @param {object} params - the URL parameters to be supplied in the API call
+   * @param {object} additionalOptions - extra options to be supplied to axios
    * @return {Promise<object>} - response from API
    *
    * @beta
    */
-  public async getJob(options: { jobId: string; params?: object; additionalOptions?: object }): Promise<object> {
-    return await request({
+  public getJob(options: { jobId: string; params?: object; additionalOptions?: object }): Promise<object> {
+    return request({
       oauthOptions: this.oauthOptions,
       method: 'get',
       url: this.apiBaseURL.concat(`v2/jobs/${options.jobId}`),
@@ -87,13 +93,15 @@ export default class Connector {
    * Get information about a set of events
    * @param {number} limit - How many items to return
    * @param {string} cursor - An opaque cursor used for pagination
-   * @param {string} event Status - Eventstatus to filter by
+   * @param {string} eventStatus - Eventstatus to filter by
    * @param {string} eventType - Event type to filter by
+   * @param {object} params - the URL parameters to be supplied in the API call
+   * @param {object} additionalOptions - extra options to be supplied to axios
    * @return {Promise<object>} - response from API
    *
    * @beta
    */
-  public async getEvents(options: {
+  public getEvents(options: {
     eventOptions: {
       limit: number
       cursor: string
@@ -103,7 +111,7 @@ export default class Connector {
     params?: object
     additionalOptions?: object
   }): Promise<object> {
-    return await request({
+    return request({
       oauthOptions: this.oauthOptions,
       method: 'get',
       url: this.apiBaseURL.concat(`v2/events`),
@@ -116,12 +124,14 @@ export default class Connector {
   /**
    * Get information about a specific event
    * @param {string} eventId - jobId of job to get
+   * @param {object} params - the URL parameters to be supplied in the API call
+   * @param {object} additionalOptions - extra options to be supplied to axios
    * @return {Promise<object>} - response from API
    *
    * @beta
    */
-  public async getEvent(options: { eventId: string; params?: object; additionalOptions?: object }): Promise<object> {
-    return await request({
+  public getEvent(options: { eventId: string; params?: object; additionalOptions?: object }): Promise<object> {
+    return request({
       oauthOptions: this.oauthOptions,
       method: 'get',
       url: this.apiBaseURL.concat(`v2/events/${options.eventId}`),
@@ -133,16 +143,18 @@ export default class Connector {
   /**
    * Update the status of the event to 'processed'
    * @param {string} eventId - Event to update the status of
+   * @param {object} params - the URL parameters to be supplied in the API call
+   * @param {object} additionalOptions - extra options to be supplied to axios
    * @return {Promise<object>} - response from API
    *
    * @beta
    */
-  public async updateEventStatus(options: {
+  public updateEventStatus(options: {
     eventId: string
     params?: object
     additionalOptions?: object
   }): Promise<object> {
-    return await request({
+    return request({
       oauthOptions: this.oauthOptions,
       method: 'put',
       url: this.apiBaseURL.concat(`v2/events/${options.eventId}/status`),
