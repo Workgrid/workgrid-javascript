@@ -1,7 +1,5 @@
 import axios from 'axios'
-// @ts-ignore
 import * as oauth from 'axios-oauth-client'
-// @ts-ignore
 import * as tokenProvider from 'axios-token-interceptor'
 import mem from 'mem'
 

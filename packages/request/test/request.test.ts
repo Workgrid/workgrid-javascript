@@ -43,7 +43,7 @@ describe('@workgrid/request', () => {
       grantType: 'client_credentials'
     }
     /* eslint-enable @typescript-eslint/camelcase */
-    apiOptions = { oauthOptions: oauthOptions, url: 'https://code.workgrid.com/v2/jobs', method: 'post' }
+    apiOptions = { oauthOptions: oauthOptions, baseURL: 'https://code.workgrid.com/', url: 'v2/jobs', method: 'post' }
   })
 
   beforeEach(() => {
@@ -67,7 +67,8 @@ describe('@workgrid/request', () => {
       /* eslint-enable @typescript-eslint/camelcase */
       const newAPIOptions: APIOptions = {
         oauthOptions: newOAuthOptions,
-        url: 'https://code.workgrid.com/v2/jobs',
+        baseURL: 'https://code.workgrid.com/',
+        url: 'v2/jobs',
         method: 'post'
       }
       await expect(request(newAPIOptions)).rejects.toThrowError('Request failed with status code 403')

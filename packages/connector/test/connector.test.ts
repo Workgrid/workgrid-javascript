@@ -87,7 +87,7 @@ describe('@connector', (): void => {
     expect(getEventOutput).toEqual({
       oauthOptions: oauthOptions,
       method: 'get',
-      baesURL: 'https://code.workgrid.com/',
+      baseURL: 'https://code.workgrid.com/',
       url: `v2/events/${id}`,
       additionalOptions: {}
     })
