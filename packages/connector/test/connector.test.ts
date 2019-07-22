@@ -42,58 +42,68 @@ describe('@connector', (): void => {
   })
 
   test('createJobs forms correct options on call', async () => {
-    const createJobsOutput = await connector.createJobs({ jobs: [jobData] })
+    const createJobsOutput = await connector.createJobs([jobData])
     expect(createJobsOutput).toEqual({
       oauthOptions: oauthOptions,
       method: 'post',
-      url: 'https://code.workgrid.com/v2/jobs',
-      data: [jobData]
+      baseURL: 'https://code.workgrid.com/',
+      url: 'v2/jobs',
+      data: [jobData],
+      additionalOptions: {}
     })
   })
 
   test('createJob is equivalent to createJobs when given a single job', async () => {
-    const createJobOutput = await connector.createJob({ job: jobData })
-    const createJobsOutput = await connector.createJobs({ jobs: [jobData] })
+    const createJobOutput = await connector.createJob(jobData)
+    const createJobsOutput = await connector.createJobs([jobData])
     expect(createJobOutput).toEqual(createJobsOutput)
   })
 
   test('getJob forms correct options on call', async () => {
-    const getJobOutput = await connector.getJob({ jobId: id })
+    const getJobOutput = await connector.getJob(id)
     expect(getJobOutput).toEqual({
       oauthOptions: oauthOptions,
       method: 'get',
-      url: `https://code.workgrid.com/v2/jobs/${id}`
+      baseURL: 'https://code.workgrid.com/',
+      url: `v2/jobs/${id}`,
+      additionalOptions: {}
     })
   })
 
   test('getEvents forms correct options on call', async () => {
-    const getEventsOutput = await connector.getEvents({ eventOptions: eventOptions })
+    const getEventsOutput = await connector.getEvents(eventOptions)
     expect(getEventsOutput).toEqual({
       oauthOptions: oauthOptions,
       method: 'get',
-      url: `https://code.workgrid.com/v2/events`,
-      data: eventOptions
+      baseURL: `https://code.workgrid.com/`,
+      url: 'v2/events',
+      data: eventOptions,
+      additionalOptions: {}
     })
   })
 
   test('getEvent forms correct options on call', async () => {
-    const getEventOutput = await connector.getEvent({ eventId: id })
+    const getEventOutput = await connector.getEvent(id)
     expect(getEventOutput).toEqual({
       oauthOptions: oauthOptions,
       method: 'get',
-      url: `https://code.workgrid.com/v2/events/${id}`
+      baesURL: 'https://code.workgrid.com/',
+      url: `v2/events/${id}`,
+      additionalOptions: {}
     })
   })
 
   test('updateEventStatus forms correct options on call', async () => {
-    const updateEventStatusOutput = await connector.updateEventStatus({ eventId: id })
+    const updateEventStatusOutput = await connector.updateEventStatus(id)
     expect(updateEventStatusOutput).toEqual({
       oauthOptions: oauthOptions,
       method: 'put',
-      url: `https://code.workgrid.com/v2/events/${id}/status`,
+      baseURL: 'https://code.workgrid.com/',
+      url: `v2/events/${id}/status`,
       data: {
         status: 'processed'
-      }
+      },
+      additionalOptions: {}
     })
   })
 })
