@@ -40,12 +40,14 @@ export default class Connector {
    *
    * @beta
    */
-  public async createJobs(jobs: object[]): Promise<object> {
+  public async createJobs(options: { jobs: object[]; params?: object; additionalOptions?: object }): Promise<object> {
     return await request({
       oauthOptions: this.oauthOptions,
       method: 'post',
       url: this.apiBaseURL.concat(`v2/jobs`),
-      data: jobs
+      data: options.jobs,
+      params: options.params,
+      additionalOptions: options.additionalOptions
     })
   }
 
@@ -56,8 +58,12 @@ export default class Connector {
    *
    * @beta
    */
-  public async createJob(job: object): Promise<object> {
-    return await this.createJobs([job])
+  public async createJob(options: { job: object; params?: object; additionalOptions?: object }): Promise<object> {
+    return await this.createJobs({
+      jobs: [options.job],
+      params: options.params,
+      additionalOptions: options.additionalOptions
+    })
   }
 
   /**
@@ -67,11 +73,13 @@ export default class Connector {
    *
    * @beta
    */
-  public async getJob(jobId: string): Promise<object> {
+  public async getJob(options: { jobId: string; params?: object; additionalOptions?: object }): Promise<object> {
     return await request({
       oauthOptions: this.oauthOptions,
       method: 'get',
-      url: this.apiBaseURL.concat(`v2/jobs/${jobId}`)
+      url: this.apiBaseURL.concat(`v2/jobs/${options.jobId}`),
+      params: options.params,
+      additionalOptions: options.additionalOptions
     })
   }
 
@@ -85,17 +93,23 @@ export default class Connector {
    *
    * @beta
    */
-  public async getEvents(eventOptions: {
-    limit: number
-    cursor: string
-    eventStatus: string
-    eventType: string
+  public async getEvents(options: {
+    eventOptions: {
+      limit: number
+      cursor: string
+      eventStatus: string
+      eventType: string
+    }
+    params?: object
+    additionalOptions?: object
   }): Promise<object> {
     return await request({
       oauthOptions: this.oauthOptions,
       method: 'get',
       url: this.apiBaseURL.concat(`v2/events`),
-      data: eventOptions
+      data: options.eventOptions,
+      params: options.params,
+      additionalOptions: options.additionalOptions
     })
   }
 
@@ -106,11 +120,13 @@ export default class Connector {
    *
    * @beta
    */
-  public async getEvent(eventId: string): Promise<object> {
+  public async getEvent(options: { eventId: string; params?: object; additionalOptions?: object }): Promise<object> {
     return await request({
       oauthOptions: this.oauthOptions,
       method: 'get',
-      url: this.apiBaseURL.concat(`v2/events/${eventId}`)
+      url: this.apiBaseURL.concat(`v2/events/${options.eventId}`),
+      params: options.params,
+      additionalOptions: options.additionalOptions
     })
   }
 
@@ -121,14 +137,20 @@ export default class Connector {
    *
    * @beta
    */
-  public async updateEventStatus(eventId: string): Promise<object> {
+  public async updateEventStatus(options: {
+    eventId: string
+    params?: object
+    additionalOptions?: object
+  }): Promise<object> {
     return await request({
       oauthOptions: this.oauthOptions,
       method: 'put',
-      url: this.apiBaseURL.concat(`v2/events/${eventId}/status`),
+      url: this.apiBaseURL.concat(`v2/events/${options.eventId}/status`),
       data: {
         status: 'processed'
-      }
+      },
+      params: options.params,
+      additionalOptions: options.additionalOptions
     })
   }
 }
