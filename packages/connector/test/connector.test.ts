@@ -32,7 +32,7 @@ const updateEventResponse: UpdateEventResponse = { status: 200, data: { eventId:
 
 jest.mock('@workgrid/request/src/request', () => {
   return {
-    default: (options: { url: string; data?: object }): Promise<APIResponse> => {
+    default: (options: { url: string }): Promise<APIResponse> => {
       if (options.url === 'v2/jobs') {
         return Promise.resolve(createJobResponse)
       } else if (options.url == `v2/jobs/${id}`) {
