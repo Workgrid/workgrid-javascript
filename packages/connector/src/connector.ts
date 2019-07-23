@@ -1,5 +1,60 @@
 import request, { OAuthOptions } from '@workgrid/request/src/request'
 
+interface Status {
+  status: number
+}
+
+export interface CreateJobResponse extends Status {
+  data: {
+    jobId: string
+    jobType: string
+    jobStatus: string
+    correlationId: string
+  }[]
+}
+
+export interface GetJobResponse extends Status {
+  data: {
+    jobId: string
+    jobStatus: string
+  }
+}
+
+interface EventData {
+  eventId: string
+  eventType: string
+  eventStatus: string
+  eventData: {
+    action: string
+    request: string
+  }
+  userName: string
+  userId: string
+  notificationId: string
+}
+
+export interface GetEventsResponse extends Status {
+  data: EventData[]
+}
+
+export interface GetEventResponse extends Status {
+  data: EventData
+}
+
+export interface UpdateEventResponse extends Status {
+  data: {
+    eventId: string
+    eventStatus: string
+  }
+}
+
+export type APIResponse =
+  | CreateJobResponse
+  | GetJobResponse
+  | GetEventResponse
+  | GetEventsResponse
+  | UpdateEventResponse
+
 /**
  * A pretty class-wrapper for the request package, allowing for easier interaction with the Workgrid API.
  *
@@ -49,7 +104,7 @@ export default class Connector {
    *
    * @beta
    */
-  public createJobs(jobs: object[]): Promise<{ status: number; data: object }> {
+  public async createJobs(jobs: object[]): Promise<CreateJobResponse> {
     return request({
       oauthOptions: this.oauthOptions,
       method: 'post',
@@ -57,6 +112,9 @@ export default class Connector {
       url: 'v2/jobs',
       data: jobs,
       additionalOptions: this.additionalOptions
+    }).then((response: object) => {
+      const newResponse = response as CreateJobResponse
+      return { status: newResponse.status, data: newResponse.data }
     })
   }
 
@@ -67,7 +125,7 @@ export default class Connector {
    *
    * @beta
    */
-  public createJob(job: object): Promise<{ status: number; data: object }> {
+  public createJob(job: object): Promise<CreateJobResponse> {
     return this.createJobs([job])
   }
 
@@ -78,13 +136,16 @@ export default class Connector {
    *
    * @beta
    */
-  public getJob(jobId: string): Promise<{ status: number; data: object }> {
+  public getJob(jobId: string): Promise<GetJobResponse> {
     return request({
       oauthOptions: this.oauthOptions,
       method: 'get',
       baseURL: this.apiBaseURL,
       url: `v2/jobs/${jobId}`,
       additionalOptions: this.additionalOptions
+    }).then((response: object) => {
+      const newResponse = response as GetJobResponse
+      return { status: newResponse.status, data: newResponse.data }
     })
   }
 
@@ -103,7 +164,7 @@ export default class Connector {
     cursor: string
     eventStatus: string
     eventType: string
-  }): Promise<{ status: number; data: object }> {
+  }): Promise<GetEventsResponse> {
     return request({
       oauthOptions: this.oauthOptions,
       method: 'get',
@@ -111,6 +172,9 @@ export default class Connector {
       url: 'v2/events',
       data: eventOptions,
       additionalOptions: this.additionalOptions
+    }).then((response: object) => {
+      const newResponse = response as GetEventsResponse
+      return { status: newResponse.status, data: newResponse.data }
     })
   }
 
@@ -121,13 +185,16 @@ export default class Connector {
    *
    * @beta
    */
-  public getEvent(eventId: string): Promise<{ status: number; data: object }> {
+  public getEvent(eventId: string): Promise<GetEventResponse> {
     return request({
       oauthOptions: this.oauthOptions,
       method: 'get',
       baseURL: this.apiBaseURL,
       url: `v2/events/${eventId}`,
       additionalOptions: this.additionalOptions
+    }).then((response: object) => {
+      const newResponse = response as GetEventResponse
+      return { status: newResponse.status, data: newResponse.data }
     })
   }
 
@@ -138,7 +205,7 @@ export default class Connector {
    *
    * @beta
    */
-  public updateEventStatus(eventId: string): Promise<{ status: number; data: object }> {
+  public updateEventStatus(eventId: string): Promise<UpdateEventResponse> {
     return request({
       oauthOptions: this.oauthOptions,
       method: 'put',
@@ -148,6 +215,9 @@ export default class Connector {
         status: 'processed'
       },
       additionalOptions: this.additionalOptions
+    }).then((response: object) => {
+      const newResponse = response as UpdateEventResponse
+      return { status: newResponse.status, data: newResponse.data }
     })
   }
 }

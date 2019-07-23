@@ -100,7 +100,7 @@ const createInstance = mem((oauthOptions: OAuthOptions): any => {
  *
  * @beta
  */
-export default async function request(apiOptions: APIOptions): Promise<{ status: number; data: object }> {
+export default async function request(apiOptions: APIOptions): Promise<object> {
   const oauthOptions: OAuthOptions = apiOptions.oauthOptions
   const instance: any = createInstance(oauthOptions)
   const options: object = Object.assign({}, apiOptions.additionalOptions, {
@@ -109,6 +109,5 @@ export default async function request(apiOptions: APIOptions): Promise<{ status:
     url: apiOptions.url,
     baseURL: apiOptions.baseURL
   })
-  const response: { status: number; data: object } = await instance(options)
-  return { status: response.status, data: response.data }
+  return await instance(options)
 }
