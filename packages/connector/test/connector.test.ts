@@ -1,19 +1,17 @@
-import Connector, {
-  APIResponse,
-  CreateJobResponse,
-  GetJobResponse,
-  GetEventsResponse,
-  GetEventResponse,
-  UpdateEventResponse
-} from '../src/connector'
+import Connector, { CreateJobResponse, GetJobResponse, GetEventResponse, UpdateEventResponse } from '../src/connector'
 
-const createJobResponse: CreateJobResponse = {
+const createJobResponse = {
   status: 200,
-  data: [{ jobId: '123', jobType: 'notification.create', jobStatus: 'processed', correlationId: 'xyz' }]
+  data: {
+    jobId: '123',
+    jobType: 'notification.create',
+    jobStatus: 'processed',
+    correlationId: 'xyz'
+  }
 }
 const id = '1'
-const getJobResponse: GetJobResponse = { status: 200, data: { jobId: id, jobStatus: 'processing' } }
-const getEventsResponse: GetEventsResponse = {
+const getJobResponse = { status: 200, data: { jobId: id, jobStatus: 'processing' } }
+const getEventsResponse = {
   status: 200,
   data: [
     {
@@ -27,12 +25,13 @@ const getEventsResponse: GetEventsResponse = {
     }
   ]
 }
-const getEventResponse: GetEventResponse = { status: 200, data: getEventsResponse.data[0] }
-const updateEventResponse: UpdateEventResponse = { status: 200, data: { eventId: id, eventStatus: 'processed' } }
+const getEventResponse = { status: 200, data: getEventsResponse.data[0] }
+const updateEventResponse = { status: 200, data: { eventId: id, eventStatus: 'processed' } }
+const errorResponse = { status: 400, message: 'Bad call' }
 
 jest.mock('@workgrid/request/src/request', () => {
   return {
-    default: (options: { url: string }): Promise<APIResponse> => {
+    default: (options: { url: string }): Promise<object> => {
       if (options.url === 'v2/jobs') {
         return Promise.resolve(createJobResponse)
       } else if (options.url == `v2/jobs/${id}`) {
@@ -41,8 +40,10 @@ jest.mock('@workgrid/request/src/request', () => {
         return Promise.resolve(getEventsResponse)
       } else if (options.url == `v2/events/${id}`) {
         return Promise.resolve(getEventResponse)
-      } else {
+      } else if (options.url == `v2/events/${id}/status`) {
         return Promise.resolve(updateEventResponse)
+      } else {
+        return Promise.reject(errorResponse)
       }
     }
   }
@@ -74,33 +75,33 @@ describe('@connector', (): void => {
   })
 
   test('createJobs forms correct options on call', async () => {
-    const createJobsOutput: CreateJobResponse = await connector.createJobs([jobData])
-    expect(createJobsOutput).toEqual(createJobResponse)
+    const createJobsOutput: CreateJobResponse[] = await connector.createJobs([jobData])
+    expect(createJobsOutput).toEqual(createJobResponse.data)
   })
 
   test('createJob is equivalent to createJobs when given a single job', async () => {
     const createJobOutput: CreateJobResponse = await connector.createJob(jobData)
-    const createJobsOutput: CreateJobResponse = await connector.createJobs([jobData])
-    expect(createJobOutput).toEqual(createJobsOutput)
+    const createJobsOutput: CreateJobResponse[] = await connector.createJobs([jobData])
+    expect(createJobOutput).toEqual(createJobsOutput[0])
   })
 
   test('getJob forms correct options on call', async () => {
     const getJobOutput: GetJobResponse = await connector.getJob(id)
-    expect(getJobOutput).toEqual(getJobResponse)
+    expect(getJobOutput).toEqual(getJobResponse.data)
   })
 
   test('getEvents forms correct options on call', async () => {
-    const getEventsOutput: GetEventsResponse = await connector.getEvents(eventOptions)
-    expect(getEventsOutput).toEqual(getEventsOutput)
+    const getEventsOutput: GetEventResponse[] = await connector.getEvents(eventOptions)
+    expect(getEventsOutput).toEqual(getEventsResponse.data)
   })
 
   test('getEvent forms correct options on call', async () => {
     const getEventOutput: GetEventResponse = await connector.getEvent(id)
-    expect(getEventOutput).toEqual(getEventOutput)
+    expect(getEventOutput).toEqual(getEventResponse.data)
   })
 
   test('updateEventStatus forms correct options on call', async () => {
     const updateEventStatusOutput: UpdateEventResponse = await connector.updateEventStatus(id)
-    expect(updateEventStatusOutput).toEqual(updateEventResponse)
+    expect(updateEventStatusOutput).toEqual(updateEventResponse.data)
   })
 })
