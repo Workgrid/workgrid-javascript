@@ -4,23 +4,23 @@ interface Status {
   status: number
 }
 
-export interface CreateJobResponse extends Status {
-  data: {
+interface RequestResponse {
+  data: object
+}
+
+export interface CreateJobResponse {
     jobId: string
     jobType: string
     jobStatus: string
     correlationId: string
-  }[]
 }
 
-export interface GetJobResponse extends Status {
-  data: {
+export interface GetJobResponse {
     jobId: string
     jobStatus: string
-  }
 }
 
-interface EventData {
+export interface GetEventResponse {
   eventId: string
   eventType: string
   eventStatus: string
@@ -33,26 +33,16 @@ interface EventData {
   notificationId: string
 }
 
-export interface GetEventsResponse extends Status {
-  data: EventData[]
-}
-
-export interface GetEventResponse extends Status {
-  data: EventData
-}
-
-export interface UpdateEventResponse extends Status {
-  data: {
+export interface UpdateEventResponse {
     eventId: string
     eventStatus: string
-  }
 }
 
 export type APIResponse =
   | CreateJobResponse
   | GetJobResponse
   | GetEventResponse
-  | GetEventsResponse
+  | Array<GetEventResponse>
   | UpdateEventResponse
 
 /**
@@ -104,18 +94,21 @@ export default class Connector {
    *
    * @beta
    */
-  public async createJobs(jobs: object[]): Promise<CreateJobResponse> {
-    return request({
+  public async createJobs(jobs: object[]): Promise<Array<CreateJobResponse>> {
+    try{
+    const response = await request({
       oauthOptions: this.oauthOptions,
       method: 'post',
       baseURL: this.apiBaseURL,
       url: 'v2/jobs',
       data: jobs,
       additionalOptions: this.additionalOptions
-    }).then((response: object) => {
-      const newResponse = response as CreateJobResponse
-      return { status: newResponse.status, data: newResponse.data }
-    })
+    }) as RequestResponse
+    return response.data as Array<CreateJobResponse>
+  }catch (e){
+    console.log(e)
+    return e
+  }
   }
 
   /**
@@ -125,8 +118,9 @@ export default class Connector {
    *
    * @beta
    */
-  public createJob(job: object): Promise<CreateJobResponse> {
-    return this.createJobs([job])
+  public async createJob(job: object): Promise<CreateJobResponse> {
+    const jobResponse = await this.createJobs([job])
+    return jobResponse[0]
   }
 
   /**
@@ -144,8 +138,8 @@ export default class Connector {
       url: `v2/jobs/${jobId}`,
       additionalOptions: this.additionalOptions
     }).then((response: object) => {
-      const newResponse = response as GetJobResponse
-      return { status: newResponse.status, data: newResponse.data }
+      const newResponse = response as RequestResponse
+      return  newResponse.data as GetJobResponse
     })
   }
 
@@ -164,7 +158,7 @@ export default class Connector {
     cursor: string
     eventStatus: string
     eventType: string
-  }): Promise<GetEventsResponse> {
+  }): Promise< Array<GetEventResponse>> {
     return request({
       oauthOptions: this.oauthOptions,
       method: 'get',
@@ -173,8 +167,8 @@ export default class Connector {
       data: eventOptions,
       additionalOptions: this.additionalOptions
     }).then((response: object) => {
-      const newResponse = response as GetEventsResponse
-      return { status: newResponse.status, data: newResponse.data }
+      const newResponse = response as RequestResponse
+      return newResponse.data as Array<GetEventResponse>
     })
   }
 
@@ -193,8 +187,8 @@ export default class Connector {
       url: `v2/events/${eventId}`,
       additionalOptions: this.additionalOptions
     }).then((response: object) => {
-      const newResponse = response as GetEventResponse
-      return { status: newResponse.status, data: newResponse.data }
+      const newResponse = response as RequestResponse
+      return newResponse.data as GetEventResponse
     })
   }
 
@@ -216,8 +210,8 @@ export default class Connector {
       },
       additionalOptions: this.additionalOptions
     }).then((response: object) => {
-      const newResponse = response as UpdateEventResponse
-      return { status: newResponse.status, data: newResponse.data }
+      const newResponse = response as RequestResponse
+      return newResponse.data as UpdateEventResponse
     })
   }
 }
