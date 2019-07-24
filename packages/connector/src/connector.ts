@@ -4,13 +4,15 @@ interface Status {
   status: number
 }
 
-export interface CreateJobResponse extends Status {
-  data: {
+interface RequestResponse {
+  data: object
+}
+
+export interface CreateJobsResponse {
     jobId: string
     jobType: string
     jobStatus: string
     correlationId: string
-  }[]
 }
 
 export interface GetJobResponse extends Status {
@@ -49,7 +51,7 @@ export interface UpdateEventResponse extends Status {
 }
 
 export type APIResponse =
-  | CreateJobResponse
+  | CreateJobsResponse
   | GetJobResponse
   | GetEventResponse
   | GetEventsResponse
@@ -104,18 +106,21 @@ export default class Connector {
    *
    * @beta
    */
-  public async createJobs(jobs: object[]): Promise<CreateJobResponse> {
-    return request({
+  public async createJobs(jobs: object[]): Promise<CreateJobsResponse> {
+    try{
+    const response = await request({
       oauthOptions: this.oauthOptions,
       method: 'post',
       baseURL: this.apiBaseURL,
       url: 'v2/jobs',
       data: jobs,
       additionalOptions: this.additionalOptions
-    }).then((response: object) => {
-      const newResponse = response as CreateJobResponse
-      return { status: newResponse.status, data: newResponse.data }
-    })
+    }) as RequestResponse
+    return response.data as CreateJobsResponse
+  }catch (e){
+    console.log(e)
+    return e
+  }
   }
 
   /**
@@ -125,7 +130,7 @@ export default class Connector {
    *
    * @beta
    */
-  public createJob(job: object): Promise<CreateJobResponse> {
+  public createJob(job: object): Promise<CreateJobsResponse> {
     return this.createJobs([job])
   }
 
