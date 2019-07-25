@@ -45,7 +45,7 @@
    *
    * SUPPORTED TOKENS: <projectFolder>, <packageName>, <unscopedPackageName>
    */
-  "mainEntryPointFilePath": "dist/connector.d.ts",
+  "mainEntryPointFilePath": "dist/src/connector.d.ts",
 
   /**
    * Determines how the TypeScript compiler engine will be invoked by API Extractor.

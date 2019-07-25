@@ -1,61 +1,67 @@
 import request, { OAuthOptions } from '@workgrid/request/src/request'
+import {
+  RequestResponse,
+  CreateJobResponse,
+  GetJobResponse,
+  GetEventResponse,
+  UpdateEventResponse
+} from '../types/connector'
 
-interface Status {
-  status: number
-}
+/**
+ * A ConnectorError Object returned when an exception occurs
+ *
+ * Why: JavaScript throws are not type safe
+ */
 
-interface RequestResponse {
-  data: object
-}
+export class ConnectorError {
+  /**
+   * The error's name
+   */
+  public name: string
 
-export interface CreateJobsResponse {
-    jobId: string
-    jobType: string
-    jobStatus: string
-    correlationId: string
-}
+  /**
+   * The error's message
+   */
+  public message: string
 
-export interface GetJobResponse extends Status {
-  data: {
-    jobId: string
-    jobStatus: string
+  /**
+   * The error's status code
+   */
+  public status: number
+
+  /**
+   * The error's stack trace
+   */
+  public trace: string
+
+  /**
+   * The error object
+   */
+  public error: object
+
+  public constructor(error: any) {
+    this.name = this.getName(error.response.status)
+    this.message = error.message
+    this.status = error.response.status
+    this.trace = error.stack
+    this.error = error
+  }
+
+  /**
+   * Get a custom name for an error of the provided status code
+   *
+   * @param status - the error's status code
+   * @returns {string} - the error's custom name
+   */
+  private getName(status: number): string {
+    if (status === 400) return 'BadRequestException'
+    if (status === 401) return 'UnauthorizedException'
+    if (status === 404) return 'NotFoundException'
+    if (status === 422) return 'UnprocessableEntityException'
+    if (status === 500) return 'InternalServerErrorException'
+    return 'UnknownException'
   }
 }
-
-interface EventData {
-  eventId: string
-  eventType: string
-  eventStatus: string
-  eventData: {
-    action: string
-    request: string
-  }
-  userName: string
-  userId: string
-  notificationId: string
-}
-
-export interface GetEventsResponse extends Status {
-  data: EventData[]
-}
-
-export interface GetEventResponse extends Status {
-  data: EventData
-}
-
-export interface UpdateEventResponse extends Status {
-  data: {
-    eventId: string
-    eventStatus: string
-  }
-}
-
-export type APIResponse =
-  | CreateJobsResponse
-  | GetJobResponse
-  | GetEventResponse
-  | GetEventsResponse
-  | UpdateEventResponse
 
 /**
  * A pretty class-wrapper for the request package, allowing for easier interaction with the Workgrid API.
@@ -106,21 +112,20 @@ export default class Connector {
    *
    * @beta
    */
-  public async createJobs(jobs: object[]): Promise<CreateJobsResponse> {
-    try{
-    const response = await request({
-      oauthOptions: this.oauthOptions,
-      method: 'post',
-      baseURL: this.apiBaseURL,
-      url: 'v2/jobs',
-      data: jobs,
-      additionalOptions: this.additionalOptions
-    }) as RequestResponse
-    return response.data as CreateJobsResponse
-  }catch (e){
-    console.log(e)
-    return e
-  }
+  public async createJobs(jobs: object[]): Promise<CreateJobResponse[] | ConnectorError> {
+    try {
+      const response = (await request({
+        oauthOptions: this.oauthOptions,
+        method: 'post',
+        baseURL: this.apiBaseURL,
+        url: 'v2/jobs',
+        data: jobs,
+        additionalOptions: this.additionalOptions
+      })) as RequestResponse
+      return response.data as CreateJobResponse[]
+    } catch (error) {
+      return new ConnectorError(error)
+    }
   }
 
   /**
@@ -130,8 +135,9 @@ export default class Connector {
    *
    * @beta
    */
-  public createJob(job: object): Promise<CreateJobsResponse> {
-    return this.createJobs([job])
+  public async createJob(job: object): Promise<CreateJobResponse | ConnectorError> {
+    const jobResponse = await this.createJobs([job])
+    return jobResponse instanceof ConnectorError ? jobResponse : jobResponse[0]
   }
 
   /**
@@ -141,17 +147,19 @@ export default class Connector {
    *
    * @beta
    */
-  public getJob(jobId: string): Promise<GetJobResponse> {
-    return request({
-      oauthOptions: this.oauthOptions,
-      method: 'get',
-      baseURL: this.apiBaseURL,
-      url: `v2/jobs/${jobId}`,
-      additionalOptions: this.additionalOptions
-    }).then((response: object) => {
-      const newResponse = response as GetJobResponse
-      return { status: newResponse.status, data: newResponse.data }
-    })
+  public async getJob(jobId: string): Promise<GetJobResponse | ConnectorError> {
+    try {
+      const response = (await request({
+        oauthOptions: this.oauthOptions,
+        method: 'get',
+        baseURL: this.apiBaseURL,
+        url: `v2/jobs/${jobId}`,
+        additionalOptions: this.additionalOptions
+      })) as RequestResponse
+      return response.data as GetJobResponse
+    } catch (error) {
+      return new ConnectorError(error)
+    }
   }
 
   /**
@@ -164,23 +172,25 @@ export default class Connector {
    *
    * @beta
    */
-  public getEvents(eventOptions: {
+  public async getEvents(eventOptions: {
     limit: number
     cursor: string
     eventStatus: string
     eventType: string
-  }): Promise<GetEventsResponse> {
-    return request({
-      oauthOptions: this.oauthOptions,
-      method: 'get',
-      baseURL: this.apiBaseURL,
-      url: 'v2/events',
-      data: eventOptions,
-      additionalOptions: this.additionalOptions
-    }).then((response: object) => {
-      const newResponse = response as GetEventsResponse
-      return { status: newResponse.status, data: newResponse.data }
-    })
+  }): Promise<GetEventResponse[] | ConnectorError> {
+    try {
+      const newResponse = (await request({
+        oauthOptions: this.oauthOptions,
+        method: 'get',
+        baseURL: this.apiBaseURL,
+        url: 'v2/events',
+        data: eventOptions,
+        additionalOptions: this.additionalOptions
+      })) as RequestResponse
+      return newResponse.data as GetEventResponse[]
+    } catch (error) {
+      return new ConnectorError(error)
+    }
   }
 
   /**
@@ -190,17 +200,19 @@ export default class Connector {
    *
    * @beta
    */
-  public getEvent(eventId: string): Promise<GetEventResponse> {
-    return request({
-      oauthOptions: this.oauthOptions,
-      method: 'get',
-      baseURL: this.apiBaseURL,
-      url: `v2/events/${eventId}`,
-      additionalOptions: this.additionalOptions
-    }).then((response: object) => {
-      const newResponse = response as GetEventResponse
-      return { status: newResponse.status, data: newResponse.data }
-    })
+  public async getEvent(eventId: string): Promise<GetEventResponse | ConnectorError> {
+    try {
+      const response = (await request({
+        oauthOptions: this.oauthOptions,
+        method: 'get',
+        baseURL: this.apiBaseURL,
+        url: `v2/events/${eventId}`,
+        additionalOptions: this.additionalOptions
+      })) as RequestResponse
+      return response.data as GetEventResponse
+    } catch (error) {
+      return new ConnectorError(error)
+    }
   }
 
   /**
@@ -210,19 +222,29 @@ export default class Connector {
    *
    * @beta
    */
-  public updateEventStatus(eventId: string): Promise<UpdateEventResponse> {
-    return request({
-      oauthOptions: this.oauthOptions,
-      method: 'put',
-      baseURL: this.apiBaseURL,
-      url: `v2/events/${eventId}/status`,
-      data: {
-        status: 'processed'
-      },
-      additionalOptions: this.additionalOptions
-    }).then((response: object) => {
-      const newResponse = response as UpdateEventResponse
-      return { status: newResponse.status, data: newResponse.data }
-    })
+  public async updateEventStatus(eventId: string): Promise<UpdateEventResponse | ConnectorError> {
+    try {
+      const response = (await request({
+        oauthOptions: this.oauthOptions,
+        method: 'put',
+        baseURL: this.apiBaseURL,
+        url: `v2/events/${eventId}/status`,
+        data: {
+          status: 'processed'
+        },
+        additionalOptions: this.additionalOptions
+      })) as RequestResponse
+      return response.data as UpdateEventResponse
+    } catch (error) {
+      return new ConnectorError(error)
+    }
   }
 }
+
+export {
+  RequestResponse,
+  CreateJobResponse,
+  GetJobResponse,
+  GetEventResponse,
+  UpdateEventResponse
+} from '../types/connector'

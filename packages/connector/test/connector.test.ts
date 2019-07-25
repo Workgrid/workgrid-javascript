@@ -1,4 +1,10 @@
-import Connector, { CreateJobResponse, GetJobResponse, GetEventResponse, UpdateEventResponse } from '../src/connector'
+import Connector, {
+  CreateJobResponse,
+  GetJobResponse,
+  GetEventResponse,
+  UpdateEventResponse,
+  ConnectorError
+} from '../src/connector'
 
 const createJobResponse = {
   status: 200,
@@ -27,7 +33,7 @@ const getEventsResponse = {
 }
 const getEventResponse = { status: 200, data: getEventsResponse.data[0] }
 const updateEventResponse = { status: 200, data: { eventId: id, eventStatus: 'processed' } }
-const errorResponse = { status: 400, message: 'Bad call' }
+const errorResponse = { status: 400, message: 'Your request was bad' }
 
 jest.mock('@workgrid/request/src/request', () => {
   return {
@@ -75,33 +81,37 @@ describe('@connector', (): void => {
   })
 
   test('createJobs forms correct options on call', async () => {
-    const createJobsOutput: CreateJobResponse[] = await connector.createJobs([jobData])
+    const createJobsOutput: CreateJobResponse[] | ConnectorError = await connector.createJobs([jobData])
     expect(createJobsOutput).toEqual(createJobResponse.data)
   })
 
   test('createJob is equivalent to createJobs when given a single job', async () => {
-    const createJobOutput: CreateJobResponse = await connector.createJob(jobData)
-    const createJobsOutput: CreateJobResponse[] = await connector.createJobs([jobData])
+    const createJobOutput: CreateJobResponse | ConnectorError = (await connector.createJob(
+      jobData
+    )) as CreateJobResponse
+    const createJobsOutput: CreateJobResponse[] | ConnectorError = (await connector.createJobs([
+      jobData
+    ])) as CreateJobResponse[]
     expect(createJobOutput).toEqual(createJobsOutput[0])
   })
 
   test('getJob forms correct options on call', async () => {
-    const getJobOutput: GetJobResponse = await connector.getJob(id)
+    const getJobOutput: GetJobResponse | ConnectorError = await connector.getJob(id)
     expect(getJobOutput).toEqual(getJobResponse.data)
   })
 
   test('getEvents forms correct options on call', async () => {
-    const getEventsOutput: GetEventResponse[] = await connector.getEvents(eventOptions)
+    const getEventsOutput: GetEventResponse[] | ConnectorError = await connector.getEvents(eventOptions)
     expect(getEventsOutput).toEqual(getEventsResponse.data)
   })
 
   test('getEvent forms correct options on call', async () => {
-    const getEventOutput: GetEventResponse = await connector.getEvent(id)
+    const getEventOutput: GetEventResponse | ConnectorError = await connector.getEvent(id)
     expect(getEventOutput).toEqual(getEventResponse.data)
   })
 
   test('updateEventStatus forms correct options on call', async () => {
-    const updateEventStatusOutput: UpdateEventResponse = await connector.updateEventStatus(id)
+    const updateEventStatusOutput: UpdateEventResponse | ConnectorError = await connector.updateEventStatus(id)
     expect(updateEventStatusOutput).toEqual(updateEventResponse.data)
   })
 })
