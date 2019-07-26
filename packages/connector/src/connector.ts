@@ -8,58 +8,93 @@ import {
 } from '../types/connector'
 
 /**
- * A ConnectorError Object returned when an exception occurs
+ * The default ConnectorException Object returned when an exception occurs
  *
  * Why: JavaScript throws are not type safe
  */
 
-export class ConnectorError {
+export class ConnectorException {
   /**
-   * The error's name
+   * The exception's name
    */
   public name: string
 
   /**
-   * The error's message
+   * The exception's message
    */
   public message: string
 
   /**
-   * The error's status code
+   * The exception's status code
    */
   public status: number
 
   /**
-   * The error's stack trace
+   * The exception's stack trace
    */
   public trace: string
 
   /**
-   * The error object
+   * The errors which caused the exception
    */
-  public error: object
+  public errors: {
+    message: string
+    params: object
+  }[]
 
   public constructor(error: any) {
-    this.name = this.getName(error.response.status)
+    this.name = 'ConnectorException'
     this.message = error.message
     this.status = error.response.status
     this.trace = error.stack
-    this.error = error
+    this.errors = error.response.data.errors.map(function(error: { message: string; params: object }) {
+      return {
+        message: error.message,
+        params: error.params
+      }
+    })
   }
+}
 
-  /**
-   * Get a custom name for an error of the provided status code
-   *
-   * @param status - the error's status code
-   * @returns {string} - the error's custom name
-   */
-  private getName(status: number): string {
-    if (status === 400) return 'BadRequestException'
-    if (status === 401) return 'UnauthorizedException'
-    if (status === 404) return 'NotFoundException'
-    if (status === 422) return 'UnprocessableEntityException'
-    if (status === 500) return 'InternalServerErrorException'
-    return 'UnknownException'
+export class BadRequestException extends ConnectorException {
+  public constructor(error: any) {
+    super(error)
+    this.name = 'BadRequestException'
+  }
+}
+
+export class UnauthorizedException extends ConnectorException {
+  public constructor(error: any) {
+    super(error)
+    this.name = 'UnauthorizedException'
+  }
+}
+
+export class NotFoundException extends ConnectorException {
+  public constructor(error: any) {
+    super(error)
+    this.name = 'NotFoundException'
+  }
+}
+
+export class UnprocessableEntityException extends ConnectorException {
+  public constructor(error: any) {
+    super(error)
+    this.name = 'UnprocessableEntityException'
+  }
+}
+
+export class InternalServerErrorException extends ConnectorException {
+  public constructor(error: any) {
+    super(error)
+    this.name = 'InternalServerErrorException'
+  }
+}
+
+export class UnknownException extends ConnectorException {
+  public constructor(error: any) {
+    super(error)
+    this.name = 'UnknownException'
   }
 }
 
@@ -112,7 +147,7 @@ export default class Connector {
    *
    * @beta
    */
-  public async createJobs(jobs: object[]): Promise<CreateJobResponse[] | ConnectorError> {
+  public async createJobs(jobs: object[]): Promise<CreateJobResponse[] | ConnectorException> {
     try {
       const response = (await request({
         oauthOptions: this.oauthOptions,
@@ -124,7 +159,7 @@ export default class Connector {
       })) as RequestResponse
       return response.data as CreateJobResponse[]
     } catch (error) {
-      return new ConnectorError(error)
+      return this.generateException(error)
     }
   }
 
@@ -135,9 +170,9 @@ export default class Connector {
    *
    * @beta
    */
-  public async createJob(job: object): Promise<CreateJobResponse | ConnectorError> {
+  public async createJob(job: object): Promise<CreateJobResponse | ConnectorException> {
     const jobResponse = await this.createJobs([job])
-    return jobResponse instanceof ConnectorError ? jobResponse : jobResponse[0]
+    return jobResponse instanceof ConnectorException ? jobResponse : jobResponse[0]
   }
 
   /**
@@ -147,7 +182,7 @@ export default class Connector {
    *
    * @beta
    */
-  public async getJob(jobId: string): Promise<GetJobResponse | ConnectorError> {
+  public async getJob(jobId: string): Promise<GetJobResponse | ConnectorException> {
     try {
       const response = (await request({
         oauthOptions: this.oauthOptions,
@@ -158,7 +193,7 @@ export default class Connector {
       })) as RequestResponse
       return response.data as GetJobResponse
     } catch (error) {
-      return new ConnectorError(error)
+      return this.generateException(error)
     }
   }
 
@@ -177,7 +212,7 @@ export default class Connector {
     cursor: string
     eventStatus: string
     eventType: string
-  }): Promise<GetEventResponse[] | ConnectorError> {
+  }): Promise<GetEventResponse[] | ConnectorException> {
     try {
       const newResponse = (await request({
         oauthOptions: this.oauthOptions,
@@ -189,7 +224,7 @@ export default class Connector {
       })) as RequestResponse
       return newResponse.data as GetEventResponse[]
     } catch (error) {
-      return new ConnectorError(error)
+      return this.generateException(error)
     }
   }
 
@@ -200,7 +235,7 @@ export default class Connector {
    *
    * @beta
    */
-  public async getEvent(eventId: string): Promise<GetEventResponse | ConnectorError> {
+  public async getEvent(eventId: string): Promise<GetEventResponse | ConnectorException> {
     try {
       const response = (await request({
         oauthOptions: this.oauthOptions,
@@ -211,7 +246,7 @@ export default class Connector {
       })) as RequestResponse
       return response.data as GetEventResponse
     } catch (error) {
-      return new ConnectorError(error)
+      return this.generateException(error)
     }
   }
 
@@ -222,7 +257,7 @@ export default class Connector {
    *
    * @beta
    */
-  public async updateEventStatus(eventId: string): Promise<UpdateEventResponse | ConnectorError> {
+  public async updateEventStatus(eventId: string): Promise<UpdateEventResponse | ConnectorException> {
     try {
       const response = (await request({
         oauthOptions: this.oauthOptions,
@@ -236,8 +271,18 @@ export default class Connector {
       })) as RequestResponse
       return response.data as UpdateEventResponse
     } catch (error) {
-      return new ConnectorError(error)
+      return this.generateException(error)
     }
+  }
+
+  private generateException(error: any): ConnectorException {
+    const status = error.response.status
+    if (status === 400) return new BadRequestException(error)
+    if (status === 401) return new UnauthorizedException(error)
+    if (status === 404) return new NotFoundException(error)
+    if (status === 422) return new UnprocessableEntityException(error)
+    if (status === 500) return new InternalServerErrorException(error)
+    return new UnknownException(error)
   }
 }
 
