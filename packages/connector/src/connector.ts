@@ -47,12 +47,16 @@ export class ConnectorException {
     this.message = error.message
     this.status = error.response.status
     this.trace = error.stack
-    this.errors = error.response.data.errors.map(function(error: { message: string; params: object }) {
-      return {
-        message: error.message,
-        params: error.params
-      }
-    })
+    if (error.response.data.errors) {
+      this.errors = error.response.data.errors.map(function(error: { message: string; params: object }) {
+        return {
+          message: error.message,
+          params: error.params
+        }
+      })
+    } else {
+      this.errors = []
+    }
   }
 }
 
