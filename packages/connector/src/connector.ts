@@ -6,101 +6,15 @@ import {
   GetEventResponse,
   UpdateEventResponse
 } from '../types/connector'
-
-/**
- * The default ConnectorException Object returned when an exception occurs
- *
- * Why: JavaScript throws are not type safe
- */
-
-export class ConnectorException {
-  /**
-   * The exception's name
-   */
-  public name: string
-
-  /**
-   * The exception's message
-   */
-  public message: string
-
-  /**
-   * The exception's status code
-   */
-  public status: number
-
-  /**
-   * The exception's stack trace
-   */
-  public trace: string
-
-  /**
-   * The errors which caused the exception
-   */
-  public errors: {
-    message: string
-    params: object
-  }[]
-
-  public constructor(error: any) {
-    this.name = 'ConnectorException'
-    this.message = error.message
-    this.status = error.response.status
-    this.trace = error.stack
-    if (error.response.data.errors) {
-      this.errors = error.response.data.errors.map(function(error: { message: string; params: object }) {
-        return {
-          message: error.message,
-          params: error.params
-        }
-      })
-    } else {
-      this.errors = []
-    }
-  }
-}
-
-export class BadRequestException extends ConnectorException {
-  public constructor(error: any) {
-    super(error)
-    this.name = 'BadRequestException'
-  }
-}
-
-export class UnauthorizedException extends ConnectorException {
-  public constructor(error: any) {
-    super(error)
-    this.name = 'UnauthorizedException'
-  }
-}
-
-export class NotFoundException extends ConnectorException {
-  public constructor(error: any) {
-    super(error)
-    this.name = 'NotFoundException'
-  }
-}
-
-export class UnprocessableEntityException extends ConnectorException {
-  public constructor(error: any) {
-    super(error)
-    this.name = 'UnprocessableEntityException'
-  }
-}
-
-export class InternalServerErrorException extends ConnectorException {
-  public constructor(error: any) {
-    super(error)
-    this.name = 'InternalServerErrorException'
-  }
-}
-
-export class UnknownException extends ConnectorException {
-  public constructor(error: any) {
-    super(error)
-    this.name = 'UnknownException'
-  }
-}
+import {
+  ConnectorException,
+  BadRequestException,
+  UnauthorizedException,
+  NotFoundException,
+  InternalServerErrorException,
+  UnprocessableEntityException,
+  UnknownException
+} from './connector-exceptions'
 
 /**
  * A pretty class-wrapper for the request package, allowing for easier interaction with the Workgrid API.
@@ -279,6 +193,14 @@ export default class Connector {
     }
   }
 
+  /**
+   * Generates a custom exception object based on the type of the caught error
+   *
+   * @param error - the caught error object
+   * @return {ConnectorException} - a custom exception object
+   *
+   * @beta
+   */
   private generateException(error: any): ConnectorException {
     const status = error.response.status
     if (status === 400) return new BadRequestException(error)
@@ -290,10 +212,14 @@ export default class Connector {
   }
 }
 
+export { RequestResponse, CreateJobResponse, GetJobResponse, GetEventResponse, UpdateEventResponse }
+
 export {
-  RequestResponse,
-  CreateJobResponse,
-  GetJobResponse,
-  GetEventResponse,
-  UpdateEventResponse
-} from '../types/connector'
+  ConnectorException,
+  BadRequestException,
+  UnauthorizedException,
+  NotFoundException,
+  InternalServerErrorException,
+  UnprocessableEntityException,
+  UnknownException
+}
