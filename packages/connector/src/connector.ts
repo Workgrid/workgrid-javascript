@@ -311,10 +311,10 @@ export default class Connector {
    * @param body - the message body sent.
    * @param digest - the post-hash to be compared against.
    * @param algorithm - the hashing algorithm to be used.
-   * 
+   *
    * @beta
    */
-  public validateWebhook(body: string, digest: string, algorithm: string = 'sha256'): boolean {
+  public validateWebhook(body: string, digest: string, algorithm?: string): boolean {
     return validate(this.oauthOptions.clientSecret, body, digest, algorithm)
   }
 
