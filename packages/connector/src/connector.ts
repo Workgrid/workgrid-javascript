@@ -1,4 +1,5 @@
 import request, { OAuthOptions } from '@workgrid/request/src/request'
+import validate from '@workgrid/webhook-validation/src/webhook'
 import {
   APIException,
   MissingParameterException,
@@ -302,6 +303,19 @@ export default class Connector {
     } catch (error) {
       return this.generateException(error)
     }
+  }
+
+  /**
+   * Determines whether the webhook sent to this connector is valid.
+   *
+   * @param body - the message body sent.
+   * @param digest - the post-hash to be compared against.
+   * @param algorithm - the hashing algorithm to be used.
+   * 
+   * @beta
+   */
+  public validateWebhook(body: string, digest: string, algorithm: string = 'sha256'): boolean {
+    return validate(this.oauthOptions.clientSecret, body, digest, algorithm)
   }
 
   /**
