@@ -1,12 +1,9 @@
 import request, { OAuthOptions } from '@workgrid/request/src/request'
 import {
-  RequestResponse,
-  CreateJobResponse,
-  GetJobResponse,
-  GetEventResponse,
-  UpdateEventResponse
-} from '../types/connector'
-import {
+  APIException,
+  MissingParameterException,
+  NotAllowedValueException,
+  TooLargeTitleException,
   ConnectorException,
   BadRequestException,
   UnauthorizedException,
@@ -15,6 +12,120 @@ import {
   UnprocessableEntityException,
   UnknownException
 } from './connector-exceptions'
+
+/**
+ * Basic interface representing API response
+ */
+export interface RequestResponse {
+  data: object
+}
+
+/**
+ * Interface representing successful API response from /v2/jobs
+ *
+ * @beta
+ */
+export interface CreateJobResponse {
+  /**
+   * The job's id
+   */
+  jobId: string
+
+  /**
+   * The job's type
+   */
+  jobType: string
+
+  /**
+   * The job's status
+   */
+  jobStatus: string
+
+  /**
+   * The job's correlation id
+   */
+  correlationId: string
+}
+
+/**
+ * Interface representing successful API response from /v2/jobs/{jobId}
+ */
+export interface GetJobResponse {
+  /**
+   * The job's id
+   */
+  jobId: string
+
+  /**
+   * The job's status
+   */
+  jobStatus: string
+}
+
+/**
+ * Interface representing successful API response from /v2/events or /v2/events/{eventId}
+ */
+export interface GetEventResponse {
+  /**
+   * The event's id
+   */
+  eventId: string
+
+  /**
+   * The event's type
+   */
+  eventType: string
+
+  /**
+   * The event's status
+   */
+  eventStatus: string
+
+  /**
+   * The event's data
+   */
+  eventData: {
+    /**
+     * The event's action
+     */
+    action: string
+
+    /**
+     * The event's request
+     */
+    request: string
+  }
+
+  /**
+   * The event's corresponding username
+   */
+  userName: string
+
+  /**
+   * The event's corresponding user id
+   */
+  userId: string
+
+  /**
+   * The event's corresponding notification id
+   */
+  notificationId: string
+}
+
+/**
+ * Interface representing successul API response from /v2/events/{eventId}/status
+ */
+export interface UpdateEventResponse {
+  /**
+   * The event's id
+   */
+  eventId: string
+
+  /**
+   * The event's status
+   */
+  eventStatus: string
+}
 
 /**
  * A pretty class-wrapper for the request package, allowing for easier interaction with the Workgrid API.
@@ -61,7 +172,7 @@ export default class Connector {
   /**
    * Submit one or more job requests
    * @param {Array<object>} jobs - the jobs to be created by the Workgrid API
-   * @return {Promise<object>} - response from API
+   * @return {Promise<CreateJobResponse[] | ConnectorException>} - either information for each created job, or a custom error if a job was unsuccessful
    *
    * @beta
    */
@@ -84,7 +195,7 @@ export default class Connector {
   /**
    * Submit a single job request
    * @param {object} job - the job to be created by the Workgrid API
-   * @return {Promise<object>} - response from API
+   * @return {Promise<CreateJobResponse | ConnectorException>} - either information for the created job, or a custom error if it was unsuccessful
    *
    * @beta
    */
@@ -96,7 +207,7 @@ export default class Connector {
   /**
    * Get the job and its current status
    * @param {string} jobId - jobId of job to get
-   * @return {Promise<object>} - response from API
+   * @return {Promise<GetJobResponse | ConnectorException>} - either information about the requested job, or a custom error if it was unsuccessful
    *
    * @beta
    */
@@ -121,7 +232,7 @@ export default class Connector {
    * @param {string} cursor - An opaque cursor used for pagination
    * @param {string} eventStatus - Eventstatus to filter by
    * @param {string} eventType - Event type to filter by
-   * @return {Promise<object>} - response from API
+   * @return {Promise<GetEventResponse[] | ConnectorException>} - either information about a set of events based on filters, or a custom error if it was unsuccessful
    *
    * @beta
    */
@@ -148,8 +259,8 @@ export default class Connector {
 
   /**
    * Get information about a specific event
-   * @param {string} eventId - jobId of job to get
-   * @return {Promise<object>} - response from API
+   * @param {string} eventId - eventId of job to get
+   * @return {Promise<GetEventsResponse | ConnectorException>} - either information about a single event, or a custom error if it was unsuccessful
    *
    * @beta
    */
@@ -171,7 +282,7 @@ export default class Connector {
   /**
    * Update the status of the event to 'processed'
    * @param {string} eventId - Event to update the status of
-   * @return {Promise<object>} - response from API
+   * @return {Promise<UpdateEventResponse | ConnectorException>} - either information about the updated event, or a custom error if it was unsuccessful
    *
    * @beta
    */
@@ -202,19 +313,25 @@ export default class Connector {
    * @beta
    */
   private generateException(error: any): ConnectorException {
-    const status = error.response.status
-    if (status === 400) return new BadRequestException(error)
-    if (status === 401) return new UnauthorizedException(error)
-    if (status === 404) return new NotFoundException(error)
-    if (status === 422) return new UnprocessableEntityException(error)
-    if (status === 500) return new InternalServerErrorException(error)
-    return new UnknownException(error)
+    if (error.response) {
+      const status = error.response.status
+      if (status === 400) return new BadRequestException(error)
+      if (status === 401) return new UnauthorizedException(error)
+      if (status === 404) return new NotFoundException(error)
+      if (status === 422) return new UnprocessableEntityException(error)
+      if (status === 500) return new InternalServerErrorException(error)
+      return new UnknownException(error)
+    } else {
+      throw error
+    }
   }
 }
 
-export { RequestResponse, CreateJobResponse, GetJobResponse, GetEventResponse, UpdateEventResponse }
-
 export {
+  APIException,
+  MissingParameterException,
+  NotAllowedValueException,
+  TooLargeTitleException,
   ConnectorException,
   BadRequestException,
   UnauthorizedException,

@@ -3,6 +3,9 @@ import Connector, {
   GetJobResponse,
   GetEventResponse,
   UpdateEventResponse,
+  MissingParameterException,
+  NotAllowedValueException,
+  TooLargeTitleException,
   BadRequestException,
   ConnectorException,
   NotFoundException,
@@ -38,9 +41,13 @@ const getEventsResponse = {
 const getEventResponse = { status: 200, data: getEventsResponse.data[0] }
 const updateEventResponse = { status: 200, data: { eventId: id, eventStatus: 'processed' } }
 
-const badRequestResponse = { response: { status: 400, message: 'Bad request', stack: '', data: { errors: [] } } }
-const notFoundResponse = { response: { status: 404, message: 'Endpoint not found', stack: '', data: { errors: [] } } }
-const unauthorizedResponse = { response: { status: 401, message: 'Unauthorized', stack: '', data: { errors: [] } } }
+const badRequestResponse = { response: { status: 400, data: {} } }
+const notFoundResponse = { response: { status: 404, data: {} } }
+const unauthorizedResponse = { response: { status: 401, data: {} } }
+
+const notAllowedValueData = { errors: [{ message: 'should be equal to one of the allowed values' }] }
+const titleTooLongData = { errors: [{ message: 'Notification title size is greater than max 5' }] }
+const missingParameterData = { errors: [{ message: "should have required property 'title'" }] }
 
 jest.mock('@workgrid/request/src/request', () => {
   return {
@@ -51,15 +58,28 @@ jest.mock('@workgrid/request/src/request', () => {
         options.oauthOptions.url == 'https://auth.code.workgrid.com/oauth2/token'
       ) {
         if (options.url === 'v2/jobs') {
-          if ((options.data as { data: string }[])[0].data) {
-            return Promise.resolve(createJobResponse)
+          const error = Object.assign({}, badRequestResponse)
+          const title = (options.data as { title: string }[])[0].title
+          if (!title) {
+            error.response.data = missingParameterData
+            return Promise.reject(error)
+          } else if (title.length > 5) {
+            error.response.data = titleTooLongData
+            return Promise.reject(error)
           } else {
-            return Promise.reject(badRequestResponse)
+            return Promise.resolve(createJobResponse)
           }
         } else if (options.url == `v2/jobs/${id}`) {
           return Promise.resolve(getJobResponse)
         } else if (options.url == 'v2/events') {
-          return Promise.resolve(getEventsResponse)
+          const error = Object.assign({}, badRequestResponse)
+          const eventStatus = (options.data as { eventStatus: string }).eventStatus
+          if (eventStatus !== 'processed') {
+            error.response.data = notAllowedValueData
+            return Promise.reject(error)
+          } else {
+            return Promise.resolve(getEventsResponse)
+          }
         } else if (options.url == `v2/events/${id}`) {
           return Promise.resolve(getEventResponse)
         } else if (options.url == `v2/events/${id}/status`) {
@@ -76,8 +96,8 @@ jest.mock('@workgrid/request/src/request', () => {
 
 describe('@connector', (): void => {
   let connector: Connector
-  let createJobData: { data: string }
-  let eventData: { limit: number; cursor: string; eventStatus: string; eventType: string }
+  let createJobData: { title: string }
+  let eventOptions: { limit: number; cursor: string; eventStatus: string; eventType: string }
 
   beforeAll(() => {
     const options = {
@@ -90,8 +110,8 @@ describe('@connector', (): void => {
       companyCode: 'code',
       ...options
     })
-    createJobData = { data: 'data' }
-    eventData = {
+    createJobData = { title: 'title' }
+    eventOptions = {
       limit: 1,
       cursor: '',
       eventStatus: 'processed',
@@ -99,7 +119,7 @@ describe('@connector', (): void => {
     }
   })
 
-  test('createJobs forms correct options on call', async () => {
+  test('createJobs returns expected data on successful call', async () => {
     const createJobsOutput: CreateJobResponse[] | ConnectorException = await connector.createJobs([createJobData])
     expect(createJobsOutput).toEqual(createJobResponse.data)
   })
@@ -114,29 +134,24 @@ describe('@connector', (): void => {
     expect(createJobOutput).toEqual(createJobsOutput[0])
   })
 
-  test('getJob forms correct options on call', async () => {
+  test('getJob returns expected data on successful call', async () => {
     const getJobOutput: GetJobResponse | ConnectorException = await connector.getJob(id)
     expect(getJobOutput).toEqual(getJobResponse.data)
   })
 
-  test('getEvents forms correct options on call', async () => {
-    const getEventsOutput: GetEventResponse[] | ConnectorException = await connector.getEvents(eventData)
+  test('getEvents returns expected data on successful call', async () => {
+    const getEventsOutput: GetEventResponse[] | ConnectorException = await connector.getEvents(eventOptions)
     expect(getEventsOutput).toEqual(getEventsResponse.data)
   })
 
-  test('getEvent forms correct options on call', async () => {
+  test('getEvent returns expected data on successful call', async () => {
     const getEventOutput: GetEventResponse | ConnectorException = await connector.getEvent(id)
     expect(getEventOutput).toEqual(getEventResponse.data)
   })
 
-  test('updateEventStatus forms correct options on call', async () => {
+  test('updateEventStatus returns expected data on successful call', async () => {
     const updateEventStatusOutput: UpdateEventResponse | ConnectorException = await connector.updateEventStatus(id)
     expect(updateEventStatusOutput).toEqual(updateEventResponse.data)
-  })
-
-  test('sending unexpected data results in bad request exception', async () => {
-    const response: CreateJobResponse | ConnectorException = await connector.createJob({})
-    expect(response).toBeInstanceOf(BadRequestException)
   })
 
   test('hitting incorrect endpoint results in not found exception', async () => {
@@ -155,5 +170,27 @@ describe('@connector', (): void => {
     const badConnector = new Connector(options)
     const response: GetEventResponse | ConnectorException = await badConnector.getEvent(id)
     expect(response).toBeInstanceOf(UnauthorizedException)
+  })
+
+  test('too large title results in too large title exception', async () => {
+    const response: GetJobResponse | ConnectorException = await connector.createJob({ title: 'titles' })
+    expect(response).toBeInstanceOf(BadRequestException)
+    const error = response as ConnectorException
+    expect(error.errors[0]).toBeInstanceOf(TooLargeTitleException)
+  })
+
+  test('missing required parameter results in missing parameter exception', async () => {
+    const response: CreateJobResponse | ConnectorException = await connector.createJob({})
+    expect(response).toBeInstanceOf(BadRequestException)
+    const error = response as ConnectorException
+    expect(error.errors[0]).toBeInstanceOf(MissingParameterException)
+  })
+
+  test('not passing in required data field value results in not allowed value exception', async () => {
+    const badGetEventsOptions = { limit: 1, cursor: '', eventStatus: 'notProcessed', eventType: 'Notification.Action' }
+    const response: GetEventResponse[] | ConnectorException = await connector.getEvents(badGetEventsOptions)
+    expect(response).toBeInstanceOf(BadRequestException)
+    const error = response as ConnectorException
+    expect(error.errors[0]).toBeInstanceOf(NotAllowedValueException)
   })
 })
