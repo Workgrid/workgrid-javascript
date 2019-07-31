@@ -57,14 +57,14 @@ export interface APIOptions {
   url: string
 
   /**
+   * The API endpoint to hit
+   */
+  baseURL: string
+
+  /**
    * The body data to be supplied in the API call
    */
   data?: object
-
-  /**
-   * The URL parameters to be supplied in the API call
-   */
-  params?: object
 
   /**
    * Extra options to be supplied to axios
@@ -100,15 +100,14 @@ const createInstance = mem((oauthOptions: OAuthOptions): any => {
  *
  * @beta
  */
-export default async function request(apiOptions: APIOptions): Promise<any> {
+export default async function request(apiOptions: APIOptions): Promise<object> {
   const oauthOptions: OAuthOptions = apiOptions.oauthOptions
   const instance: any = createInstance(oauthOptions)
   const options: object = Object.assign({}, apiOptions.additionalOptions, {
     method: apiOptions.method,
     data: apiOptions.data,
-    params: apiOptions.params,
-    url: apiOptions.url
+    url: apiOptions.url,
+    baseURL: apiOptions.baseURL
   })
-  const response: object = await instance(options)
-  return response
+  return await instance(options)
 }

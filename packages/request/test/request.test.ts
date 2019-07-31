@@ -4,6 +4,7 @@ import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
 
 let tokenInvoked = false
+const jobResponse = 'Success!'
 
 const mock = new MockAdapter(axios)
 mock.onAny().reply((config: any) => {
@@ -22,7 +23,7 @@ mock.onAny().reply((config: any) => {
   } else {
     const token: string = config.headers.Authorization.split(' ')[1]
     if (token == '24') {
-      return [200, 'Success!']
+      return [200, jobResponse]
     } else {
       return [403]
     }
@@ -34,7 +35,6 @@ describe('@workgrid/request', () => {
   let apiOptions: APIOptions
 
   beforeAll(() => {
-    /* eslint-disable @typescript-eslint/camelcase */
     oauthOptions = {
       clientId: 'will',
       clientSecret: 'secret',
@@ -42,8 +42,7 @@ describe('@workgrid/request', () => {
       url: 'https://auth.code.workgrid.com/oauth2/token',
       grantType: 'client_credentials'
     }
-    /* eslint-enable @typescript-eslint/camelcase */
-    apiOptions = { oauthOptions: oauthOptions, url: 'https://code.workgrid.com/v2/jobs', method: 'post' }
+    apiOptions = { oauthOptions: oauthOptions, baseURL: 'https://code.workgrid.com/', url: 'v2/jobs', method: 'post' }
   })
 
   beforeEach(() => {
@@ -52,24 +51,15 @@ describe('@workgrid/request', () => {
 
   describe('request()', () => {
     test("should return 'Success!' on successful API call", async () => {
-      const response = await request(apiOptions)
-      expect(response.data).toBe('Success!')
+      const response: any = await request(apiOptions)
+      expect(response.data).toStrictEqual(jobResponse)
     })
     test('should throw an error on unsuccessful API call', async () => {
-      /* eslint-disable @typescript-eslint/camelcase */
-      const newOAuthOptions: OAuthOptions = {
-        clientId: 'notWill',
-        clientSecret: 'notSecret',
-        scopes: ['com.workgrid.api/notifications.all'],
-        url: 'https://auth.code.workgrid.com/oauth2/token',
-        grantType: 'client_credentials'
-      }
-      /* eslint-enable @typescript-eslint/camelcase */
-      const newAPIOptions: APIOptions = {
-        oauthOptions: newOAuthOptions,
-        url: 'https://code.workgrid.com/v2/jobs',
-        method: 'post'
-      }
+      const newOauthOptions = Object.assign({}, oauthOptions)
+      newOauthOptions.clientId = 'notWill'
+      newOauthOptions.clientSecret = 'notSecret'
+      const newAPIOptions = Object.assign({}, apiOptions)
+      newAPIOptions.oauthOptions = newOauthOptions
       await expect(request(newAPIOptions)).rejects.toThrowError('Request failed with status code 403')
     })
     test('new OAuth token should not be retrieved when current token is still valid', async () => {
