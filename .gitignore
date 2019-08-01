@@ -1,14 +1,12 @@
 # Use a global .gitignore to exclude system files
 # git config --global core.excludesfile ~/.gitignore
 
-coverage-integration/
 node_modules/
 test-reports/
 coverage/
 dist/
+temp/
+docs/
+
 *.log
-/.idea/
-.vscode/
-.DS_Store
-tsdoc-metadata.json
-**/*.api.md
+*.api.md

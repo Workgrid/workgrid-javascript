@@ -1,5 +1,7 @@
 /**
  * Custom error representing
+ *
+ * @beta
  */
 export class APIException extends Error {
   /**
@@ -16,6 +18,8 @@ export class APIException extends Error {
 
 /**
  * Custom error representing a missing required data parameter from the data field of an API request
+ *
+ * @beta
  */
 export class MissingParameterException extends APIException {
   public constructor(error: any) {
@@ -27,6 +31,8 @@ export class MissingParameterException extends APIException {
 
 /**
  * Custom error representing a data parameter not being set to an allowed value in the data field of an API request
+ *
+ * @beta
  */
 export class NotAllowedValueException extends APIException {
   public constructor(error: any) {
@@ -38,6 +44,8 @@ export class NotAllowedValueException extends APIException {
 
 /**
  * Custom error representing a too large notification title in the data field of an API request
+ *
+ * @beta
  */
 export class TooLargeTitleException extends APIException {
   public constructor(error: any) {
@@ -51,6 +59,8 @@ export class TooLargeTitleException extends APIException {
  * The default ConnectorException Object returned when an exception occurs
  *
  * Why: JavaScript throws are not type safe
+ *
+ * @beta
  */
 export class ConnectorException extends APIException {
   /**
@@ -99,6 +109,8 @@ export class ConnectorException extends APIException {
 
 /**
  * Custom error representing 400 status code
+ *
+ * @beta
  */
 export class BadRequestException extends ConnectorException {
   public constructor(error: any) {
@@ -110,6 +122,8 @@ export class BadRequestException extends ConnectorException {
 
 /**
  * Custom error representing 401 status code
+ *
+ * @beta
  */
 export class UnauthorizedException extends ConnectorException {
   public constructor(error: any) {
@@ -121,6 +135,8 @@ export class UnauthorizedException extends ConnectorException {
 
 /**
  * Custom error representing 404 status code
+ *
+ * @beta
  */
 export class NotFoundException extends ConnectorException {
   public constructor(error: any) {
@@ -132,6 +148,8 @@ export class NotFoundException extends ConnectorException {
 
 /**
  * Custom error representing 422 status code
+ *
+ * @beta
  */
 export class UnprocessableEntityException extends ConnectorException {
   public constructor(error: any) {
@@ -143,6 +161,8 @@ export class UnprocessableEntityException extends ConnectorException {
 
 /**
  * Custom error representing 500 status code
+ *
+ * @beta
  */
 export class InternalServerErrorException extends ConnectorException {
   public constructor(error: any) {
@@ -154,6 +174,8 @@ export class InternalServerErrorException extends ConnectorException {
 
 /**
  * Custom error representing any other status code
+ *
+ * @beta
  */
 export class UnknownException extends ConnectorException {
   public constructor(error: any) {

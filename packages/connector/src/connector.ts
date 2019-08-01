@@ -16,6 +16,8 @@ import {
 
 /**
  * Basic interface representing API response
+ *
+ * @beta
  */
 export interface RequestResponse {
   data: object
@@ -50,6 +52,8 @@ export interface CreateJobResponse {
 
 /**
  * Interface representing successful API response from /v2/jobs/{jobId}
+ *
+ * @beta
  */
 export interface GetJobResponse {
   /**
@@ -65,6 +69,8 @@ export interface GetJobResponse {
 
 /**
  * Interface representing successful API response from /v2/events or /v2/events/{eventId}
+ *
+ * @beta
  */
 export interface GetEventResponse {
   /**
@@ -115,6 +121,8 @@ export interface GetEventResponse {
 
 /**
  * Interface representing successul API response from /v2/events/{eventId}/status
+ *
+ * @beta
  */
 export interface UpdateEventResponse {
   /**
@@ -172,8 +180,8 @@ export default class Connector {
 
   /**
    * Submit one or more job requests
-   * @param {Array<object>} jobs - the jobs to be created by the Workgrid API
-   * @return {Promise<CreateJobResponse[] | ConnectorException>} - either information for each created job, or a custom error if a job was unsuccessful
+   * @param jobs - the jobs to be created by the Workgrid API
+   * @returns - either information for each created job, or a custom error if a job was unsuccessful
    *
    * @beta
    */
@@ -195,8 +203,8 @@ export default class Connector {
 
   /**
    * Submit a single job request
-   * @param {object} job - the job to be created by the Workgrid API
-   * @return {Promise<CreateJobResponse | ConnectorException>} - either information for the created job, or a custom error if it was unsuccessful
+   * @param job - the job to be created by the Workgrid API
+   * @returns - either information for the created job, or a custom error if it was unsuccessful
    *
    * @beta
    */
@@ -207,8 +215,8 @@ export default class Connector {
 
   /**
    * Get the job and its current status
-   * @param {string} jobId - jobId of job to get
-   * @return {Promise<GetJobResponse | ConnectorException>} - either information about the requested job, or a custom error if it was unsuccessful
+   * @param jobId - jobId of job to get
+   * @returns - either information about the requested job, or a custom error if it was unsuccessful
    *
    * @beta
    */
@@ -229,11 +237,11 @@ export default class Connector {
 
   /**
    * Get information about a set of events
-   * @param {number} limit - How many items to return
-   * @param {string} cursor - An opaque cursor used for pagination
-   * @param {string} eventStatus - Eventstatus to filter by
-   * @param {string} eventType - Event type to filter by
-   * @return {Promise<GetEventResponse[] | ConnectorException>} - either information about a set of events based on filters, or a custom error if it was unsuccessful
+   * @param limit - How many items to return
+   * @param cursor - An opaque cursor used for pagination
+   * @param eventStatus - Eventstatus to filter by
+   * @param eventType - Event type to filter by
+   * @returns - either information about a set of events based on filters, or a custom error if it was unsuccessful
    *
    * @beta
    */
@@ -260,8 +268,8 @@ export default class Connector {
 
   /**
    * Get information about a specific event
-   * @param {string} eventId - eventId of job to get
-   * @return {Promise<GetEventsResponse | ConnectorException>} - either information about a single event, or a custom error if it was unsuccessful
+   * @param eventId - eventId of job to get
+   * @returns - either information about a single event, or a custom error if it was unsuccessful
    *
    * @beta
    */
@@ -282,8 +290,8 @@ export default class Connector {
 
   /**
    * Update the status of the event to 'processed'
-   * @param {string} eventId - Event to update the status of
-   * @return {Promise<UpdateEventResponse | ConnectorException>} - either information about the updated event, or a custom error if it was unsuccessful
+   * @param eventId - Event to update the status of
+   * @returns - either information about the updated event, or a custom error if it was unsuccessful
    *
    * @beta
    */
@@ -322,7 +330,7 @@ export default class Connector {
    * Generates a custom exception object based on the type of the caught error
    *
    * @param error - the caught error object
-   * @return {ConnectorException} - a custom exception object
+   * @returns - a custom exception object
    *
    * @beta
    */

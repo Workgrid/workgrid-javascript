@@ -285,6 +285,18 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^12.0.9"
 
+"@microsoft/api-documenter@^7.3.1":
+  version "7.3.11"
+  resolved "https://repo.forge.lmig.com/api/npm/npm/@microsoft/api-documenter/-/api-documenter-7.3.11.tgz#9007aafb18e03306eaf9a869cf32d84ba3e45b8e"
+  integrity sha1-kAeq+xjgMwbq+ahpzzLYS6PkW44=
+  dependencies:
+    "@microsoft/api-extractor-model" "7.3.0"
+    "@microsoft/node-core-library" "3.13.0"
+    "@microsoft/ts-command-line" "4.2.6"
+    "@microsoft/tsdoc" "0.12.10"
+    colors "~1.2.1"
+    js-yaml "~3.13.1"
+
 "@microsoft/api-extractor-model@7.2.0":
   version "7.2.0"
   resolved "https://repo.forge.lmig.com/api/npm/npm/@microsoft/api-extractor-model/-/api-extractor-model-7.2.0.tgz#9d081c44f704acba773b18dc5849b59b8c353242"
@@ -292,6 +304,15 @@
   dependencies:
     "@microsoft/node-core-library" "3.13.0"
     "@microsoft/tsdoc" "0.12.9"
+    "@types/node" "8.5.8"
+
+"@microsoft/api-extractor-model@7.3.0":
+  version "7.3.0"
+  resolved "https://repo.forge.lmig.com/api/npm/npm/@microsoft/api-extractor-model/-/api-extractor-model-7.3.0.tgz#2eab0a3272f40821f1b81deffdca5f6e311b2451"
+  integrity sha1-LqsKMnL0CCHxuB3v/cpfbjEbJFE=
+  dependencies:
+    "@microsoft/node-core-library" "3.13.0"
+    "@microsoft/tsdoc" "0.12.10"
     "@types/node" "8.5.8"
 
 "@microsoft/api-extractor@^7.3.1":
@@ -332,6 +353,11 @@
     "@types/node" "8.5.8"
     argparse "~1.0.9"
     colors "~1.2.1"
+
+"@microsoft/tsdoc@0.12.10":
+  version "0.12.10"
+  resolved "https://repo.forge.lmig.com/api/npm/npm/@microsoft/tsdoc/-/tsdoc-0.12.10.tgz#c0e2c875c24a21da6d345d09189f5df4a1801d82"
+  integrity sha1-wOLIdcJKIdptNF0JGJ9d9KGAHYI=
 
 "@microsoft/tsdoc@0.12.9":
   version "0.12.9"
@@ -2936,7 +2962,7 @@ jju@~1.4.0:
   resolved "https://repo.forge.lmig.com/api/npm/npm/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
   integrity sha1-GSA/tZmR35jjoocFDUZHzerzJJk=
 
-js-yaml@^3.13.1:
+js-yaml@^3.13.1, js-yaml@~3.13.1:
   version "3.13.1"
   resolved "https://repo.forge.lmig.com/api/npm/npm/js-yaml/-/js-yaml-3.13.1.tgz#aff151b30bfdfa8e49e05da22e7415e9dfa37847"
   integrity sha1-r/FRswv9+o5J4F2iLnQV6d+jeEc=
