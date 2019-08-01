@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const path = require('path')
 const execa = require('execa')
 // const semver = require('semver')

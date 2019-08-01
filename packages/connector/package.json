@@ -10,8 +10,10 @@
     "api:document": "api-documenter markdown -i temp -o docs"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.136",
     "@workgrid/request": "^0.0.1",
-    "@workgrid/webhook-validation": "^0.0.1"
+    "@workgrid/webhook-validation": "^0.0.1",
+    "lodash": "^4.17.15"
   },
   "devDependencies": {
     "@microsoft/api-documenter": "^7.3.1",

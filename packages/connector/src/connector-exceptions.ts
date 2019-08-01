@@ -1,3 +1,5 @@
+import { AxiosError } from '@workgrid/request'
+
 /**
  * Custom error representing
  *
@@ -9,8 +11,8 @@ export class APIException extends Error {
    */
   public name: string
 
-  public constructor(error: any) {
-    super(error)
+  public constructor(error: AxiosError) {
+    super(error.message)
     Object.setPrototypeOf(this, APIException.prototype)
     this.name = 'APIException'
   }
@@ -22,7 +24,7 @@ export class APIException extends Error {
  * @beta
  */
 export class MissingParameterException extends APIException {
-  public constructor(error: any) {
+  public constructor(error: AxiosError) {
     super(error)
     Object.setPrototypeOf(this, MissingParameterException.prototype)
     this.name = 'MissingParameterException'
@@ -35,7 +37,7 @@ export class MissingParameterException extends APIException {
  * @beta
  */
 export class NotAllowedValueException extends APIException {
-  public constructor(error: any) {
+  public constructor(error: AxiosError) {
     super(error)
     Object.setPrototypeOf(this, NotAllowedValueException.prototype)
     this.name = 'NotAllowedValueException'
@@ -48,7 +50,7 @@ export class NotAllowedValueException extends APIException {
  * @beta
  */
 export class TooLargeTitleException extends APIException {
-  public constructor(error: any) {
+  public constructor(error: AxiosError) {
     super(error)
     Object.setPrototypeOf(this, TooLargeTitleException.prototype)
     this.name = 'TooLargeTitleException'
@@ -81,7 +83,7 @@ export class ConnectorException extends APIException {
    *
    * @param error - the error provided by the Workgrid API
    */
-  private handleInternalException(error: any): Error {
+  private handleInternalException(error: AxiosError): Error {
     const message: string = error.message
     if (message.includes('should have required property')) {
       return new MissingParameterException(error)
@@ -94,12 +96,12 @@ export class ConnectorException extends APIException {
     }
   }
 
-  public constructor(error: any) {
+  public constructor(error: AxiosError) {
     super(error)
     Object.setPrototypeOf(this, ConnectorException.prototype)
     this.name = 'ConnectorException'
-    this.status = error.response.status
-    if (error.response.data.errors) {
+    this.status = error.response ? error.response.status : 500
+    if (error.response && error.response.data && error.response.data.errors) {
       this.errors = error.response.data.errors.map(this.handleInternalException)
     } else {
       this.errors = []
@@ -113,7 +115,7 @@ export class ConnectorException extends APIException {
  * @beta
  */
 export class BadRequestException extends ConnectorException {
-  public constructor(error: any) {
+  public constructor(error: AxiosError) {
     super(error)
     Object.setPrototypeOf(this, BadRequestException.prototype)
     this.name = 'BadRequestException'
@@ -126,7 +128,7 @@ export class BadRequestException extends ConnectorException {
  * @beta
  */
 export class UnauthorizedException extends ConnectorException {
-  public constructor(error: any) {
+  public constructor(error: AxiosError) {
     super(error)
     Object.setPrototypeOf(this, UnauthorizedException.prototype)
     this.name = 'UnauthorizedException'
@@ -139,7 +141,7 @@ export class UnauthorizedException extends ConnectorException {
  * @beta
  */
 export class NotFoundException extends ConnectorException {
-  public constructor(error: any) {
+  public constructor(error: AxiosError) {
     super(error)
     Object.setPrototypeOf(this, NotFoundException.prototype)
     this.name = 'NotFoundException'
@@ -152,7 +154,7 @@ export class NotFoundException extends ConnectorException {
  * @beta
  */
 export class UnprocessableEntityException extends ConnectorException {
-  public constructor(error: any) {
+  public constructor(error: AxiosError) {
     super(error)
     Object.setPrototypeOf(this, UnprocessableEntityException.prototype)
     this.name = 'UnprocessableEntityException'
@@ -165,7 +167,7 @@ export class UnprocessableEntityException extends ConnectorException {
  * @beta
  */
 export class InternalServerErrorException extends ConnectorException {
-  public constructor(error: any) {
+  public constructor(error: AxiosError) {
     super(error)
     Object.setPrototypeOf(this, InternalServerErrorException.prototype)
     this.name = 'InternalServerErrorException'
@@ -178,7 +180,7 @@ export class InternalServerErrorException extends ConnectorException {
  * @beta
  */
 export class UnknownException extends ConnectorException {
-  public constructor(error: any) {
+  public constructor(error: AxiosError) {
     super(error)
     Object.setPrototypeOf(this, UnknownException.prototype)
     this.name = 'UnknownException'

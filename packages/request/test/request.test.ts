@@ -1,4 +1,4 @@
-import request, { APIOptions, OAuthOptions } from '../src/request'
+import request, { APIOptions, OAuthOptions, AxiosResponse } from '../src/request'
 
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
@@ -7,7 +7,7 @@ let tokenInvoked = false
 const jobResponse = 'Success!'
 
 const mock = new MockAdapter(axios)
-mock.onAny().reply((config: any) => {
+mock.onAny().reply((config: object) => {
   if (config.url == 'https://auth.code.workgrid.com/oauth2/token') {
     tokenInvoked = true
     const data: string[] = config.data.split('&')
@@ -51,7 +51,7 @@ describe('@workgrid/request', () => {
 
   describe('request()', () => {
     test("should return 'Success!' on successful API call", async () => {
-      const response: any = await request(apiOptions)
+      const response: AxiosResponse = await request(apiOptions)
       expect(response.data).toStrictEqual(jobResponse)
     })
     test('should throw an error on unsuccessful API call', async () => {

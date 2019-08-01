@@ -1,4 +1,4 @@
-import request, { OAuthOptions } from '@workgrid/request'
+import request, { OAuthOptions, AxiosResponse, AxiosError } from '@workgrid/request'
 import validate from '@workgrid/webhook-validation'
 import {
   APIException,
@@ -13,13 +13,14 @@ import {
   UnprocessableEntityException,
   UnknownException
 } from './connector-exceptions'
+import { has } from 'lodash'
 
 /**
  * Basic interface representing API response
  *
  * @beta
  */
-export interface RequestResponse {
+export interface RequestResponse extends AxiosResponse {
   data: object
 }
 
@@ -334,17 +335,18 @@ export default class Connector {
    *
    * @beta
    */
-  private generateException(error: any): ConnectorException {
-    if (error.response) {
-      const status = error.response.status
-      if (status === 400) return new BadRequestException(error)
-      if (status === 401) return new UnauthorizedException(error)
-      if (status === 404) return new NotFoundException(error)
-      if (status === 422) return new UnprocessableEntityException(error)
-      if (status === 500) return new InternalServerErrorException(error)
-      return new UnknownException(error)
+  private generateException(error: Error | AxiosError): ConnectorException {
+    if (has(error, 'response')) {
+      const axiosError = error as AxiosError
+      const status = axiosError.response && axiosError.response.status
+      if (status === 400) return new BadRequestException(axiosError)
+      if (status === 401) return new UnauthorizedException(axiosError)
+      if (status === 404) return new NotFoundException(axiosError)
+      if (status === 422) return new UnprocessableEntityException(axiosError)
+      if (status === 500) return new InternalServerErrorException(axiosError)
+      return new UnknownException(axiosError)
     } else {
-      throw error
+      throw error as Error
     }
   }
 }
