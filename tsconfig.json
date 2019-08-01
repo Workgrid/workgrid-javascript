@@ -1,4 +1,4 @@
 {
   "extends": "@workgrid/typescript",
-  "exclude": ["**/*.test.ts", "dist"]
+  "exclude": ["**/*.test.ts", "dist", "coverage"]
 }
