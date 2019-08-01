@@ -1,11 +1,14 @@
 {
   "name": "@workgrid/webhook-validation",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "dist/webhook.js",
   "scripts": {
     "build": "tsc",
     "postbuild": "api-extractor run --local --verbose && rm -rf temp"
+  },
+  "devDependencies": {
+    "@microsoft/api-extractor": "^7.3.1"
   },
   "license": "ISC"
 }

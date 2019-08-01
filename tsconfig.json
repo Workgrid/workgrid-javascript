@@ -1,10 +1,4 @@
 {
-  "extends": "./packages/typescript/tsconfig.json",
-  "compilerOptions": {
-    "baseUrl": "packages",
-    "types": ["node","jest"],
-    "paths": {
-      "@workgrid/*": ["*/src"]
-    }
-  }
+  "extends": "@workgrid/typescript",
+  "exclude": ["**/*.test.ts", "dist"]
 }

@@ -1,5 +1,5 @@
-import request, { OAuthOptions } from '@workgrid/request/src/request'
-import validate from '@workgrid/webhook-validation/src/webhook'
+import request, { OAuthOptions } from '@workgrid/request'
+import validate from '@workgrid/webhook-validation'
 import {
   APIException,
   MissingParameterException,

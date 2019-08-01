@@ -1,6 +1,6 @@
 import axios from 'axios'
 import * as oauth from 'axios-oauth-client'
-import * as tokenProvider from 'axios-token-interceptor'
+import tokenProvider from 'axios-token-interceptor'
 import mem from 'mem'
 
 /**

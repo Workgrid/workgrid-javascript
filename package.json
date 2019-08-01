@@ -3,37 +3,40 @@
   "name": "workgrid-javascript",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "lint": "eslint --fix '**/*.{js,ts}' --ignore-path .gitignore",
     "unit": "jest --coverage",
     "test": "yarn lint && yarn unit",
-    "build": "yarn workspaces run build",
-    "watch": "yarn workspaces tsc -w",
-    "format": "prettier --write '**/*.{json,md}' --ignore-path .gitignore"
+    "build": "wsrun --stages build",
+    "format": "prettier --write '**/*.{json,md}' --ignore-path .gitignore",
+    "pretest": "yarn build"
   },
   "repository": {
     "type": "git",
     "url": "https://git.forge.lmig.com/scm/ws1/workgrid-javascript.git"
-  },
-  "license": "ISC",
-  "dependencies": {
-    "@microsoft/api-extractor": "^7.3.1",
-    "@types/node": "^12.6.2"
   },
   "workspaces": [
     "packages/*"
   ],
   "devDependencies": {
     "@types/jest": "^24.0.15",
+    "@types/node": "^12.6.2",
     "@typescript-eslint/eslint-plugin": "^1.11.0",
     "@typescript-eslint/parser": "^1.11.0",
+    "chalk": "^2.4.2",
     "eslint": "^6.0.1",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-prettier": "^3.1.0",
+    "execa": "^1.0.0",
     "jest": "^24.8.0",
+    "lodash": "^4.17.15",
+    "p-reflect": "^2.1.0",
+    "package-json": "^6.5.0",
     "prettier": "^1.18.2",
+    "semver": "^6.3.0",
     "ts-jest": "^24.0.2",
-    "typescript": "^3.5.3"
-  }
+    "typescript": "^3.5.3",
+    "wsrun": "^5.0.0"
+  },
+  "license": "ISC"
 }

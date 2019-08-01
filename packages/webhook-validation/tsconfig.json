@@ -1,16 +1,7 @@
 {
+  "extends": "@workgrid/typescript",
+  "exclude": ["**/*.test.ts", "dist"],
   "compilerOptions": {
-    "target": "ES2017",
-    "module": "commonjs",
-    "declaration": true,
-    "outDir": "./dist",
-    "strict": true,
-    "typeRoots": ["node_modules/@types"],
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "sourceMap": true,
-    "types": ["node", "jest"]
-  },
-  "include": ["**/*.ts"],
-  "exclude": ["**/*.test.ts", "dist"]
+    "outDir": "./dist"
+  }
 }

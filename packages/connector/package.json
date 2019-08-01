@@ -1,11 +1,18 @@
 {
-    "name": "@workgrid/connector",
-    "version": "1.0.0",
-    "description": "",
-    "main": "dist/connector.js",
-    "scripts": {
-      "build": "tsc",
-      "postbuild": "api-extractor run --local --verbose && rm -rf temp"
-    },
-    "license": "ISC"
-  }
+  "name": "@workgrid/connector",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/src/connector.js",
+  "scripts": {
+    "build": "tsc",
+    "postbuild": "api-extractor run --local --verbose && rm -rf temp"
+  },
+  "dependencies": {
+    "@workgrid/request": "^0.0.1",
+    "@workgrid/webhook-validation": "^0.0.1"
+  },
+  "devDependencies": {
+    "@microsoft/api-extractor": "^7.3.1"
+  },
+  "license": "ISC"
+}
