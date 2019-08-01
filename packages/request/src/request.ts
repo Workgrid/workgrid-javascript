@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios'
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
 import * as oauth from 'axios-oauth-client'
 import tokenProvider from 'axios-token-interceptor'
 import mem from 'mem'
@@ -114,4 +114,4 @@ export default async function request(apiOptions: APIOptions): Promise<AxiosResp
   return await instance(options)
 }
 
-export { AxiosResponse, AxiosError }
+export { AxiosRequestConfig, AxiosResponse, AxiosError }
