@@ -9,7 +9,7 @@ const packageJson = require('package-json')
 const { get } = require('lodash')
 
 const yarn = async (args, opts) => {
-  const stdout = await execa.stdout('yarn', [...args, '--json'], opts)
+  const { stdout } = await execa('yarn', [...args, '--json'], opts)
 
   try {
     return JSON.parse(stdout).data

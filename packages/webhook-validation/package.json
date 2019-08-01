@@ -2,7 +2,7 @@
   "name": "@workgrid/webhook-validation",
   "version": "0.0.1",
   "description": "",
-  "main": "dist/webhook.js",
+  "main": "dist/src/webhook.js",
   "scripts": {
     "build": "tsc",
     "postbuild": "api-extractor run --local --verbose && rm -rf temp"

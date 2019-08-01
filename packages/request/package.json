@@ -9,12 +9,15 @@
   },
   "license": "ISC",
   "dependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/axios-token-interceptor": "^0.1.2",
     "axios": "^0.18.0",
     "axios-oauth-client": "^1.1.1",
     "axios-token-interceptor": "^0.1.0"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.3.1",
+    "@types/axios-mock-adapter": "^1.10.0",
     "axios-mock-adapter": "^1.17.0"
   }
 }

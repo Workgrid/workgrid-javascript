@@ -5,7 +5,16 @@ const execa = require('execa')
 const chalk = require('chalk').default
 const readPkg = require('read-pkg')
 
-const yarn = async (args, opts) => JSON.parse(await execa.stdout('yarn', [...args, '--json'], opts)).data
+const yarn = async (args, opts) => {
+  const { stdout } = await execa('yarn', [...args, '--json'], opts)
+
+  try {
+    return JSON.parse(stdout).data
+  } catch (e) {
+    console.log('Error parsing', stdout)
+    return stdout
+  }
+}
 
 !(async () => {
   const { workspaceRootFolder } = JSON.parse(await yarn(['config', 'current']))
