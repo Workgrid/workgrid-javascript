@@ -1,11 +1,24 @@
 {
-    "name": "@workgrid/connector",
-    "version": "1.0.0",
-    "description": "",
-    "main": "dist/connector.js",
-    "scripts": {
-      "build": "tsc",
-      "postbuild": "api-extractor run --local --verbose && rm -rf temp"
-    },
-    "license": "ISC"
-  }
+  "name": "@workgrid/connector",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/src/connector.js",
+  "scripts": {
+    "build": "tsc",
+    "postbuild": "yarn api:extract && yarn api:document",
+    "api:extract": "api-extractor run",
+    "api:document": "api-documenter markdown -i temp -o docs"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.14.136",
+    "@workgrid/request": "^0.0.1",
+    "@workgrid/webhook-validation": "^0.0.1",
+    "lodash": "^4.17.15"
+  },
+  "devDependencies": {
+    "@microsoft/api-documenter": "^7.3.1",
+    "@microsoft/api-extractor": "^7.3.1",
+    "@workgrid/typescript": "^0.0.1"
+  },
+  "license": "ISC"
+}

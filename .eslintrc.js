@@ -12,5 +12,13 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
     "prettier/@typescript-eslint"
+  ],
+  overrides: [
+    {
+      files: ['*.js'],
+      rules: {
+        '@typescript-eslint/no-var-requires': 'off'
+      }
+    }
   ]
 };

@@ -1,6 +1,6 @@
-import axios from 'axios'
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
 import * as oauth from 'axios-oauth-client'
-import * as tokenProvider from 'axios-token-interceptor'
+import tokenProvider from 'axios-token-interceptor'
 import mem from 'mem'
 
 /**
@@ -77,21 +77,23 @@ export interface APIOptions {
  *
  * @param oauthOptions - the options to provide to axios for acquiring/refreshing the OAuth token.
  */
-const createInstance = mem((oauthOptions: OAuthOptions): any => {
-  const instance: any = axios.create()
-  /* eslint-disable @typescript-eslint/camelcase */
-  const oauthClient: any = oauth.client(axios.create(), {
-    client_id: oauthOptions.clientId,
-    client_secret: oauthOptions.clientSecret,
-    url: oauthOptions.url,
-    scope: oauthOptions.scopes.join(' '),
-    grant_type: oauthOptions.grantType
-  })
-  /* eslint-enable @typescript-eslint/camelcase */
-  const interceptor: any = oauth.interceptor(tokenProvider, oauthClient)
-  instance.interceptors.request.use(interceptor)
-  return instance
-})
+const createInstance = mem(
+  (oauthOptions: OAuthOptions): AxiosInstance => {
+    const instance: AxiosInstance = axios.create()
+    /* eslint-disable @typescript-eslint/camelcase */
+    const oauthClient = oauth.client(axios.create(), {
+      client_id: oauthOptions.clientId,
+      client_secret: oauthOptions.clientSecret,
+      url: oauthOptions.url,
+      scope: oauthOptions.scopes.join(' '),
+      grant_type: oauthOptions.grantType
+    })
+    /* eslint-enable @typescript-eslint/camelcase */
+    const interceptor = oauth.interceptor(tokenProvider, oauthClient)
+    instance.interceptors.request.use(interceptor)
+    return instance
+  }
+)
 
 /**
  * Assists in setting up OAuth authentication, forming the request to send to the Workgrid API, and actually making the request.
@@ -100,9 +102,9 @@ const createInstance = mem((oauthOptions: OAuthOptions): any => {
  *
  * @beta
  */
-export default async function request(apiOptions: APIOptions): Promise<object> {
+export default async function request(apiOptions: APIOptions): Promise<AxiosResponse> {
   const oauthOptions: OAuthOptions = apiOptions.oauthOptions
-  const instance: any = createInstance(oauthOptions)
+  const instance: AxiosInstance = createInstance(oauthOptions)
   const options: object = Object.assign({}, apiOptions.additionalOptions, {
     method: apiOptions.method,
     data: apiOptions.data,
@@ -111,3 +113,5 @@ export default async function request(apiOptions: APIOptions): Promise<object> {
   })
   return await instance(options)
 }
+
+export { AxiosRequestConfig, AxiosResponse, AxiosError }

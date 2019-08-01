@@ -1,11 +1,18 @@
 {
   "name": "@workgrid/webhook-validation",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
-  "main": "dist/webhook.js",
+  "main": "dist/src/webhook.js",
   "scripts": {
     "build": "tsc",
-    "postbuild": "api-extractor run --local --verbose && rm -rf temp"
+    "postbuild": "yarn api:extract && yarn api:document",
+    "api:extract": "api-extractor run",
+    "api:document": "api-documenter markdown -i temp -o docs"
+  },
+  "devDependencies": {
+    "@microsoft/api-documenter": "^7.3.1",
+    "@microsoft/api-extractor": "^7.3.1",
+    "@workgrid/typescript": "^0.0.1"
   },
   "license": "ISC"
 }
