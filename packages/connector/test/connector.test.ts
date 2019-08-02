@@ -15,12 +15,14 @@ import { APIOptions } from '@workgrid/request'
 
 const createJobResponse = {
   status: 200,
-  data: {
-    jobId: '123',
-    jobType: 'notification.create',
-    jobStatus: 'processed',
-    correlationId: 'xyz'
-  }
+  data: [
+    {
+      jobId: '123',
+      jobType: 'notification.create',
+      jobStatus: 'processed',
+      correlationId: 'xyz'
+    }
+  ]
 }
 const id = '1'
 const getJobResponse = { status: 200, data: { jobId: id, jobStatus: 'processing' } }
