@@ -1,4 +1,4 @@
-import request, { APIOptions, OAuthOptions, AxiosRequestConfig, AxiosResponse } from '../src/request'
+import request, { APIOptions, OAuthOptions, AxiosRequestConfig, RequestResponse } from '../src/request'
 
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
@@ -51,8 +51,8 @@ describe('@workgrid/request', () => {
 
   describe('request()', () => {
     test("should return 'Success!' on successful API call", async () => {
-      const response: AxiosResponse = await request(apiOptions)
-      expect(response.data).toStrictEqual(jobResponse)
+      const response: RequestResponse = await request(apiOptions)
+      expect(response.data).toEqual(jobResponse)
     })
     test('should throw an error on unsuccessful API call', async () => {
       const newOauthOptions = Object.assign({}, oauthOptions)

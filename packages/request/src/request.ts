@@ -4,6 +4,30 @@ import tokenProvider from 'axios-token-interceptor'
 import mem from 'mem'
 
 /**
+ * Basic interface representing response from Axios
+ *
+ * @beta
+ */
+export interface RequestResponse extends AxiosResponse {
+  /**
+   * Data returned in the response from Axios
+   */
+  data: object
+}
+
+/**
+ * Basic interface representing error from Axios
+ *
+ * @beta
+ */
+export interface RequestError extends AxiosError {
+  /**
+   * The name of the error thrown by Axios
+   */
+  name: string
+}
+
+/**
  * The interface representing the options necessary for authentication.
  *
  * @beta
@@ -102,7 +126,7 @@ const createInstance = mem(
  *
  * @beta
  */
-export default async function request(apiOptions: APIOptions): Promise<AxiosResponse> {
+export default async function request(apiOptions: APIOptions): Promise<RequestResponse> {
   const oauthOptions: OAuthOptions = apiOptions.oauthOptions
   const instance: AxiosInstance = createInstance(oauthOptions)
   const options: object = Object.assign({}, apiOptions.additionalOptions, {
@@ -111,7 +135,7 @@ export default async function request(apiOptions: APIOptions): Promise<AxiosResp
     url: apiOptions.url,
     baseURL: apiOptions.baseURL
   })
-  return await instance(options)
+  return (await instance(options)) as RequestResponse
 }
 
-export { AxiosRequestConfig, AxiosResponse, AxiosError }
+export { AxiosRequestConfig }
