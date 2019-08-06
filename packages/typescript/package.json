@@ -5,5 +5,12 @@
   "scripts": {
     "build": "echo \"No '$npm_lifecycle_event' script defined for $npm_package_name.\""
   },
+  "repository": {
+    "type": "git",
+    "url": "https://git.forge.lmig.com/scm/ws1/workgrid-javascript.git"
+  },
+  "publishConfig": {
+    "registry": "https://repo.forge.lmig.com/api/npm/npm-releases/"
+  },
   "license": "ISC"
 }

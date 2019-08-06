@@ -9,6 +9,13 @@
     "api:extract": "api-extractor run",
     "api:document": "api-documenter markdown -i temp -o docs"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://git.forge.lmig.com/scm/ws1/workgrid-javascript.git"
+  },
+  "publishConfig": {
+    "registry": "https://repo.forge.lmig.com/api/npm/npm-releases/"
+  },
   "devDependencies": {
     "@microsoft/api-documenter": "^7.3.1",
     "@microsoft/api-extractor": "^7.3.1",
