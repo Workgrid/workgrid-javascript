@@ -129,6 +129,67 @@ export interface UpdateEventResponse {
 }
 
 /**
+ * Interface representing Connector parameters
+ *
+ * @beta
+ */
+export interface ConnectorConfiguration {
+  /**
+   * The connector's id
+   */
+  clientId: string
+
+  /**
+   * The connector's secret
+   */
+  clientSecret: string
+
+  /**
+   * The grant type of the OAuth token
+   */
+  grantType: string
+
+  /**
+   * The scopes of the OAuth token
+   */
+  scopes: string[]
+
+  /**
+   * Any additional options to be supplied
+   */
+  additionalOptions?: object
+}
+
+/**
+ * Interface representing Connector parameters when the company code is supplied
+ *
+ * @beta
+ */
+export interface CompanyCodeConfiguration extends ConnectorConfiguration {
+  /**
+   * The connector's company code
+   */
+  companyCode: string
+}
+
+/**
+ * Interface representing Connector parameters when the API/token URLs are supplied
+ *
+ * @beta
+ */
+export interface URLConfiguration extends ConnectorConfiguration {
+  /**
+   * The base API url to hit
+   */
+  apiUrl: string
+
+  /**
+   * The token url to hit
+   */
+  tokenUrl: string
+}
+
+/**
  * A pretty class-wrapper for the request package, allowing for easier interaction with the Workgrid API.
  *
  * @beta
@@ -149,22 +210,15 @@ export default class Connector {
    */
   private additionalOptions: object = {}
 
-  public constructor(params: {
-    clientId: string
-    clientSecret: string
-    companyCode: string
-    grantType: string
-    scopes: string[]
-    additionalOptions?: object
-  }) {
+  public constructor(params: CompanyCodeConfiguration | URLConfiguration) {
     this.oauthOptions = {
       clientId: params.clientId,
       clientSecret: params.clientSecret,
-      url: `https://auth.${params.companyCode}.workgrid.com/oauth2/token`,
+      url: 'tokenUrl' in params ? params.tokenUrl : `https://auth.${params.companyCode}.workgrid.com/oauth2/token`,
       grantType: params.grantType,
       scopes: params.scopes
     }
-    this.apiBaseURL = `https://${params.companyCode}.workgrid.com/`
+    this.apiBaseURL = 'apiUrl' in params ? params.apiUrl : `https://${params.companyCode}.workgrid.com`
     if (params.additionalOptions) {
       this.additionalOptions = params.additionalOptions
     }

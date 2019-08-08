@@ -103,13 +103,11 @@ describe('@connector', (): void => {
     const options = {
       clientId: 'will',
       clientSecret: 'secret',
+      companyCode: 'code',
       grantType: 'client_credentials',
       scopes: ['com.workgrid.api/notifications.all']
     }
-    connector = new Connector({
-      companyCode: 'code',
-      ...options
-    })
+    connector = new Connector(options)
     createJobData = { title: 'title' }
     eventOptions = {
       limit: 1,
