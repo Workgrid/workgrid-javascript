@@ -214,11 +214,11 @@ export default class Connector {
     this.oauthOptions = {
       clientId: params.clientId,
       clientSecret: params.clientSecret,
-      url: 'companyCode' in params ? `https://auth.${params.companyCode}.workgrid.com/oauth2/token` : params.tokenUrl,
+      url: 'tokenUrl' in params ? params.tokenUrl : `https://auth.${params.companyCode}.workgrid.com/oauth2/token`,
       grantType: params.grantType,
       scopes: params.scopes
     }
-    this.apiBaseURL = 'companyCode' in params ? `https://${params.companyCode}.workgrid.com` : params.apiUrl
+    this.apiBaseURL = 'apiUrl' in params ? params.apiUrl : `https://${params.companyCode}.workgrid.com`
     if (params.additionalOptions) {
       this.additionalOptions = params.additionalOptions
     }
