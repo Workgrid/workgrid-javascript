@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@types/lodash": "^4.14.136",
-    "@workgrid/request": "^0.0.1",
+    "@workgrid/request": "^0.0.2",
     "@workgrid/webhook-validation": "^0.0.1",
     "lodash": "^4.17.15"
   },

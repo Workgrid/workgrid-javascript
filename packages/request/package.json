@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/request",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "dist/src/request.js",
   "scripts": {
