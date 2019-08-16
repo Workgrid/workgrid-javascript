@@ -231,7 +231,7 @@ export default class Connector {
    *
    * @beta
    */
-  public async createJobs(jobs: object[]): Promise<CreateJobResponse[] | ConnectorException> {
+  public async createJobs(jobs: object[]): Promise<CreateJobResponse[]> {
     try {
       const response = (await request({
         oauthOptions: this.oauthOptions,
@@ -243,7 +243,7 @@ export default class Connector {
       })) as RequestResponse
       return response.data as CreateJobResponse[]
     } catch (error) {
-      return this.generateException(error)
+      throw this.generateException(error)
     }
   }
 
@@ -254,9 +254,9 @@ export default class Connector {
    *
    * @beta
    */
-  public async createJob(job: object): Promise<CreateJobResponse | ConnectorException> {
+  public async createJob(job: object): Promise<CreateJobResponse> {
     const jobResponse = await this.createJobs([job])
-    return jobResponse instanceof ConnectorException ? jobResponse : jobResponse[0]
+    return jobResponse[0]
   }
 
   /**
@@ -266,7 +266,7 @@ export default class Connector {
    *
    * @beta
    */
-  public async getJob(jobId: string): Promise<GetJobResponse | ConnectorException> {
+  public async getJob(jobId: string): Promise<GetJobResponse> {
     try {
       const response = (await request({
         oauthOptions: this.oauthOptions,
@@ -277,7 +277,7 @@ export default class Connector {
       })) as RequestResponse
       return response.data as GetJobResponse
     } catch (error) {
-      return this.generateException(error)
+      throw this.generateException(error)
     }
   }
 
@@ -296,7 +296,7 @@ export default class Connector {
     cursor: string
     eventStatus: string
     eventType: string
-  }): Promise<GetEventResponse[] | ConnectorException> {
+  }): Promise<GetEventResponse[]> {
     try {
       const newResponse = (await request({
         oauthOptions: this.oauthOptions,
@@ -308,7 +308,7 @@ export default class Connector {
       })) as RequestResponse
       return newResponse.data as GetEventResponse[]
     } catch (error) {
-      return this.generateException(error)
+      throw this.generateException(error)
     }
   }
 
@@ -319,7 +319,7 @@ export default class Connector {
    *
    * @beta
    */
-  public async getEvent(eventId: string): Promise<GetEventResponse | ConnectorException> {
+  public async getEvent(eventId: string): Promise<GetEventResponse> {
     try {
       const response = (await request({
         oauthOptions: this.oauthOptions,
@@ -330,7 +330,7 @@ export default class Connector {
       })) as RequestResponse
       return response.data as GetEventResponse
     } catch (error) {
-      return this.generateException(error)
+      throw this.generateException(error)
     }
   }
 
@@ -341,7 +341,7 @@ export default class Connector {
    *
    * @beta
    */
-  public async updateEventStatus(eventId: string): Promise<UpdateEventResponse | ConnectorException> {
+  public async updateEventStatus(eventId: string): Promise<UpdateEventResponse> {
     try {
       const response = (await request({
         oauthOptions: this.oauthOptions,
@@ -355,7 +355,7 @@ export default class Connector {
       })) as RequestResponse
       return response.data as UpdateEventResponse
     } catch (error) {
-      return this.generateException(error)
+      throw this.generateException(error)
     }
   }
 
@@ -380,7 +380,7 @@ export default class Connector {
    *
    * @beta
    */
-  private generateException(error: Error | RequestError): ConnectorException {
+  private generateException(error: Error | RequestError): ConnectorException | Error {
     if (has(error, 'response')) {
       const axiosError = error as RequestError
       const status = axiosError.response && axiosError.response.status
@@ -391,7 +391,7 @@ export default class Connector {
       if (status === 500) return new InternalServerErrorException(axiosError)
       return new UnknownException(axiosError)
     } else {
-      throw error as Error
+      return error as Error
     }
   }
 }

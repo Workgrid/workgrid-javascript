@@ -54,6 +54,24 @@ export class TooLargeTitleException extends APIException {
 }
 
 /**
+ * Internally used to map an error internal to an axios error to a custom exception object.
+ *
+ * @param error - the error provided by the Workgrid API
+ */
+function handleInternalException(error: RequestError): APIException {
+  const message: string = error.message
+  if (message.includes('should have required property')) {
+    return new MissingParameterException(error)
+  } else if (message.includes('should be equal to one of the allowed values')) {
+    return new NotAllowedValueException(error)
+  } else if (message.includes('Notification title size')) {
+    return new TooLargeTitleException(error)
+  } else {
+    return new APIException(error)
+  }
+}
+
+/**
  * The default ConnectorException Object returned when an exception occurs
  *
  * Why: JavaScript throws are not type safe
@@ -71,30 +89,12 @@ export class ConnectorException extends APIException {
    */
   public errors: APIException[]
 
-  /**
-   * Internally used to map an error internal to an axios error to a custom exception object.
-   *
-   * @param error - the error provided by the Workgrid API
-   */
-  private handleInternalException(error: RequestError): APIException {
-    const message: string = error.message
-    if (message.includes('should have required property')) {
-      return new MissingParameterException(error)
-    } else if (message.includes('should be equal to one of the allowed values')) {
-      return new NotAllowedValueException(error)
-    } else if (message.includes('Notification title size')) {
-      return new TooLargeTitleException(error)
-    } else {
-      return new APIException(error)
-    }
-  }
-
   public constructor(error: RequestError) {
     super(error)
     this.name = 'ConnectorException'
     this.status = error.response ? error.response.status : 500
     if (error.response && error.response.data && error.response.data.errors) {
-      this.errors = error.response.data.errors.map(this.handleInternalException)
+      this.errors = error.response.data.errors.map(handleInternalException)
     } else {
       this.errors = []
     }

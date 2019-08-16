@@ -118,43 +118,39 @@ describe('@connector', (): void => {
   })
 
   test('createJobs returns expected data on successful call', async () => {
-    const createJobsOutput: CreateJobResponse[] | ConnectorException = await connector.createJobs([createJobData])
+    const createJobsOutput: CreateJobResponse[] = await connector.createJobs([createJobData])
     expect(createJobsOutput).toEqual(createJobResponse.data)
   })
 
   test('createJob is equivalent to createJobs when given a single job', async () => {
-    const createJobOutput: CreateJobResponse | ConnectorException = (await connector.createJob(
-      createJobData
-    )) as CreateJobResponse
-    const createJobsOutput: CreateJobResponse[] | ConnectorException = (await connector.createJobs([
-      createJobData
-    ])) as CreateJobResponse[]
+    const createJobOutput: CreateJobResponse = (await connector.createJob(createJobData)) as CreateJobResponse
+    const createJobsOutput: CreateJobResponse[] = (await connector.createJobs([createJobData])) as CreateJobResponse[]
     expect(createJobOutput).toEqual(createJobsOutput[0])
   })
 
   test('getJob returns expected data on successful call', async () => {
-    const getJobOutput: GetJobResponse | ConnectorException = await connector.getJob(id)
+    const getJobOutput: GetJobResponse = await connector.getJob(id)
     expect(getJobOutput).toEqual(getJobResponse.data)
   })
 
   test('getEvents returns expected data on successful call', async () => {
-    const getEventsOutput: GetEventResponse[] | ConnectorException = await connector.getEvents(eventOptions)
+    const getEventsOutput: GetEventResponse[] = await connector.getEvents(eventOptions)
     expect(getEventsOutput).toEqual(getEventsResponse.data)
   })
 
   test('getEvent returns expected data on successful call', async () => {
-    const getEventOutput: GetEventResponse | ConnectorException = await connector.getEvent(id)
+    const getEventOutput: GetEventResponse = await connector.getEvent(id)
     expect(getEventOutput).toEqual(getEventResponse.data)
   })
 
   test('updateEventStatus returns expected data on successful call', async () => {
-    const updateEventStatusOutput: UpdateEventResponse | ConnectorException = await connector.updateEventStatus(id)
+    const updateEventStatusOutput: UpdateEventResponse = await connector.updateEventStatus(id)
     expect(updateEventStatusOutput).toEqual(updateEventResponse.data)
   })
 
   test('hitting incorrect endpoint results in not found exception', async () => {
-    const response: GetJobResponse | ConnectorException = await connector.getJob(id + 1)
-    expect(response).toBeInstanceOf(NotFoundException)
+    const error: ConnectorException = await connector.getJob(id + 1).catch(error => error)
+    expect(error).toBeInstanceOf(NotFoundException)
   })
 
   test('incorrect OAuth configurations results in unauthorized exception', async () => {
@@ -166,29 +162,26 @@ describe('@connector', (): void => {
       scopes: ['com.workgrid.api/notifications.all']
     }
     const badConnector = new Connector(options)
-    const response: GetEventResponse | ConnectorException = await badConnector.getEvent(id)
-    expect(response).toBeInstanceOf(UnauthorizedException)
+    const error: ConnectorException = await badConnector.getEvent(id).catch(error => error)
+    expect(error).toBeInstanceOf(UnauthorizedException)
   })
 
   test('too large title results in too large title exception', async () => {
-    const response: GetJobResponse | ConnectorException = await connector.createJob({ title: 'titles' })
-    expect(response).toBeInstanceOf(BadRequestException)
-    const error = response as ConnectorException
+    const error: ConnectorException = await connector.createJob({ title: 'titles' }).catch(error => error)
+    expect(error).toBeInstanceOf(BadRequestException)
     expect(error.errors[0]).toBeInstanceOf(TooLargeTitleException)
   })
 
   test('missing required parameter results in missing parameter exception', async () => {
-    const response: CreateJobResponse | ConnectorException = await connector.createJob({})
-    expect(response).toBeInstanceOf(BadRequestException)
-    const error = response as ConnectorException
+    const error: ConnectorException = await connector.createJob({}).catch(error => error)
+    expect(error).toBeInstanceOf(BadRequestException)
     expect(error.errors[0]).toBeInstanceOf(MissingParameterException)
   })
 
   test('not passing in required data field value results in not allowed value exception', async () => {
     const badGetEventsOptions = { limit: 1, cursor: '', eventStatus: 'notProcessed', eventType: 'Notification.Action' }
-    const response: GetEventResponse[] | ConnectorException = await connector.getEvents(badGetEventsOptions)
-    expect(response).toBeInstanceOf(BadRequestException)
-    const error = response as ConnectorException
+    const error: ConnectorException = await connector.getEvents(badGetEventsOptions).catch(error => error)
+    expect(error).toBeInstanceOf(BadRequestException)
     expect(error.errors[0]).toBeInstanceOf(NotAllowedValueException)
   })
 })
