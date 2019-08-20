@@ -1,0 +1,41 @@
+{
+  "name": "@workgrid/micro-app",
+  "version": "0.8.0",
+  "description": "",
+  "main": "dist/micro-app.js",
+  "types": "dist/micro-app.d.ts",
+  "files": [
+    "dist",
+    "docs"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist docs temp",
+    "build": "yarn clean && tsc",
+    "prepack": "yarn api:extract && yarn api:document",
+    "api:extract": "api-extractor run",
+    "api:document": "api-documenter markdown -i temp -o docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.forge.lmig.com/scm/ws1/workgrid-javascript.git"
+  },
+  "publishConfig": {
+    "registry": "https://repo.forge.lmig.com/api/npm/npm-releases/"
+  },
+  "dependencies": {
+    "@types/jwt-decode": "^2.2.1",
+    "@types/lodash": "^4.14.137",
+    "@types/ms": "^0.7.30",
+    "@workgrid/courier": "^0.6.0",
+    "jwt-decode": "^2.2.0",
+    "lodash": "^4.17.11",
+    "ms": "^2.1.1",
+    "resize-observer-polyfill": "^1.5.1"
+  },
+  "devDependencies": {
+    "@microsoft/api-documenter": "^7.3.1",
+    "@microsoft/api-extractor": "^7.3.1",
+    "@workgrid/typescript": "^0.0.1"
+  },
+  "license": "ISC"
+}
