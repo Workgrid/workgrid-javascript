@@ -34,7 +34,7 @@ describe('@workgrid/request', () => {
   let oauthOptions: OAuthOptions
   let apiOptions: APIOptions
 
-  beforeAll(() => {
+  beforeEach(() => {
     oauthOptions = {
       clientId: 'will',
       clientSecret: 'secret',
@@ -42,11 +42,12 @@ describe('@workgrid/request', () => {
       url: 'https://auth.code.workgrid.com/oauth2/token',
       grantType: 'client_credentials'
     }
-    apiOptions = { oauthOptions: oauthOptions, baseURL: 'https://code.workgrid.com/', url: 'v2/jobs', method: 'post' }
-  })
-
-  beforeEach(() => {
-    tokenInvoked = false
+    apiOptions = {
+      oauthOptions: oauthOptions,
+      baseURL: 'https://code.workgrid.com/',
+      url: 'v2/jobs',
+      method: 'post'
+    }
   })
 
   describe('request()', () => {
@@ -63,6 +64,7 @@ describe('@workgrid/request', () => {
       await expect(request(newAPIOptions)).rejects.toThrowError('Request failed with status code 403')
     })
     test('new OAuth token should not be retrieved when current token is still valid', async () => {
+      tokenInvoked = false
       await request(apiOptions)
       expect(tokenInvoked).toBe(false)
     })

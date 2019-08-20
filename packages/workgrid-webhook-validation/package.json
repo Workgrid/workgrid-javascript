@@ -2,9 +2,15 @@
   "name": "@workgrid/webhook-validation",
   "version": "0.0.1",
   "description": "",
-  "main": "dist/src/webhook.js",
+  "main": "dist/webhook-validation.js",
+  "files": [
+    "dist",
+    "docs"
+  ],
   "scripts": {
+    "clean": "rm -rf dist docs temp",
     "build": "tsc",
+    "prebuild": "yarn clean",
     "postbuild": "yarn api:extract && yarn api:document",
     "api:extract": "api-extractor run",
     "api:document": "api-documenter markdown -i temp -o docs"
@@ -16,6 +22,7 @@
   "publishConfig": {
     "registry": "https://repo.forge.lmig.com/api/npm/npm-releases/"
   },
+  "dependencies": {},
   "devDependencies": {
     "@microsoft/api-documenter": "^7.3.1",
     "@microsoft/api-extractor": "^7.3.1",

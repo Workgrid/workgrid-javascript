@@ -2,9 +2,15 @@
   "name": "@workgrid/request",
   "version": "0.0.2",
   "description": "",
-  "main": "dist/src/request.js",
+  "main": "dist/request.js",
+  "files": [
+    "dist",
+    "docs"
+  ],
   "scripts": {
+    "clean": "rm -rf dist docs temp",
     "build": "tsc",
+    "prebuild": "yarn clean",
     "postbuild": "yarn api:extract && yarn api:document",
     "api:extract": "api-extractor run",
     "api:document": "api-documenter markdown -i temp -o docs"

@@ -2,9 +2,15 @@
   "name": "@workgrid/connector",
   "version": "0.0.3",
   "description": "",
-  "main": "dist/src/connector.js",
+  "main": "dist/connector.js",
+  "files": [
+    "dist",
+    "docs"
+  ],
   "scripts": {
+    "clean": "rm -rf dist docs temp",
     "build": "tsc",
+    "prebuild": "yarn clean",
     "postbuild": "yarn api:extract && yarn api:document",
     "api:extract": "api-extractor run",
     "api:document": "api-documenter markdown -i temp -o docs"
@@ -17,7 +23,7 @@
     "registry": "https://repo.forge.lmig.com/api/npm/npm-releases/"
   },
   "dependencies": {
-    "@types/lodash": "^4.14.136",
+    "@types/lodash": "^4.14.137",
     "@workgrid/request": "^0.0.2",
     "@workgrid/webhook-validation": "^0.0.1",
     "lodash": "^4.17.15"
