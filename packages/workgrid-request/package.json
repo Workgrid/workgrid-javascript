@@ -3,6 +3,7 @@
   "version": "0.0.2",
   "description": "",
   "main": "dist/request.js",
+  "types": "dist/request.d.ts",
   "files": [
     "dist",
     "docs"

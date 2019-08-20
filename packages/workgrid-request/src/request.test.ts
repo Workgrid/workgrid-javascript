@@ -1,4 +1,4 @@
-import request, { APIOptions, OAuthOptions, AxiosRequestConfig, RequestResponse } from '../src/request'
+import request, { APIOptions, OAuthOptions, AxiosRequestConfig, RequestResponse } from './request'
 
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'

@@ -3,6 +3,7 @@
   "version": "0.0.3",
   "description": "",
   "main": "dist/connector.js",
+  "types": "dist/connector.d.ts",
   "files": [
     "dist",
     "docs"

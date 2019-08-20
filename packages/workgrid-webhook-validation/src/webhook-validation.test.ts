@@ -1,4 +1,4 @@
-import webhookValidation from '../src/webhook-validation'
+import webhookValidation from './webhook-validation'
 
 describe('@workgrid/webhook-validation', () => {
   let secret: string
