@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "@workgrid/micro-app",
   "version": "0.8.0",
   "description": "",
