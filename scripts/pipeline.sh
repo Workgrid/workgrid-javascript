@@ -10,6 +10,7 @@ npx @workgrid/audit             # Audit the dependencies
 yarn install --frozen-lockfile  # Ensure we don't modify the lock file
 
 yarn test
+yarn build
 
 if [ "$bamboo_repository_branch_name" == "master" ]; then
   yarn release
