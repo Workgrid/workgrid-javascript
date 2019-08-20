@@ -50,54 +50,48 @@ const notAllowedValueData = { errors: [{ message: 'should be equal to one of the
 const titleTooLongData = { errors: [{ message: 'Notification title size is greater than max 5' }] }
 const missingParameterData = { errors: [{ message: "should have required property 'title'" }] }
 
-jest.mock('@workgrid/webhook-validation', () => {}, { virtual: true })
-
-jest.mock(
-  '@workgrid/request',
-  () => {
-    return (options: any): Promise<object> => {
-      if (
-        options.oauthOptions.clientId == 'will' &&
-        options.oauthOptions.clientSecret == 'secret' &&
-        options.oauthOptions.url == 'https://auth.code.workgrid.com/oauth2/token'
-      ) {
-        if (options.url === 'v2/jobs') {
-          const error = Object.assign({}, badRequestResponse)
-          const title = (options.data as { title: string }[])[0].title
-          if (!title) {
-            error.response.data = missingParameterData
-            return Promise.reject(error)
-          } else if (title.length > 5) {
-            error.response.data = titleTooLongData
-            return Promise.reject(error)
-          } else {
-            return Promise.resolve(createJobResponse)
-          }
-        } else if (options.url == `v2/jobs/${id}`) {
-          return Promise.resolve(getJobResponse)
-        } else if (options.url == 'v2/events') {
-          const error = Object.assign({}, badRequestResponse)
-          const eventStatus = (options.data as { eventStatus: string }).eventStatus
-          if (eventStatus !== 'processed') {
-            error.response.data = notAllowedValueData
-            return Promise.reject(error)
-          } else {
-            return Promise.resolve(getEventsResponse)
-          }
-        } else if (options.url == `v2/events/${id}`) {
-          return Promise.resolve(getEventResponse)
-        } else if (options.url == `v2/events/${id}/status`) {
-          return Promise.resolve(updateEventResponse)
+jest.mock('@workgrid/request', () => {
+  return (options: any): Promise<object> => {
+    if (
+      options.oauthOptions.clientId == 'will' &&
+      options.oauthOptions.clientSecret == 'secret' &&
+      options.oauthOptions.url == 'https://auth.code.workgrid.com/oauth2/token'
+    ) {
+      if (options.url === 'v2/jobs') {
+        const error = Object.assign({}, badRequestResponse)
+        const title = (options.data as { title: string }[])[0].title
+        if (!title) {
+          error.response.data = missingParameterData
+          return Promise.reject(error)
+        } else if (title.length > 5) {
+          error.response.data = titleTooLongData
+          return Promise.reject(error)
         } else {
-          return Promise.reject(notFoundResponse)
+          return Promise.resolve(createJobResponse)
         }
+      } else if (options.url == `v2/jobs/${id}`) {
+        return Promise.resolve(getJobResponse)
+      } else if (options.url == 'v2/events') {
+        const error = Object.assign({}, badRequestResponse)
+        const eventStatus = (options.data as { eventStatus: string }).eventStatus
+        if (eventStatus !== 'processed') {
+          error.response.data = notAllowedValueData
+          return Promise.reject(error)
+        } else {
+          return Promise.resolve(getEventsResponse)
+        }
+      } else if (options.url == `v2/events/${id}`) {
+        return Promise.resolve(getEventResponse)
+      } else if (options.url == `v2/events/${id}/status`) {
+        return Promise.resolve(updateEventResponse)
       } else {
-        return Promise.reject(unauthorizedResponse)
+        return Promise.reject(notFoundResponse)
       }
+    } else {
+      return Promise.reject(unauthorizedResponse)
     }
-  },
-  { virtual: true }
-)
+  }
+})
 
 describe('@connector', (): void => {
   let connector: Connector
