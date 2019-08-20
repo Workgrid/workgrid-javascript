@@ -10,8 +10,7 @@ import Connector, {
   ConnectorException,
   NotFoundException,
   UnauthorizedException
-} from '../src/connector'
-import { APIOptions } from '@workgrid/request'
+} from './connector'
 
 const createJobResponse = {
   status: 200,
@@ -52,7 +51,7 @@ const titleTooLongData = { errors: [{ message: 'Notification title size is great
 const missingParameterData = { errors: [{ message: "should have required property 'title'" }] }
 
 jest.mock('@workgrid/request', () => {
-  return (options: APIOptions): Promise<object> => {
+  return (options: any): Promise<object> => {
     if (
       options.oauthOptions.clientId == 'will' &&
       options.oauthOptions.clientSecret == 'secret' &&

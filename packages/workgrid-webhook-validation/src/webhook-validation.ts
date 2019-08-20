@@ -10,7 +10,12 @@ import { createHmac } from 'crypto'
  *
  * @beta
  */
-export default function(secret: string, body: string, digest: string, algorithm: string = 'sha256'): boolean {
+export default function webhookValidation(
+  secret: string,
+  body: string,
+  digest: string,
+  algorithm: string = 'sha256'
+): boolean {
   const hmacSignature = createHmac(algorithm, secret).update(body)
   return `${algorithm}=${hmacSignature.digest('hex')}` === digest
 }

@@ -1,4 +1,4 @@
 {
   "extends": "@workgrid/typescript/api-extractor.json",
-  "mainEntryPointFilePath": "dist/src/request.d.ts"
+  "mainEntryPointFilePath": "dist/webhook-validation.d.ts"
 }

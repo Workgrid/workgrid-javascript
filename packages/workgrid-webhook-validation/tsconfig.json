@@ -2,7 +2,7 @@
   "extends": "@workgrid/typescript",
   "exclude": ["**/*.test.ts", "dist"],
   "compilerOptions": {
-    "rootDir": ".",
+    "rootDir": "./src",
     "outDir": "./dist"
   }
 }

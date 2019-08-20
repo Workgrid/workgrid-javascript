@@ -7,11 +7,10 @@
     "lint": "eslint --fix '**/*.{js,ts}' --ignore-path .gitignore",
     "unit": "jest --coverage",
     "test": "yarn lint && yarn unit",
-    "build": "wsrun --stages --fast-exit build",
+    "build": "wsrun --stages --fast-exit --collect-logs build",
     "format": "prettier --write '**/*.{json,md}' --ignore-path .gitignore",
-    "pretest": "yarn build",
     "release": "node ./scripts/release.js",
-    "postinstall": "node scripts/types-installer.js",
+    "pretest": "yarn build",
     "precommit": "yarn version-check && lint-staged",
     "prerelease": "yarn version-check",
     "version-check": "node ./scripts/version-check.js"
@@ -47,14 +46,9 @@
     "typescript": "^3.5.3",
     "wsrun": "^5.0.0"
   },
-  "lint-staged": {
-    "*.ts": [
-      "eslint --fix",
-      "git add"
-    ],
-    "*.json": [
-      "prettier --write",
-      "git add"
+  "eslintConfig": {
+    "extends": [
+      "./eslint.config.js"
     ]
   },
   "license": "ISC"
