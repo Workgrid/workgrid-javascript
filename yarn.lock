@@ -98,6 +98,13 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.0.0"
 
+"@babel/runtime@^7.4.4":
+  version "7.5.5"
+  resolved "https://repo.forge.lmig.com/api/npm/npm/@babel/runtime/-/runtime-7.5.5.tgz#74fba56d35efbeca444091c7850ccd494fd2f132"
+  integrity sha1-dPulbTXvvspEQJHHhQzNSU/S8TI=
+  dependencies:
+    regenerator-runtime "^0.13.2"
+
 "@babel/template@^7.1.0", "@babel/template@^7.4.0", "@babel/template@^7.4.4":
   version "7.4.4"
   resolved "https://repo.forge.lmig.com/api/npm/npm/@babel/template/-/template-7.4.4.tgz#f4b88d1225689a08f5bc3a17483545be9e4ed237"
@@ -463,6 +470,11 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/debug@^4.1.5":
+  version "4.1.5"
+  resolved "https://repo.forge.lmig.com/api/npm/npm/@types/debug/-/debug-4.1.5.tgz#b14efa8852b7768d898906613c23f688713e02cd"
+  integrity sha1-sU76iFK3do2JiQZhPCP2iHE+As0=
+
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
   resolved "https://repo.forge.lmig.com/api/npm/npm/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"
@@ -526,10 +538,30 @@
   resolved "https://repo.forge.lmig.com/api/npm/npm/@types/jju/-/jju-1.4.1.tgz#0a39f5f8e84fec46150a7b9ca985c3f89ad98e9f"
   integrity sha1-Cjn1+OhP7EYVCnucqYXD+JrZjp8=
 
+"@types/json-schema@^7.0.3":
+  version "7.0.3"
+  resolved "https://repo.forge.lmig.com/api/npm/npm/@types/json-schema/-/json-schema-7.0.3.tgz#bdfd69d61e464dcc81b25159c270d75a73c1a636"
+  integrity sha1-vf1p1h5GTcyBslFZwnDXWnPBpjY=
+
+"@types/jwt-decode@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@types/jwt-decode/-/jwt-decode-2.2.1.tgz#afdf5c527fcfccbd4009b5fd02d1e18241f2d2f2"
+  integrity sha512-aWw2YTtAdT7CskFyxEX2K21/zSDStuf/ikI3yBqmwpwJF0pS+/IX5DWv+1UFffZIbruP6cnT9/LAJV1gFwAT1A==
+
+"@types/lodash@^4.14.137":
+  version "4.14.137"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.137.tgz#8a4804937dc6462274ffcc088df8f14fc1b368e2"
+  integrity sha512-g4rNK5SRKloO+sUGbuO7aPtwbwzMgjK+bm9BBhLD7jGUiGR7zhwYEhSln/ihgYQBeIJ5j7xjyaYzrWTcu3UotQ==
+
 "@types/minimatch@*":
   version "3.0.3"
   resolved "https://repo.forge.lmig.com/api/npm/npm/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
   integrity sha1-PcoOPzOyAPx9ETnAzZbBJoyt/Z0=
+
+"@types/ms@^0.7.30":
+  version "0.7.30"
+  resolved "https://registry.yarnpkg.com/@types/ms/-/ms-0.7.30.tgz#f6c38b7ecbbf698b0bbd138315a0f0f18954f85f"
+  integrity sha512-OftRLCgAzJP7vmKn9by/GVjnf4hloz/pXNOwPo0vKGAfXI7GqWXJi9N2kRar4cP5s1dGwuwcagWqO6iHBTq1Mg==
 
 "@types/node@*", "@types/node@^12.6.2":
   version "12.6.2"
@@ -550,6 +582,13 @@
   version "1.0.1"
   resolved "https://repo.forge.lmig.com/api/npm/npm/@types/stack-utils/-/stack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
   integrity sha1-CoUdO9lkmPolwzq3J47TvWXwbD4=
+
+"@types/uuid@^3.4.5":
+  version "3.4.5"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-3.4.5.tgz#d4dc10785b497a1474eae0ba7f0cb09c0ddfd6eb"
+  integrity sha512-MNL15wC3EKyw1VLF+RoVO4hJJdk9t/Hlv3rt1OL65Qvuadm4BYo6g9ZJQqoq7X8NBFSsQXgAujWciovh2lpVjA==
+  dependencies:
+    "@types/node" "*"
 
 "@types/yargs@^12.0.2", "@types/yargs@^12.0.9":
   version "12.0.12"
@@ -580,6 +619,15 @@
     "@typescript-eslint/typescript-estree" "1.11.0"
     eslint-scope "^4.0.0"
 
+"@typescript-eslint/experimental-utils@^1.13.0":
+  version "1.13.0"
+  resolved "https://repo.forge.lmig.com/api/npm/npm/@typescript-eslint/experimental-utils/-/experimental-utils-1.13.0.tgz#b08c60d780c0067de2fb44b04b432f540138301e"
+  integrity sha1-sIxg14DABn3i+0SwS0MvVAE4MB4=
+  dependencies:
+    "@types/json-schema" "^7.0.3"
+    "@typescript-eslint/typescript-estree" "1.13.0"
+    eslint-scope "^4.0.0"
+
 "@typescript-eslint/parser@^1.11.0":
   version "1.11.0"
   resolved "https://repo.forge.lmig.com/api/npm/npm/@typescript-eslint/parser/-/parser-1.11.0.tgz#2f6d4f7e64eeb1e7c25b422f8df14d0c9e508e36"
@@ -594,6 +642,14 @@
   version "1.11.0"
   resolved "https://repo.forge.lmig.com/api/npm/npm/@typescript-eslint/typescript-estree/-/typescript-estree-1.11.0.tgz#b7b5782aab22e4b3b6d84633652c9f41e62d37d5"
   integrity sha1-t7V4Kqsi5LO22EYzZSyfQeYtN9U=
+  dependencies:
+    lodash.unescape "4.0.1"
+    semver "5.5.0"
+
+"@typescript-eslint/typescript-estree@1.13.0":
+  version "1.13.0"
+  resolved "https://repo.forge.lmig.com/api/npm/npm/@typescript-eslint/typescript-estree/-/typescript-estree-1.13.0.tgz#8140f17d0f60c03619798f1d628b8434913dc32e"
+  integrity sha1-gUDxfQ9gwDYZeY8dYouENJE9wy4=
   dependencies:
     lodash.unescape "4.0.1"
     semver "5.5.0"
@@ -1488,6 +1544,13 @@ eslint-config-prettier@^6.0.0:
   integrity sha1-9CmlO96fx2YOY1ORD9mW1ihNPCU=
   dependencies:
     get-stdin "^6.0.0"
+
+eslint-plugin-jest@^22.15.1:
+  version "22.15.1"
+  resolved "https://repo.forge.lmig.com/api/npm/npm/eslint-plugin-jest/-/eslint-plugin-jest-22.15.1.tgz#54c4a752a44c4bc5a564ecc22b32e1cd16a2961a"
+  integrity sha1-VMSnUqRMS8WlZOzCKzLhzRailho=
+  dependencies:
+    "@typescript-eslint/experimental-utils" "^1.13.0"
 
 eslint-plugin-prettier@^3.1.0:
   version "3.1.0"
@@ -3076,6 +3139,11 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
+jwt-decode@^2.2.0:
+  version "2.2.0"
+  resolved "https://repo.forge.lmig.com/api/npm/npm/jwt-decode/-/jwt-decode-2.2.0.tgz#7d86bd56679f58ce6a84704a657dd392bba81a79"
+  integrity sha1-fYa9VmefWM5qhHBKZX3TkruoGnk=
+
 keyv@^3.0.0:
   version "3.1.0"
   resolved "https://repo.forge.lmig.com/api/npm/npm/keyv/-/keyv-3.1.0.tgz#ecc228486f69991e49e9476485a5be1e8fc5c4d9"
@@ -3566,6 +3634,11 @@ nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://repo.forge.lmig.com/api/npm/npm/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
   integrity sha1-ozeKdpbOfSI+iPybdkvX7xCJ42Y=
+
+nice-try@^2.0.0:
+  version "2.0.0"
+  resolved "https://repo.forge.lmig.com/api/npm/npm/nice-try/-/nice-try-2.0.0.tgz#0ccb36ce82be13528f0217334adcf870c8eb3356"
+  integrity sha1-DMs2zoK+E1KPAhczStz4cMjrM1Y=
 
 node-int64@^0.4.0:
   version "0.4.0"
@@ -4206,6 +4279,11 @@ realpath-native@^1.1.0:
   dependencies:
     util.promisify "^1.0.0"
 
+regenerator-runtime@^0.13.2:
+  version "0.13.3"
+  resolved "https://repo.forge.lmig.com/api/npm/npm/regenerator-runtime/-/regenerator-runtime-0.13.3.tgz#7cf6a77d8f5c6f60eb73c5fc1955b2ceb01e6bf5"
+  integrity sha1-fPanfY9cb2Drc8X8GVWyzrAea/U=
+
 regex-not@^1.0.0, regex-not@^1.0.2:
   version "1.0.2"
   resolved "https://repo.forge.lmig.com/api/npm/npm/regex-not/-/regex-not-1.0.2.tgz#1f4ece27e00b0b65e0247a6810e6a85d83a5752c"
@@ -4305,6 +4383,11 @@ require-main-filename@^2.0.0:
   version "2.0.0"
   resolved "https://repo.forge.lmig.com/api/npm/npm/require-main-filename/-/require-main-filename-2.0.0.tgz#d0b329ecc7cc0f61649f62215be69af54aa8989b"
   integrity sha1-0LMp7MfMD2Fkn2IhW+aa9UqomJs=
+
+resize-observer-polyfill@^1.5.1:
+  version "1.5.1"
+  resolved "https://repo.forge.lmig.com/api/npm/npm/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"
+  integrity sha1-DpAg3T0hAkRY1OvSfiPkAmmBBGQ=
 
 resolve-cwd@^2.0.0:
   version "2.0.0"

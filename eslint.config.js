@@ -4,6 +4,7 @@ module.exports = {
     project: './tsconfig.json'
   },
   env: {
+    es6: true,
     node: true
   },
   extends: [
@@ -21,9 +22,20 @@ module.exports = {
       }
     },
     {
-      files: ['*.test.ts'],
+      files: ['*.test.{js,ts}'],
+      extends: ['plugin:jest/recommended'],
       rules: {
-        '@typescript-eslint/explicit-function-return-type': 'off'
+        '@typescript-eslint/explicit-function-return-type': 'off',
+        '@typescript-eslint/no-var-requires': 'off'
+      }
+    },
+    // TODO: Localize these overrides
+    {
+      files: ['**/{workgrid-courier,workgrid-micro-app}/**/*'],
+      env: {
+        node: false,
+        browser: true,
+        commonjs: true
       }
     }
   ]

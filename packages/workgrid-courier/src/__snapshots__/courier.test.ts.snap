@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`@workgrid/courier emitter is rejected by async handler 1`] = `"APP-16"`;
+
+exports[`@workgrid/courier emitter is rejected by sync handler 1`] = `"APP-16"`;
+
+exports[`@workgrid/courier emitter is rejected by timeout 1`] = `"APP-14"`;
+
+exports[`@workgrid/courier error is emitted if a message is received from an unexpected source 1`] = `"APP-15"`;
+
+exports[`@workgrid/courier error is emitted if data cannot be parsed 1`] = `"APP-11"`;
+
+exports[`@workgrid/courier error is emitted if data does not have type or parentId 1`] = `"APP-10"`;
+
+exports[`@workgrid/courier target is not a member of sources 1`] = `"APP-13"`;
+
+exports[`@workgrid/courier target.postMessage or JSON.stringify throws 1`] = `"APP-12"`;

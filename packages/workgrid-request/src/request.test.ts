@@ -61,7 +61,7 @@ describe('@workgrid/request', () => {
       newOauthOptions.clientSecret = 'notSecret'
       const newAPIOptions = Object.assign({}, apiOptions)
       newAPIOptions.oauthOptions = newOauthOptions
-      await expect(request(newAPIOptions)).rejects.toThrowError('Request failed with status code 403')
+      await expect(request(newAPIOptions)).rejects.toThrow('Request failed with status code 403')
     })
     test('new OAuth token should not be retrieved when current token is still valid', async () => {
       tokenInvoked = false

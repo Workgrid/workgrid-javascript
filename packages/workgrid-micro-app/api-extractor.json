@@ -1,0 +1,4 @@
+{
+  "extends": "@workgrid/typescript/api-extractor.json",
+  "mainEntryPointFilePath": "dist/micro-app.d.ts"
+}
