@@ -13,7 +13,6 @@ import {
   UnprocessableEntityException,
   UnknownException
 } from './connector-exceptions'
-import { has } from 'lodash'
 
 /**
  * Interface representing successful API response from /v2/jobs
@@ -381,7 +380,7 @@ export default class Connector {
    * @beta
    */
   private generateException(error: Error | RequestError): ConnectorException | Error {
-    if (has(error, 'response')) {
+    if ('response' in error) {
       const axiosError = error as RequestError
       const status = axiosError.response && axiosError.response.status
       if (status === 400) return new BadRequestException(axiosError)

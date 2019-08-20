@@ -46,14 +46,9 @@
     "typescript": "^3.5.3",
     "wsrun": "^5.0.0"
   },
-  "lint-staged": {
-    "*.ts": [
-      "eslint --fix",
-      "git add"
-    ],
-    "*.json": [
-      "prettier --write",
-      "git add"
+  "eslintConfig": {
+    "extends": [
+      "./eslint.config.js"
     ]
   },
   "license": "ISC"
