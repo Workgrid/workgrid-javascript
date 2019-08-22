@@ -1,6 +1,4 @@
 module.exports = {
-  preset: 'ts-jest',
-  // testEnvironment: 'node',
-  modulePathIgnorePatterns: ['<rootDir>/dist/'],
-  reporters: ['default', ['jest-junit', { output: './test-reports/junit.xml' }]]
+  projects: ['<rootDir>/packages/*'],
+  reporters: ['default', ['jest-junit', { output: `<rootDir>/test-reports/junit.xml` }]]
 }
