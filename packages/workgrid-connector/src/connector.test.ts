@@ -1,186 +1,86 @@
-import Connector, {
-  CreateJobResponse,
-  GetJobResponse,
-  GetEventResponse,
-  UpdateEventResponse,
-  MissingParameterException,
-  NotAllowedValueException,
-  TooLargeTitleException,
-  BadRequestException,
-  ConnectorException,
-  NotFoundException,
-  UnauthorizedException
-} from './connector'
+jest.mock('@workgrid/request')
+jest.mock('@workgrid/webhook-validation')
 
-const createJobResponse = {
-  status: 200,
-  data: [
-    {
-      jobId: '123',
-      jobType: 'notification.create',
-      jobStatus: 'processed',
-      correlationId: 'xyz'
-    }
-  ]
-}
-const id = '1'
-const getJobResponse = { status: 200, data: { jobId: id, jobStatus: 'processing' } }
-const getEventsResponse = {
-  status: 200,
-  data: [
-    {
-      eventId: '123',
-      eventType: 'Notification.Action',
-      eventStatus: 'processed',
-      eventData: { action: 'approve', request: '000' },
-      userName: 'will',
-      userId: '456',
-      notificationId: '789'
-    }
-  ]
-}
-const getEventResponse = { status: 200, data: getEventsResponse.data[0] }
-const updateEventResponse = { status: 200, data: { eventId: id, eventStatus: 'processed' } }
+import Connector from './connector'
 
-const badRequestResponse = { response: { status: 400, data: {} } }
-const notFoundResponse = { response: { status: 404, data: {} } }
-const unauthorizedResponse = { response: { status: 401, data: {} } }
+import request from '@workgrid/request'
+import webhookValidation from '@workgrid/webhook-validation'
 
-const notAllowedValueData = { errors: [{ message: 'should be equal to one of the allowed values' }] }
-const titleTooLongData = { errors: [{ message: 'Notification title size is greater than max 5' }] }
-const missingParameterData = { errors: [{ message: "should have required property 'title'" }] }
-
-jest.mock('@workgrid/request', () => {
-  return (options: any): Promise<object> => {
-    if (
-      options.oauthOptions.clientId == 'will' &&
-      options.oauthOptions.clientSecret == 'secret' &&
-      options.oauthOptions.url == 'https://auth.code.workgrid.com/oauth2/token'
-    ) {
-      if (options.url === 'v2/jobs') {
-        const error = Object.assign({}, badRequestResponse)
-        const title = (options.data as { title: string }[])[0].title
-        if (!title) {
-          error.response.data = missingParameterData
-          return Promise.reject(error)
-        } else if (title.length > 5) {
-          error.response.data = titleTooLongData
-          return Promise.reject(error)
-        } else {
-          return Promise.resolve(createJobResponse)
-        }
-      } else if (options.url == `v2/jobs/${id}`) {
-        return Promise.resolve(getJobResponse)
-      } else if (options.url == 'v2/events') {
-        const error = Object.assign({}, badRequestResponse)
-        const eventStatus = (options.data as { eventStatus: string }).eventStatus
-        if (eventStatus !== 'processed') {
-          error.response.data = notAllowedValueData
-          return Promise.reject(error)
-        } else {
-          return Promise.resolve(getEventsResponse)
-        }
-      } else if (options.url == `v2/events/${id}`) {
-        return Promise.resolve(getEventResponse)
-      } else if (options.url == `v2/events/${id}/status`) {
-        return Promise.resolve(updateEventResponse)
-      } else {
-        return Promise.reject(notFoundResponse)
-      }
-    } else {
-      return Promise.reject(unauthorizedResponse)
-    }
-  }
-})
-
-describe('@connector', (): void => {
+describe('@workgrid/connector', () => {
   let connector: Connector
-  let createJobData: { title: string }
-  let eventOptions: { limit: number; cursor: string; eventStatus: string; eventType: string }
+  let mockedRequest: jest.Mock
+  let mockedWebhookValidation: jest.Mock
 
   beforeAll(() => {
-    const options = {
-      clientId: 'will',
-      clientSecret: 'secret',
-      companyCode: 'code',
+    jest.resetAllMocks()
+    jest.resetModules()
+
+    connector = new Connector({
+      companyCode: 'acme',
+      clientId: 'client-id',
+      clientSecret: 'client-secret',
       grantType: 'client_credentials',
       scopes: ['com.workgrid.api/notifications.all']
-    }
-    connector = new Connector(options)
-    createJobData = { title: 'title' }
-    eventOptions = {
-      limit: 1,
-      cursor: '',
-      eventStatus: 'processed',
-      eventType: 'Notification.Action'
-    }
+    })
+
+    // TODO: Figure out jest.Mocked<typeof request>
+    mockedRequest = request as jest.Mock
+    mockedWebhookValidation = webhookValidation as jest.Mock
   })
 
-  test('createJobs returns expected data on successful call', async () => {
-    const createJobsOutput: CreateJobResponse[] = await connector.createJobs([createJobData])
-    expect(createJobsOutput).toEqual(createJobResponse.data)
+  describe('createJobs', () => {
+    test('returns expected data on successful call', async () => {
+      mockedRequest.mockResolvedValue({ data: [{ jobId: '1234' }] })
+
+      const promise = connector.createJobs([{ type: 'notification.create', data: { title: 'Hello, world!' } }])
+      await expect(promise).resolves.toEqual([{ jobId: '1234' }])
+    })
   })
 
-  test('createJob is equivalent to createJobs when given a single job', async () => {
-    const createJobOutput: CreateJobResponse = (await connector.createJob(createJobData)) as CreateJobResponse
-    const createJobsOutput: CreateJobResponse[] = (await connector.createJobs([createJobData])) as CreateJobResponse[]
-    expect(createJobOutput).toEqual(createJobsOutput[0])
+  describe('getJob', () => {
+    test('returns expected data on successful call', async () => {
+      mockedRequest.mockResolvedValue({ data: { jobId: '1234' } })
+
+      const promise = connector.getJob('1234')
+      await expect(promise).resolves.toEqual({ jobId: '1234' })
+    })
   })
 
-  test('getJob returns expected data on successful call', async () => {
-    const getJobOutput: GetJobResponse = await connector.getJob(id)
-    expect(getJobOutput).toEqual(getJobResponse.data)
+  describe('getEvents', () => {
+    test('getEvents returns expected data on successful call', async () => {
+      mockedRequest.mockResolvedValue({ data: [{ eventId: '1234' }] })
+
+      const promise = connector.getEvents()
+      await expect(promise).resolves.toEqual([{ eventId: '1234' }])
+    })
   })
 
-  test('getEvents returns expected data on successful call', async () => {
-    const getEventsOutput: GetEventResponse[] = await connector.getEvents(eventOptions)
-    expect(getEventsOutput).toEqual(getEventsResponse.data)
+  describe('getEvent', () => {
+    test('returns expected data on successful call', async () => {
+      mockedRequest.mockResolvedValue({ data: { eventId: '1234' } })
+
+      const promise = connector.getEvent('1234')
+      await expect(promise).resolves.toEqual({ eventId: '1234' })
+    })
   })
 
-  test('getEvent returns expected data on successful call', async () => {
-    const getEventOutput: GetEventResponse = await connector.getEvent(id)
-    expect(getEventOutput).toEqual(getEventResponse.data)
+  describe('updateEventStatus', () => {
+    test('updateEventStatus returns expected data on successful call', async () => {
+      mockedRequest.mockResolvedValue({ data: { eventId: '1234' } })
+
+      const promise = connector.updateEventStatus('1234', 'processed')
+      await expect(promise).resolves.toEqual({ eventId: '1234' })
+    })
   })
 
-  test('updateEventStatus returns expected data on successful call', async () => {
-    const updateEventStatusOutput: UpdateEventResponse = await connector.updateEventStatus(id)
-    expect(updateEventStatusOutput).toEqual(updateEventResponse.data)
-  })
+  describe('validateWebhook', () => {
+    test('will return true if the webhook digest is valid', () => {
+      mockedWebhookValidation.mockReturnValueOnce(true)
 
-  test('hitting incorrect endpoint results in not found exception', async () => {
-    const error: ConnectorException = await connector.getJob(id + 1).catch(error => error)
-    expect(error).toBeInstanceOf(NotFoundException)
-  })
-
-  test('incorrect OAuth configurations results in unauthorized exception', async () => {
-    const options = {
-      clientId: 'notWill',
-      clientSecret: 'notSecret',
-      companyCode: 'code',
-      grantType: 'client_credentials',
-      scopes: ['com.workgrid.api/notifications.all']
-    }
-    const badConnector = new Connector(options)
-    const error: ConnectorException = await badConnector.getEvent(id).catch(error => error)
-    expect(error).toBeInstanceOf(UnauthorizedException)
-  })
-
-  test('too large title results in too large title exception', async () => {
-    const error: ConnectorException = await connector.createJob({ title: 'titles' }).catch(error => error)
-    expect(error).toBeInstanceOf(BadRequestException)
-    expect(error.errors[0]).toBeInstanceOf(TooLargeTitleException)
-  })
-
-  test('missing required parameter results in missing parameter exception', async () => {
-    const error: ConnectorException = await connector.createJob({}).catch(error => error)
-    expect(error).toBeInstanceOf(BadRequestException)
-    expect(error.errors[0]).toBeInstanceOf(MissingParameterException)
-  })
-
-  test('not passing in required data field value results in not allowed value exception', async () => {
-    const badGetEventsOptions = { limit: 1, cursor: '', eventStatus: 'notProcessed', eventType: 'Notification.Action' }
-    const error: ConnectorException = await connector.getEvents(badGetEventsOptions).catch(error => error)
-    expect(error).toBeInstanceOf(BadRequestException)
-    expect(error.errors[0]).toBeInstanceOf(NotAllowedValueException)
+      const result = connector.validateWebhook('body', 'digest', 'algorithm')
+      expect(mockedWebhookValidation).toHaveBeenCalledWith('client-secret', 'body', 'digest', 'algorithm')
+      expect(mockedWebhookValidation).toHaveBeenCalledTimes(1)
+      expect(result).toBe(true)
+    })
   })
 })

@@ -1,25 +1,15 @@
-import request, { OAuthOptions, RequestResponse, RequestError } from '@workgrid/request'
+import request, { RequestOptions, RequestResponse, RequestError } from '@workgrid/request'
 import validate from '@workgrid/webhook-validation'
-import {
-  APIException,
-  MissingParameterException,
-  NotAllowedValueException,
-  TooLargeTitleException,
-  ConnectorException,
-  BadRequestException,
-  UnauthorizedException,
-  NotFoundException,
-  InternalServerErrorException,
-  UnprocessableEntityException,
-  UnknownException
-} from './connector-exceptions'
+import { merge } from 'lodash'
+
+export { RequestResponse, RequestError }
 
 /**
- * Interface representing successful API response from /v2/jobs
+ * Interface representing a job
  *
  * @beta
  */
-export interface CreateJobResponse {
+export interface Job {
   /**
    * The job's id
    */
@@ -42,28 +32,11 @@ export interface CreateJobResponse {
 }
 
 /**
- * Interface representing successful API response from /v2/jobs/{jobId}
+ * Interface representing an event
  *
  * @beta
  */
-export interface GetJobResponse {
-  /**
-   * The job's id
-   */
-  jobId: string
-
-  /**
-   * The job's status
-   */
-  jobStatus: string
-}
-
-/**
- * Interface representing successful API response from /v2/events or /v2/events/{eventId}
- *
- * @beta
- */
-export interface GetEventResponse {
+export interface Event {
   /**
    * The event's id
    */
@@ -82,49 +55,7 @@ export interface GetEventResponse {
   /**
    * The event's data
    */
-  eventData: {
-    /**
-     * The event's action
-     */
-    action: string
-
-    /**
-     * The event's request
-     */
-    request: string
-  }
-
-  /**
-   * The event's corresponding username
-   */
-  userName: string
-
-  /**
-   * The event's corresponding user id
-   */
-  userId: string
-
-  /**
-   * The event's corresponding notification id
-   */
-  notificationId: string
-}
-
-/**
- * Interface representing successul API response from /v2/events/{eventId}/status
- *
- * @beta
- */
-export interface UpdateEventResponse {
-  /**
-   * The event's id
-   */
-  eventId: string
-
-  /**
-   * The event's status
-   */
-  eventStatus: string
+  eventData: any
 }
 
 /**
@@ -152,11 +83,6 @@ export interface ConnectorConfiguration {
    * The scopes of the OAuth token
    */
   scopes: string[]
-
-  /**
-   * Any additional options to be supplied
-   */
-  additionalOptions?: object
 }
 
 /**
@@ -194,90 +120,72 @@ export interface URLConfiguration extends ConnectorConfiguration {
  * @beta
  */
 export default class Connector {
-  /**
-   * The options to be supplied for retrieving an OAuth token
-   */
-  private oauthOptions: OAuthOptions
-
-  /**
-   * The base URL to be used for interacting with the Workgrid API
-   */
-  private apiBaseURL: string
-
-  /**
-   * Additional axios options to be specified by the client
-   */
-  private additionalOptions: object = {}
+  private requestOptions: RequestOptions
 
   public constructor(params: CompanyCodeConfiguration | URLConfiguration) {
-    this.oauthOptions = {
-      clientId: params.clientId,
-      clientSecret: params.clientSecret,
-      url: 'tokenUrl' in params ? params.tokenUrl : `https://auth.${params.companyCode}.workgrid.com/oauth2/token`,
-      grantType: params.grantType,
-      scopes: params.scopes
+    const { companyCode } = params as CompanyCodeConfiguration
+
+    const defaultApiUrl = companyCode && `https://${companyCode}.workgrid.com`
+    const defaultTokenUrl = companyCode && `https://auth.${companyCode}.workgrid.com/oauth2/token`
+
+    const { apiUrl = defaultApiUrl, tokenUrl = defaultTokenUrl } = params as URLConfiguration
+
+    if (!apiUrl) throw new Error('Missing required parameter: apiUrl or companyCode')
+    if (!tokenUrl) throw new Error('Missing required parameter: tokenUrl or companyCode')
+
+    const { clientId, clientSecret, grantType, scopes } = params
+
+    if (!clientId) throw new Error('Missing required parameter: clientId')
+    if (!clientSecret) throw new Error('Missing required parameter: clientSecret')
+    if (!grantType) throw new Error('Missing required parameter: grantType')
+    if (!scopes) throw new Error('Missing required parameter: scopes')
+
+    this.requestOptions = {
+      clientId,
+      clientSecret,
+      tokenUrl,
+      grantType,
+      scopes,
+      baseURL: apiUrl
     }
-    this.apiBaseURL = 'apiUrl' in params ? params.apiUrl : `https://${params.companyCode}.workgrid.com`
-    if (params.additionalOptions) {
-      this.additionalOptions = params.additionalOptions
-    }
+  }
+
+  /**
+   * @beta
+   */
+  public async request(requestOptions: any): Promise<RequestResponse> {
+    return request(merge({}, this.requestOptions, requestOptions))
   }
 
   /**
    * Submit one or more job requests
    * @param jobs - the jobs to be created by the Workgrid API
-   * @returns - either information for each created job, or a custom error if a job was unsuccessful
+   * @returns - either information for each created job
    *
    * @beta
    */
-  public async createJobs(jobs: object[]): Promise<CreateJobResponse[]> {
-    try {
-      const response = (await request({
-        oauthOptions: this.oauthOptions,
-        method: 'post',
-        baseURL: this.apiBaseURL,
-        url: 'v2/jobs',
-        data: jobs,
-        additionalOptions: this.additionalOptions
-      })) as RequestResponse
-      return response.data as CreateJobResponse[]
-    } catch (error) {
-      throw this.generateException(error)
-    }
-  }
-
-  /**
-   * Submit a single job request
-   * @param job - the job to be created by the Workgrid API
-   * @returns - either information for the created job, or a custom error if it was unsuccessful
-   *
-   * @beta
-   */
-  public async createJob(job: object): Promise<CreateJobResponse> {
-    const jobResponse = await this.createJobs([job])
-    return jobResponse[0]
+  public async createJobs(jobs: any[]): Promise<Job[]> {
+    const response = await this.request({
+      method: 'post',
+      url: '/v2/jobs',
+      data: jobs
+    })
+    return response.data as Job[]
   }
 
   /**
    * Get the job and its current status
    * @param jobId - jobId of job to get
-   * @returns - either information about the requested job, or a custom error if it was unsuccessful
+   * @returns - either information about the requested job
    *
    * @beta
    */
-  public async getJob(jobId: string): Promise<GetJobResponse> {
-    try {
-      const response = (await request({
-        oauthOptions: this.oauthOptions,
-        method: 'get',
-        baseURL: this.apiBaseURL,
-        url: `v2/jobs/${jobId}`,
-        additionalOptions: this.additionalOptions
-      })) as RequestResponse
-      return response.data as GetJobResponse
-    } catch (error) {
-      throw this.generateException(error)
-    }
+  public async getJob(jobId: string): Promise<Job> {
+    const response = await this.request({
+      method: 'get',
+      url: `/v2/jobs/${jobId}`
+    })
+    return response.data as Job
   }
 
   /**
@@ -286,76 +194,55 @@ export default class Connector {
    * @param cursor - An opaque cursor used for pagination
    * @param eventStatus - Eventstatus to filter by
    * @param eventType - Event type to filter by
-   * @returns - either information about a set of events based on filters, or a custom error if it was unsuccessful
+   * @returns - either information about a set of events based on filters
    *
    * @beta
    */
-  public async getEvents(eventOptions: {
-    limit: number
-    cursor: string
-    eventStatus: string
-    eventType: string
-  }): Promise<GetEventResponse[]> {
-    try {
-      const newResponse = (await request({
-        oauthOptions: this.oauthOptions,
-        method: 'get',
-        baseURL: this.apiBaseURL,
-        url: 'v2/events',
-        data: eventOptions,
-        additionalOptions: this.additionalOptions
-      })) as RequestResponse
-      return newResponse.data as GetEventResponse[]
-    } catch (error) {
-      throw this.generateException(error)
-    }
+  public async getEvents(eventOptions?: {
+    limit?: number
+    cursor?: string
+    eventStatus?: string
+    eventType?: string
+  }): Promise<Event[]> {
+    const newResponse = await this.request({
+      method: 'get',
+
+      url: '/v2/events',
+      data: eventOptions
+    })
+    return newResponse.data as Event[]
   }
 
   /**
    * Get information about a specific event
    * @param eventId - eventId of job to get
-   * @returns - either information about a single event, or a custom error if it was unsuccessful
+   * @returns - either information about a single event
    *
    * @beta
    */
-  public async getEvent(eventId: string): Promise<GetEventResponse> {
-    try {
-      const response = (await request({
-        oauthOptions: this.oauthOptions,
-        method: 'get',
-        baseURL: this.apiBaseURL,
-        url: `v2/events/${eventId}`,
-        additionalOptions: this.additionalOptions
-      })) as RequestResponse
-      return response.data as GetEventResponse
-    } catch (error) {
-      throw this.generateException(error)
-    }
+  public async getEvent(eventId: string): Promise<Event> {
+    const response = await this.request({
+      method: 'get',
+      url: `/v2/events/${eventId}`
+    })
+    return response.data as Event
   }
 
   /**
-   * Update the status of the event to 'processed'
+   * Update the status of the event
    * @param eventId - Event to update the status of
-   * @returns - either information about the updated event, or a custom error if it was unsuccessful
+   * @param status - The status (likely "processed")
+   * @returns - either information about the updated event
    *
    * @beta
    */
-  public async updateEventStatus(eventId: string): Promise<UpdateEventResponse> {
-    try {
-      const response = (await request({
-        oauthOptions: this.oauthOptions,
-        method: 'put',
-        baseURL: this.apiBaseURL,
-        url: `v2/events/${eventId}/status`,
-        data: {
-          status: 'processed'
-        },
-        additionalOptions: this.additionalOptions
-      })) as RequestResponse
-      return response.data as UpdateEventResponse
-    } catch (error) {
-      throw this.generateException(error)
-    }
+  public async updateEventStatus(eventId: string, status: string): Promise<Event> {
+    const response = await this.request({
+      method: 'put',
+      url: `/v2/events/${eventId}/status`,
+      data: { status }
+    })
+    return response.data as Event
   }
 
   /**
@@ -368,43 +255,6 @@ export default class Connector {
    * @beta
    */
   public validateWebhook(body: string, digest: string, algorithm?: string): boolean {
-    return validate(this.oauthOptions.clientSecret, body, digest, algorithm)
+    return validate(this.requestOptions.clientSecret, body, digest, algorithm)
   }
-
-  /**
-   * Generates a custom exception object based on the type of the caught error
-   *
-   * @param error - the caught error object
-   * @returns - a custom exception object
-   *
-   * @beta
-   */
-  private generateException(error: Error | RequestError): ConnectorException | Error {
-    if ('response' in error) {
-      const axiosError = error as RequestError
-      const status = axiosError.response && axiosError.response.status
-      if (status === 400) return new BadRequestException(axiosError)
-      if (status === 401) return new UnauthorizedException(axiosError)
-      if (status === 404) return new NotFoundException(axiosError)
-      if (status === 422) return new UnprocessableEntityException(axiosError)
-      if (status === 500) return new InternalServerErrorException(axiosError)
-      return new UnknownException(axiosError)
-    } else {
-      return error as Error
-    }
-  }
-}
-
-export {
-  APIException,
-  MissingParameterException,
-  NotAllowedValueException,
-  TooLargeTitleException,
-  ConnectorException,
-  BadRequestException,
-  UnauthorizedException,
-  NotFoundException,
-  InternalServerErrorException,
-  UnprocessableEntityException,
-  UnknownException
 }

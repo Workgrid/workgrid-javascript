@@ -1,38 +1,9 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
-import * as oauth from 'axios-oauth-client'
 import tokenProvider from 'axios-token-interceptor'
+import * as oauth from 'axios-oauth-client'
 import mem from 'mem'
 
-/**
- * Basic interface representing response from Axios
- *
- * @beta
- */
-export interface RequestResponse extends AxiosResponse {
-  /**
-   * Data returned in the response from Axios
-   */
-  data: object
-}
-
-/**
- * Basic interface representing error from Axios
- *
- * @beta
- */
-export interface RequestError extends AxiosError {
-  /**
-   * The name of the error thrown by Axios
-   */
-  name: string
-}
-
-/**
- * The interface representing the options necessary for authentication.
- *
- * @beta
- */
-export interface OAuthOptions {
+interface OAuthOptions {
   /**
    * The client's id
    */
@@ -46,17 +17,17 @@ export interface OAuthOptions {
   /**
    * The url to get the token from
    */
-  url: string
-
-  /**
-   * An array of scopes that the token is for
-   */
-  scopes: string[]
+  tokenUrl: string
 
   /**
    * The grant type the token is for
    */
   grantType: string
+
+  /**
+   * An array of scopes that the token is for
+   */
+  scopes: string[]
 }
 
 /**
@@ -64,36 +35,26 @@ export interface OAuthOptions {
  *
  * @beta
  */
-export interface APIOptions {
-  /**
-   * The options necessary for authentication
-   */
-  oauthOptions: OAuthOptions
+export interface RequestOptions extends AxiosRequestConfig, OAuthOptions {
+  internal?: any // extending a type requires at least 1 additional field
+}
 
-  /**
-   * The type of request to be made (get, post, etc)
-   */
-  method: string
+/**
+ * Basic interface representing response from Axios
+ *
+ * @beta
+ */
+export interface RequestResponse extends AxiosResponse {
+  internal?: any // extending a type requires at least 1 additional field
+}
 
-  /**
-   * The URL to hit
-   */
-  url: string
-
-  /**
-   * The API endpoint to hit
-   */
-  baseURL: string
-
-  /**
-   * The body data to be supplied in the API call
-   */
-  data?: object
-
-  /**
-   * Extra options to be supplied to axios
-   */
-  additionalOptions?: object
+/**
+ * Basic interface representing error from Axios
+ *
+ * @beta
+ */
+export interface RequestError extends AxiosError {
+  internal?: any // extending a type requires at least 1 additional field
 }
 
 /**
@@ -108,9 +69,9 @@ const createInstance = mem(
     const oauthClient = oauth.client(axios.create(), {
       client_id: oauthOptions.clientId,
       client_secret: oauthOptions.clientSecret,
-      url: oauthOptions.url,
-      scope: oauthOptions.scopes.join(' '),
-      grant_type: oauthOptions.grantType
+      url: oauthOptions.tokenUrl,
+      grant_type: oauthOptions.grantType,
+      scope: oauthOptions.scopes.join(' ')
     })
     /* eslint-enable @typescript-eslint/camelcase */
     const interceptor = oauth.interceptor(tokenProvider, oauthClient)
@@ -122,20 +83,17 @@ const createInstance = mem(
 /**
  * Assists in setting up OAuth authentication, forming the request to send to the Workgrid API, and actually making the request.
  *
- * @param options - the options to provide to axios for the API call.
+ * @param requestOptions - the options to provide to axios for the API call.
  *
  * @beta
  */
-export default async function request(apiOptions: APIOptions): Promise<RequestResponse> {
-  const oauthOptions: OAuthOptions = apiOptions.oauthOptions
-  const instance: AxiosInstance = createInstance(oauthOptions)
-  const options: object = Object.assign({}, apiOptions.additionalOptions, {
-    method: apiOptions.method,
-    data: apiOptions.data,
-    url: apiOptions.url,
-    baseURL: apiOptions.baseURL
-  })
-  return (await instance(options)) as RequestResponse
-}
+export default async function request(requestOptions: RequestOptions): Promise<RequestResponse> {
+  const { clientId, clientSecret, tokenUrl, grantType, scopes, ...options } = requestOptions
+  const instance = createInstance({ clientId, clientSecret, tokenUrl, grantType, scopes })
 
-export { AxiosRequestConfig }
+  try {
+    return (await instance(options)) as RequestResponse
+  } catch (e) {
+    throw e as RequestError
+  }
+}
