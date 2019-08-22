@@ -36,5 +36,10 @@
     "@workgrid/typescript": "^0.0.1",
     "axios-mock-adapter": "^1.17.0"
   },
+  "eslintConfig": {
+    "extends": [
+      "./eslint.config.js"
+    ]
+  },
   "license": "ISC"
 }
