@@ -3,7 +3,10 @@ import tokenProvider from 'axios-token-interceptor'
 import * as oauth from 'axios-oauth-client'
 import mem from 'mem'
 
-interface OAuthOptions {
+/**
+ * @beta
+ */
+export interface OAuthOptions {
   /**
    * The client's id
    */

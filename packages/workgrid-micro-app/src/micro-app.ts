@@ -28,12 +28,29 @@ const isExpired = (token: string): boolean => {
 }
 
 /**
+ * @beta
+ */
+export interface MicroAppOptions {
+  /**
+   * The target audience for the user token
+   */
+  audience: string
+
+  /**
+   * Custom error handler
+   */
+  onError?: Function
+
+  /**
+   * Custom log group
+   */
+  id?: string
+}
+
+/**
  * Create a new instance of the Micro App library.
  *
- * @param {Object}    options
- * @param {string}    options.audience - The target audience for the user token
- * @param {function}  [options.onError=console.error] - Custom error handler
- * @param {string}    [options.id=options.audience] - Custom log group
+ * @beta
  */
 class MicroApp {
   private audience: string
@@ -43,7 +60,7 @@ class MicroApp {
   private ro: any
   private token?: string
 
-  public constructor({ audience, onError, id }: { audience: string; onError?: Function; id?: string }) {
+  public constructor({ audience, onError, id }: MicroAppOptions) {
     if (!audience) throw new Error('Missing required parameter: options.audience')
 
     this.audience = audience
@@ -60,8 +77,6 @@ class MicroApp {
   /**
    * Set up the communication channel with Workgrid.
    * A loading overlay will be displayed until `initialize` is invoked.
-   *
-   * @returns {undefined}
    */
   public initialize = (): void => {
     // Tell the host we're ready
@@ -76,8 +91,6 @@ class MicroApp {
 
   /**
    * Start the resize observer
-   *
-   * @returns {function}
    */
   private subscribe = (): Function => {
     this.ro.observe(window.document.documentElement)
@@ -86,8 +99,6 @@ class MicroApp {
 
   /**
    * Stop the resize observer
-   *
-   * @returns {undefined}
    */
   private unsubscribe = (): void => {
     this.ro.disconnect()
@@ -95,8 +106,6 @@ class MicroApp {
 
   /**
    * Set the current height on resize
-   *
-   * @returns {undefined}
    */
   private handleResize = throttle((entries: any[]): void => {
     const mainElement = entries[0].target
@@ -108,8 +117,6 @@ class MicroApp {
   /**
    * Retrieve a token to validate the user in your API.
    * The token will be a JWT that includes `email`, `workgrid_space_id` and `workgrid_tenant_id`.
-   *
-   * @returns {Promise<string>}
    */
   public getToken = async (): Promise<string> => {
     if (this.token && !isExpired(this.token)) return this.token
@@ -121,10 +128,6 @@ class MicroApp {
 
   /**
    * Update the title of the detail panel. This will let you reflect
-   *
-   * @param {string} [title] - The title to apply (a falsy value will clear the title)
-   *
-   * @returns {undefined}
    */
   public updateTitle = (title: string): void => {
     this.emit({ type: EVENTS.UPDATE_TITLE, payload: { title } })
@@ -133,12 +136,6 @@ class MicroApp {
   /**
    * Show the detail with the given url and optional title.
    * The page shown must also be configured as a micro app, otherwise an error will be thrown.
-   *
-   * @param {Object} options
-   * @param {string} options.url - The target url to load in the detail
-   * @param {string} [options.title] - The title to apply (a falsy value will clear the title)
-   *
-   * @returns {undefined}
    */
   public showDetail = ({ url, title }: { url: string; title?: string }): void => {
     if (!url) throw new Error('URL is required to show details')
@@ -147,8 +144,6 @@ class MicroApp {
 
   /**
    * Hide the detail if it's visible.
-   *
-   * @returns {undefined}
    */
   public hideDetail = (): void => {
     this.send({ type: EVENTS.HIDE_DETAIL })
@@ -158,13 +153,8 @@ class MicroApp {
 
   /**
    * Wrap the event emitter in a queue that is flushed when the host is ready.
-   *
-   * @param {...any} args - The args passed to the Courier#emit method
-   *
-   * @private
-   * @returns {undefined}
    */
-  public emit = (...args: any[]): void => {
+  private emit = (...args: any[]): void => {
     this.queue.push((): void => {
       this.courier.emit(...args)
     })
@@ -172,10 +162,6 @@ class MicroApp {
 
   /**
    * Wrap the event sender in a queue that is flushed when the host is ready.
-   *
-   * @param {...any} args - The args passed to the Courier#send method
-   *
-   * @returns {Promise<*>}
    */
   public send = (...args: [any]): Promise<any> => {
     return new Promise((resolve: Function, reject: Function): void => {
@@ -188,8 +174,6 @@ class MicroApp {
   /**
    * Tell the host we're ready every 100ms until the message is acknowledged.
    * The event will be attempted 100 times (about 10s) before rejecting.
-   *
-   * @returns {Promise<*>}
    */
   public ready = (attempt: number = 1): Promise<any> => {
     const payload = { height: window.document.documentElement.offsetHeight }
