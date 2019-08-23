@@ -3,6 +3,10 @@
   "exclude": ["**/*.test.ts", "dist"],
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "./dist"
+    "outDir": "./dist",
+
+    "target": "ES3",
+    "module": "umd",
+    "lib": ["es6", "dom"]
   }
 }
