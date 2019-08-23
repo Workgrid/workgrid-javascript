@@ -23,16 +23,15 @@
     "registry": "https://repo.forge.lmig.com/api/npm/npm-releases/"
   },
   "dependencies": {
-    "@types/axios": "^0.14.0",
     "@types/axios-token-interceptor": "^0.1.2",
     "axios": "^0.18.0",
     "axios-oauth-client": "^1.1.1",
-    "axios-token-interceptor": "^0.1.0"
+    "axios-token-interceptor": "^0.1.0",
+    "mem": "^5.1.1"
   },
   "devDependencies": {
     "@microsoft/api-documenter": "^7.3.1",
     "@microsoft/api-extractor": "^7.3.1",
-    "@types/axios-mock-adapter": "^1.10.0",
     "@workgrid/typescript": "^0.0.2",
     "axios-mock-adapter": "^1.17.0"
   },
