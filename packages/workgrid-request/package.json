@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/request",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "main": "dist/request.js",
   "types": "dist/request.d.ts",
@@ -33,7 +33,7 @@
     "@microsoft/api-documenter": "^7.3.1",
     "@microsoft/api-extractor": "^7.3.1",
     "@types/axios-mock-adapter": "^1.10.0",
-    "@workgrid/typescript": "^0.0.1",
+    "@workgrid/typescript": "^0.0.2",
     "axios-mock-adapter": "^1.17.0"
   },
   "eslintConfig": {

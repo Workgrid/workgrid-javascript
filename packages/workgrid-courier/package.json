@@ -38,7 +38,7 @@
   "devDependencies": {
     "@microsoft/api-documenter": "^7.3.1",
     "@microsoft/api-extractor": "^7.3.1",
-    "@workgrid/typescript": "^0.0.1"
+    "@workgrid/typescript": "^0.0.2"
   },
   "eslintConfig": {
     "extends": [

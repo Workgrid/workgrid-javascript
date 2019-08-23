@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/connector",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "dist/connector.js",
   "types": "dist/connector.d.ts",
@@ -24,16 +24,14 @@
   },
   "dependencies": {
     "@types/lodash": "^4.14.137",
-    "@workgrid/request": "^0.0.2",
-    "@workgrid/webhook-validation": "^0.0.1",
+    "@workgrid/request": "^0.0.3",
+    "@workgrid/webhook-validation": "^0.0.2",
     "lodash": "^4.17.15"
   },
   "devDependencies": {
     "@microsoft/api-documenter": "^7.3.1",
     "@microsoft/api-extractor": "^7.3.1",
-    "@types/lodash": "^4.14.137",
-    "@workgrid/typescript": "^0.0.1",
-    "lodash": "^4.17.15"
+    "@workgrid/typescript": "^0.0.2"
   },
   "eslintConfig": {
     "extends": [
