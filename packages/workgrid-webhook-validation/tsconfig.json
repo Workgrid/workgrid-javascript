@@ -3,6 +3,10 @@
   "exclude": ["**/*.test.ts", "dist"],
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "./dist"
+    "outDir": "./dist",
+
+    "target": "ES6",
+    "module": "commonjs",
+    "lib": ["es6"]
   }
 }

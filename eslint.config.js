@@ -1,12 +1,4 @@
 module.exports = {
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    project: './tsconfig.json'
-  },
-  env: {
-    es6: true,
-    node: true
-  },
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/eslint-recommended',
@@ -15,6 +7,11 @@ module.exports = {
     'prettier/@typescript-eslint'
   ],
   overrides: [
+    {
+      files: ['*.config.js', 'scripts/*.js'],
+      env: { node: true }
+    },
+
     {
       files: ['*.js'],
       rules: {
@@ -27,15 +24,6 @@ module.exports = {
       rules: {
         '@typescript-eslint/explicit-function-return-type': 'off',
         '@typescript-eslint/no-var-requires': 'off'
-      }
-    },
-    // TODO: Localize these overrides
-    {
-      files: ['**/{workgrid-courier,workgrid-micro-app}/**/*'],
-      env: {
-        node: false,
-        browser: true,
-        commonjs: true
       }
     }
   ]

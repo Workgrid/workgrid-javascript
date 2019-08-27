@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/typescript",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "scripts": {
     "build": "echo \"No '$npm_lifecycle_event' script defined for $npm_package_name.\""

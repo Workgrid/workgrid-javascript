@@ -19,13 +19,34 @@ const is = (object: any, type: string): boolean => Object.prototype.toString.cal
 // APP-17: Reply could not be sent (missing `id`)
 
 /**
+ * @beta
+ */
+export interface CourierOptions {
+  /**
+   * Duration to wait for a response
+   */
+  timeout?: number
+
+  /**
+   * Predefined list of expected message sources
+   */
+  sources?: any[]
+
+  /**
+   * Predefined list of hosts to listen on
+   */
+  hosts?: any[]
+
+  /**
+   * Custom log group
+   */
+  id?: string
+}
+
+/**
  * Create a new instance of Courier (the Workgrid messenger).
  *
- * @param {Object}    options
- * @param {Number}    [options.timeout=10s] - Duration to wait for a response
- * @param {Object[]}  [options.sources=[window.parent]] - Predefined list of expected message sources
- * @param {Object[]}  [options.hosts=[window]] - Predefined list of hosts to listen on
- * @param {string}    [options.id=] - Custom log group
+ * @beta
  */
 export default class Courier {
   private debug: any
@@ -37,12 +58,7 @@ export default class Courier {
 
   public static debug = debug // TODO: Replace with `logger` instance variable
 
-  public constructor({
-    timeout,
-    sources,
-    hosts,
-    id
-  }: { timeout?: number; sources?: any[]; hosts?: any[]; id?: string } = {}) {
+  public constructor({ timeout, sources, hosts, id }: CourierOptions = {}) {
     this.debug = id ? logger.extend(id) : logger // ¯\_(ツ)_/¯
     this.debug('constructor', { timeout, sources, hosts })
 
@@ -80,8 +96,6 @@ export default class Courier {
 
   /**
    * Add a message source.
-   *
-   * @param {Object} source
    */
   public register = (source: any): void => {
     this.debug('register', { source })
@@ -94,8 +108,6 @@ export default class Courier {
 
   /**
    * Remove a message source.
-   *
-   * @param {Object} source
    */
   public unregister = (source: any): void => {
     this.debug('unregister', { source })
@@ -108,9 +120,6 @@ export default class Courier {
 
   /**
    * Start listening for an event.
-   *
-   * @param {string}   type - The event type
-   * @param {function} handler - The event handler
    */
   public on = (type: string, handler: Function): void => {
     this.debug('on', { type, handler })
@@ -120,9 +129,6 @@ export default class Courier {
 
   /**
    * Stop listening for an event.
-   *
-   * @param {string}   type - The event type
-   * @param {function} [handler] - The event handler
    */
   public off = (type: string, handler?: Function): void => {
     this.debug('off', { type, handler })
@@ -132,11 +138,6 @@ export default class Courier {
 
   /**
    * Send a message (response ignored).
-   *
-   * @param {Object}   options
-   * @param {string}   options.type - The event type
-   * @param {*}        [options.payload] - A JSON serializable event payload
-   * @param {Object}   [options.target] - An optional target (will default to the first registered source)
    */
   public emit = ({ type, payload, target }: { type: string; payload?: any; target?: any }): void => {
     this.debug('emit', { type, payload, target })
@@ -147,12 +148,6 @@ export default class Courier {
 
   /**
    * Send a message (response expected).
-   *
-   * @param {Object}   options
-   * @param {string}   options.type - The event type
-   * @param {*}        [options.payload] - A JSON serializable event payload
-   * @param {Object}   [options.target] - A custom target (will default to the first registered source)
-   * @param {Number}   [options.timeout] - Override the default timeout
    */
   public send = ({
     type,
@@ -207,9 +202,6 @@ export default class Courier {
 
   /**
    * Create a new error object with the given arguments, and fire an internal error event.
-   *
-   * @param {string} code - The error code
-   * @param {...any} args - Additional properties attached to the error
    */
   private error = (code: string, ...args: any[]): any => {
     this.debug('error', { code, args })
@@ -224,10 +216,6 @@ export default class Courier {
   /**
    * Send a message to the given target, with the given data and trasferables.
    * If the target supplied is not a registered source, an error will be thrown.
-   *
-   * @param {Object} [data] - The serializable event to be sent
-   * @param {Object} [target] - A custom target (will default to the first registered source)
-   * @param {Transferable[]} [transfer] - Used to pass a MessageChannel port
    */
   private sendMessage = (data: any, target?: any, transfer?: Transferable[]): void => {
     this.debug('sendMessage', { data, target })
@@ -255,16 +243,10 @@ export default class Courier {
   /**
    * Process a message event and emit or invoke to the appropriate handlers.
    * This method will be called when the registered hosts receive a message.
-   *
-   * @param {Object} event
-   * @param {Object} event.source - The message source
-   * @param {Object} event.data - The message data
-   * @param {string} [event.data.id] - The id to use if a response is sent
-   * @param {string} [event.data.type] - The type used to identify the appropriate handlers
-   * @param {*}      [event.data.payload] - Arbitrary data included with the event
-   * @param {string} [event.data.parentId] - The id of the message being responded to
    */
-  public handleMessage = (event: any): any => {
+  public handleMessage = (
+    event: { source: any; ports?: any[] } & ({ data: any } | { nativeEvent: { data: any } })
+  ): any => {
     this.debug('handleMessage', { event })
 
     // event.source will be null in tests
@@ -275,7 +257,7 @@ export default class Courier {
     }
 
     // https://facebook.github.io/react-native/docs/webview#onmessage
-    let data = event.nativeEvent ? event.nativeEvent.data : event.data
+    let data = 'nativeEvent' in event ? event.nativeEvent.data : event.data
     try {
       if (typeof data === 'string') data = JSON.parse(data)
     } catch (error) {

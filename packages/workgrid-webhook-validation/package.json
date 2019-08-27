@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/webhook-validation",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "dist/webhook-validation.js",
   "types": "dist/webhook-validation.d.ts",
@@ -26,7 +26,12 @@
   "devDependencies": {
     "@microsoft/api-documenter": "^7.3.1",
     "@microsoft/api-extractor": "^7.3.1",
-    "@workgrid/typescript": "^0.0.1"
+    "@workgrid/typescript": "^0.0.2"
+  },
+  "eslintConfig": {
+    "extends": [
+      "./eslint.config.js"
+    ]
   },
   "license": "ISC"
 }
