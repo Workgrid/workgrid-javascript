@@ -17,12 +17,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://git.forge.lmig.com/scm/ws1/workgrid-javascript.git"
+    "url": "https://github.com/Workgrid/workgrid-javascript"
   },
   "workspaces": [
     "packages/*"
   ],
   "devDependencies": {
+    "@microsoft/api-documenter": "^7.3.1",
+    "@microsoft/api-extractor": "^7.3.1",
     "@types/jest": "^24.0.18",
     "@types/node": "^12.7.2",
     "@typescript-eslint/eslint-plugin": "^1.11.0",
