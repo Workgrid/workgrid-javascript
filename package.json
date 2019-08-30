@@ -8,7 +8,7 @@
     "unit": "jest --coverage",
     "test": "yarn lint && yarn unit",
     "build": "wsrun --stages --fast-exit --collect-logs build",
-    "format": "prettier --write '**/*.{json,md}' --ignore-path .gitignore",
+    "format": "prettier --write '**/*.{json,yml,md}' --ignore-path .gitignore",
     "release": "node ./scripts/release.js",
     "pretest": "yarn build",
     "precommit": "yarn version-check && lint-staged",
