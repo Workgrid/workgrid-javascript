@@ -1,6 +1,6 @@
 # Workgrid Request
 
-![Latest version](https://shields.lmig.com/npm/version/@workgrid/request.svg)
+![Latest version](https://img.shields.io/npm/v/@workgrid/request.svg)
 
 ## Installation
 

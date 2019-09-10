@@ -1,6 +1,6 @@
 # Workgrid Connector
 
-![Latest version](https://shields.lmig.com/npm/version/@workgrid/connector.svg)
+![Latest version](https://img.shields.io/npm/v/@workgrid/connector.svg)
 
 ## Installation
 

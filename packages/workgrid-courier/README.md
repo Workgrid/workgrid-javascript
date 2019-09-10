@@ -1,6 +1,6 @@
 # Workgrid Courier
 
-![Latest version](https://shields.lmig.com/npm/version/@workgrid/courier.svg)
+![Latest version](https://img.shields.io/npm/v/@workgrid/courier.svg)
 
 ## Installation
 

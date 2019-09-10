@@ -1,6 +1,6 @@
 # Workgrid Typescript
 
-![Latest version](https://shields.lmig.com/npm/version/@workgrid/typescript.svg)
+![Latest version](https://img.shields.io/npm/v/@workgrid/typescript.svg)
 
 ## Installation
 

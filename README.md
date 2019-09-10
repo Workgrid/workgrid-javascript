@@ -4,5 +4,5 @@
 
 <!-- Reference Links -->
 
-[build_shield_url]: https://shields.lmig.com/bamboo/build/WSG-WJ.svg
-[build_url]: https://forge.lmig.com/builds/browse/WSG-WJ
+[build_shield_url]: https://github.com/Workgrid/workgrid-javascript/workflows/Node%20CI/badge.svg
+[build_url]: https://github.com/Workgrid/workgrid-javascript
