@@ -4,5 +4,5 @@
 
 <!-- Reference Links -->
 
-[build_shield_url]: https://github.com/Workgrid/workgrid-javascript/workflows/Node%20CI/badge.svg
+[build_shield_url]: https://github.com/Workgrid/workgrid-javascript/workflows/Install,%20Test,%20&Release/badge.svg
 [build_url]: https://github.com/Workgrid/workgrid-javascript
