@@ -16,7 +16,7 @@ jobs:
         run: yarn test
 
   publish-npm:
-    if: github.ref == refs/heads/master
+    if: github.ref == 'refs/heads/master'
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -36,7 +36,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
   publish-gpr:
-    if: github.ref == refs/heads/master
+    if: github.ref == 'refs/heads/master'
     needs: test
     runs-on: ubuntu-latest
     steps:
