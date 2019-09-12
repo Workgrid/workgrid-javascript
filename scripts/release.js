@@ -1,10 +1,6 @@
-const path = require('path')
 const execa = require('execa')
-// const semver = require('semver')
-const readPkg = require('read-pkg')
-const pReflect = require('p-reflect')
-const packageJson = require('package-json')
 const { get } = require('lodash')
+const { readPkg, isPublished, updateCanaryVersions } = require('./utils')
 
 const yarn = async (args, opts) => {
   const { stdout } = await execa('yarn', [...args, '--json'], opts)
@@ -17,27 +13,25 @@ const yarn = async (args, opts) => {
   }
 }
 
+const canary = process.argv.includes('--canary')
+const dryRun = process.argv.includes('--dry-run')
+
+// TODO: Fail if a dependency is private/unpublished?
+// or if a package is private but listed as a dependency?
 !(async () => {
-  const { workspaceRootFolder } = JSON.parse(await yarn(['config', 'current']))
-  const workspaces = JSON.parse(await yarn(['workspaces', 'info']))
+  const cwd = process.cwd()
+  if (canary) await updateCanaryVersions(cwd)
 
-  // TODO: Ensure workspaceDependencies are published first?
-  for (const [name, { location }] of Object.entries(workspaces)) {
-    const cwd = path.resolve(workspaceRootFolder, location)
+  const pkg = await readPkg(cwd)
+  if (pkg.private) return // skip private packages
 
-    /** @type object<{ value: string }> */
-    const { value: staged } = await pReflect(readPkg({ cwd }))
-    if (staged.private) continue // skip private packages
-    const version = get(staged, 'publishConfig.tag', 'latest')
+  const tag = get(pkg, 'publishConfig.tag', 'latest')
+  const version = pkg.version + (tag !== 'latest' ? ` [${tag}]` : '')
 
-    /** @type object<{ value: string }> */
-    const { value: remote } = await pReflect(packageJson(name, { version: staged.version }))
-    // const shouldPublish = remote ? semver.gt(staged.version, remote.version) : true
-    const shouldPublish = !remote
+  // await new Promise(resolve => setTimeout(resolve, 10000))
+  const alreadyPublished = await isPublished(pkg.name, pkg.version)
+  if (alreadyPublished) return console.log(`Skipping - ${version} already published`)
 
-    const result = shouldPublish ? 'Published' : 'Skipping'
-    if (shouldPublish) await yarn(['publish'], { cwd })
-
-    console.log(`${result} ${name}@${staged.version} ${version !== 'latest' ? `[${version}]` : ''}`)
-  }
+  if (!dryRun) await yarn(['publish'], { cwd })
+  console.log(`Published ${version}`)
 })()

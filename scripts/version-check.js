@@ -1,25 +1,13 @@
-const path = require('path')
-const execa = require('execa')
 const chalk = require('chalk').default
-const readPkg = require('read-pkg')
-
-const yarn = async (args, opts) => {
-  const { stdout } = await execa('yarn', [...args, '--json'], opts)
-
-  try {
-    return JSON.parse(stdout).data
-  } catch (e) {
-    console.log('Error parsing', stdout)
-    return stdout
-  }
-}
+const { resolve } = require('path')
+const { readPkg, getWorkspaces, getWorkspaceConfig } = require('./utils')
 
 !(async () => {
-  const { workspaceRootFolder } = JSON.parse(await yarn(['config', 'current']))
-  const workspaces = JSON.parse(await yarn(['workspaces', 'info']))
+  const { workspaceRootFolder } = await getWorkspaceConfig()
+  const workspaces = await getWorkspaces()
 
-  const getWorkspace = name => path.resolve(workspaceRootFolder, workspaces[name].location)
-  const getWorkspacePackage = name => readPkg({ cwd: getWorkspace(name) })
+  const getWorkspace = name => resolve(workspaceRootFolder, workspaces[name].location)
+  const getWorkspacePackage = name => readPkg(getWorkspace(name))
 
   let exitCode = 0
 

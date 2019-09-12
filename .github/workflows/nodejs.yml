@@ -1,4 +1,4 @@
-name: Node CI
+name: Build
 
 on: [push]
 
@@ -6,20 +6,40 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [8.x, 10.x, 12.x]
-
     steps:
       - uses: actions/checkout@v1
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: npm install, build, and test
-        run: |
-          npm install --global yarn@1
-          yarn install --frozen-lockfile
-          yarn test # runs build
+          node-version: 12
+      - name: Setup
+        run: npm install --global yarn@1
+      - name: Install
+        run: yarn install --frozen-lockfile
+      - name: Test
+        run: yarn test # runs 'yarn build'
+
+      - name: Publish (NPM)
+        if: github.ref == 'refs/heads/master'
+        run: echo "yarn release"
         env:
-          CI: true
+          YARN_REGISTRY: https://registry.npmjs.org/
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - name: Publish (GPR)
+        if: github.ref == 'refs/heads/master'
+        run: echo "yarn release"
+        env:
+          YARN_REGISTRY: https://npm.pkg.github.com/
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Publish (NPM) - canary
+        if: github.ref != 'refs/heads/master'
+        run: echo "yarn release --canary"
+        env:
+          YARN_REGISTRY: https://registry.npmjs.org/
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - name: Publish (GPR) - canary
+        if: github.ref != 'refs/heads/master'
+        run: echo "yarn release --canary"
+        env:
+          YARN_REGISTRY: https://npm.pkg.github.com/
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
