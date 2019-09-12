@@ -2,17 +2,6 @@ const execa = require('execa')
 const { get } = require('lodash')
 const { readPkg, isPublished, updateCanaryVersions } = require('./utils')
 
-const yarn = async (args, opts) => {
-  const { stdout } = await execa('yarn', [...args, '--json'], opts)
-
-  try {
-    return JSON.parse(stdout).data
-  } catch (e) {
-    console.log('Error parsing', stdout)
-    return stdout
-  }
-}
-
 const canary = process.argv.includes('--canary')
 const dryRun = process.argv.includes('--dry-run')
 
@@ -32,6 +21,6 @@ const dryRun = process.argv.includes('--dry-run')
   const alreadyPublished = await isPublished(pkg.name, pkg.version)
   if (alreadyPublished) return console.log(`Skipping - ${version} already published`)
 
-  if (!dryRun) await yarn(['publish'], { cwd })
+  if (!dryRun) await execa('yarn', ['publish', '--verbose'], { cwd, stdio: 'inherit' })
   console.log(`Published ${version}`)
 })()
