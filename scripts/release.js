@@ -21,6 +21,6 @@ const dryRun = process.argv.includes('--dry-run')
   const alreadyPublished = await isPublished(pkg.name, pkg.version)
   if (alreadyPublished) return console.log(`Skipping - ${version} already published`)
 
-  if (!dryRun) await execa('yarn', ['publish', '--verbose'], { cwd, stdio: 'inherit' })
+  if (!dryRun) await execa('yarn', ['publish', '--access=public', '--verbose'], { cwd, stdio: 'inherit' })
   console.log(`Published ${version}`)
 })()

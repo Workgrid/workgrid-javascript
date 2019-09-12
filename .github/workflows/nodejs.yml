@@ -18,28 +18,36 @@ jobs:
       - name: Test
         run: yarn test # runs 'yarn build'
 
+      - name: Configure (NPM)
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - name: Publish (NPM)
         if: github.ref == 'refs/heads/master'
         run: echo "yarn release"
         env:
           YARN_REGISTRY: https://registry.npmjs.org/
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Yarn doesn't seem to respect this
+      - name: Configure (GPR)
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
       - name: Publish (GPR)
         if: github.ref == 'refs/heads/master'
         run: echo "yarn release"
         env:
           YARN_REGISTRY: https://npm.pkg.github.com/
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Yarn doesn't seem to respect this
 
+      - name: Configure (NPM)
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - name: Publish (NPM) - canary
         if: github.ref != 'refs/heads/master'
         run: yarn release --canary
         env:
           YARN_REGISTRY: https://registry.npmjs.org/
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Yarn doesn't seem to respect this
+      - name: Configure (GPR)
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
       - name: Publish (GPR) - canary
         if: github.ref != 'refs/heads/master'
         run: yarn release --canary
         env:
           YARN_REGISTRY: https://npm.pkg.github.com/
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Yarn doesn't seem to respect this
