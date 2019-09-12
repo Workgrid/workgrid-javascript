@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/connector",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "main": "dist/connector.js",
   "types": "dist/connector.d.ts",
@@ -21,8 +21,8 @@
   },
   "dependencies": {
     "@types/lodash": "^4.14.137",
-    "@workgrid/request": "^0.0.3",
-    "@workgrid/webhook-validation": "^0.0.2",
+    "@workgrid/request": "^0.0.4",
+    "@workgrid/webhook-validation": "^0.0.3",
     "lodash": "^4.17.15"
   },
   "devDependencies": {},

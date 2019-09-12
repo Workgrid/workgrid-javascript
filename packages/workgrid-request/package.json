@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/request",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "dist/request.js",
   "types": "dist/request.d.ts",
