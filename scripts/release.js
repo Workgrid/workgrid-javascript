@@ -15,12 +15,13 @@ const dryRun = process.argv.includes('--dry-run')
   if (pkg.private) return // skip private packages
 
   const tag = get(pkg, 'publishConfig.tag', 'latest')
+  const access = get(pkg, 'publishConfig.access', 'public')
   const version = pkg.version + (tag !== 'latest' ? ` [${tag}]` : '')
 
   // await new Promise(resolve => setTimeout(resolve, 10000))
   const alreadyPublished = await isPublished(pkg.name, pkg.version)
   if (alreadyPublished) return console.log(`Skipping - ${version} already published`)
 
-  if (!dryRun) await execa('yarn', ['publish', '--verbose'], { cwd, stdio: 'inherit' })
+  if (!dryRun) await execa('yarn', ['publish', `--tag=${tag}`, `--access=${access}`], { cwd, stdio: 'inherit' })
   console.log(`Published ${version}`)
 })()
