@@ -1,6 +1,6 @@
 const execa = require('execa')
 const { get } = require('lodash')
-const { readPkg, isPublished, updateCanaryVersions } = require('./utils')
+const { git, readPkg, isPublished, updateCanaryVersions } = require('./utils')
 
 const canary = process.argv.includes('--canary')
 const dryRun = process.argv.includes('--dry-run')
@@ -9,7 +9,9 @@ const dryRun = process.argv.includes('--dry-run')
 // or if a package is private but listed as a dependency?
 !(async () => {
   const cwd = process.cwd()
-  if (canary) await updateCanaryVersions(cwd)
+
+  const branch = await git(['rev-parse', '--abbrev-ref HEAD'], { cwd })
+  if (canary || branch !== 'master') await updateCanaryVersions(cwd)
 
   const pkg = await readPkg(cwd)
   if (pkg.private) return // skip private packages

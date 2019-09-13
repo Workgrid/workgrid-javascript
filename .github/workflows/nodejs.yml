@@ -18,16 +18,19 @@ jobs:
       - name: Test
         run: yarn test # runs 'yarn build'
 
-      - uses: actions/upload-artifact@v1
+      - name: Capture (coverage)
+        uses: actions/upload-artifact@v1
         with:
           name: coverage
           path: ./coverage
-      - uses: actions/upload-artifact@v1
+      - name: Capture (test-reports)
+        uses: actions/upload-artifact@v1
         with:
           name: test-reports
           path: ./test-reports
 
       - name: Configure (NPM)
+        if: github.ref == 'refs/heads/master'
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - name: Publish (NPM)
         if: github.ref == 'refs/heads/master'
@@ -36,6 +39,7 @@ jobs:
           YARN_REGISTRY: https://registry.npmjs.org/
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Yarn doesn't seem to respect this
       - name: Configure (GPR)
+        if: github.ref == 'refs/heads/master'
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
       - name: Publish (GPR)
         if: github.ref == 'refs/heads/master'
@@ -44,18 +48,16 @@ jobs:
           YARN_REGISTRY: https://npm.pkg.github.com/
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Yarn doesn't seem to respect this
 
-      - name: Configure (NPM)
+      - name: Configure (NPM) - canary
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - name: Publish (NPM) - canary
-        if: github.ref != 'refs/heads/master'
         run: yarn release --canary
         env:
           YARN_REGISTRY: https://registry.npmjs.org/
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Yarn doesn't seem to respect this
-      - name: Configure (GPR)
+      - name: Configure (GPR) - canary
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
       - name: Publish (GPR) - canary
-        if: github.ref != 'refs/heads/master'
         run: yarn release --canary
         env:
           YARN_REGISTRY: https://npm.pkg.github.com/
