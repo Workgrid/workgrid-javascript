@@ -18,6 +18,15 @@ jobs:
       - name: Test
         run: yarn test # runs 'yarn build'
 
+      - uses: actions/upload-artifact@v1
+        with:
+          name: coverage
+          path: ./coverage
+      - uses: actions/upload-artifact@v1
+        with:
+          name: test-reports
+          path: ./test-reports
+
       - name: Configure (NPM)
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - name: Publish (NPM)
