@@ -22,7 +22,6 @@ const dryRun = process.argv.includes('--dry-run')
   const access = get(pkg, 'publishConfig.access', 'public')
   const version = pkg.version + (tag !== 'latest' ? ` [${tag}]` : '')
 
-  // await new Promise(resolve => setTimeout(resolve, 10000))
   const alreadyPublished = await isPublished(pkg.name, pkg.version)
   if (alreadyPublished) return console.log(`Skipping - ${version} already published`)
 
