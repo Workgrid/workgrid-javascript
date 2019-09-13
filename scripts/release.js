@@ -9,9 +9,11 @@ const dryRun = process.argv.includes('--dry-run')
 // or if a package is private but listed as a dependency?
 !(async () => {
   const cwd = process.cwd()
+  if (canary) await updateCanaryVersions(cwd)
 
-  const branch = await git(['rev-parse', '--abbrev-ref', 'HEAD'])
-  if (canary || branch !== 'master') await updateCanaryVersions(cwd)
+  // TODO: Github Actions are in a detached state...
+  // const branch = await git(['rev-parse', '--abbrev-ref', 'HEAD'])
+  // if (canary || branch !== 'master') await updateCanaryVersions(cwd)
 
   const pkg = await readPkg(cwd)
   if (pkg.private) return // skip private packages
