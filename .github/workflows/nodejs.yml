@@ -29,35 +29,35 @@ jobs:
           name: test-reports
           path: ./test-reports
 
-      - name: Configure (NPM)
+      - name: '[NPM] Configure'
         if: github.ref == 'refs/heads/master'
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-      - name: Publish (NPM)
+      - name: '[NPM] Publish'
         if: github.ref == 'refs/heads/master'
         run: yarn release
         env:
           YARN_REGISTRY: https://registry.npmjs.org/
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Yarn doesn't seem to respect this
-      - name: Configure (GPR)
+      - name: '[GPR] Configure'
         if: github.ref == 'refs/heads/master'
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
-      - name: Publish (GPR)
+      - name: '[GPR] Publish'
         if: github.ref == 'refs/heads/master'
         run: yarn release
         env:
           YARN_REGISTRY: https://npm.pkg.github.com/
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Yarn doesn't seem to respect this
 
-      - name: Configure (NPM) - canary
+      - name: '(canary) [NPM] Configure'
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-      - name: Publish (NPM) - canary
+      - name: '(canary) [NPM] Publish'
         run: yarn release --canary
         env:
           YARN_REGISTRY: https://registry.npmjs.org/
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Yarn doesn't seem to respect this
-      - name: Configure (GPR) - canary
+      - name: '(canary) [GPR] Configure'
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
-      - name: Publish (GPR) - canary
+      - name: '(canary) [GPR] Publish'
         run: yarn release --canary
         env:
           YARN_REGISTRY: https://npm.pkg.github.com/

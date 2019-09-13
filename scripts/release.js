@@ -11,6 +11,7 @@ const dryRun = process.argv.includes('--dry-run')
   const cwd = process.cwd()
 
   const branch = await git(['rev-parse', '--abbrev-ref HEAD'], { cwd })
+  console.log({ branch })
   if (canary || branch !== 'master') await updateCanaryVersions(cwd)
 
   const pkg = await readPkg(cwd)
