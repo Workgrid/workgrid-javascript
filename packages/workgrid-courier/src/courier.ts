@@ -5,6 +5,9 @@ import uuid from 'uuid/v4'
 import ms from 'ms'
 import { assign, includes } from 'lodash'
 
+// Global is typically used as an alias for self thanks to browser compilers
+declare let global: NodeJS.Global & Window & typeof globalThis
+
 const logger = debug('courier') // default logger namespace
 const is = (object: any, type: string): boolean => Object.prototype.toString.call(object) === `[object ${type}]`
 
@@ -63,8 +66,8 @@ export default class Courier {
     this.debug('constructor', { timeout, sources, hosts })
 
     this.timeout = timeout || ms('10 seconds')
-    this.sources = sources || [self.window.parent]
-    this.hosts = hosts || [self.window]
+    this.sources = sources || [global.window.parent]
+    this.hosts = hosts || [global.window]
 
     this.internal = emitter()
     this.emitter = emitter()
@@ -180,7 +183,7 @@ export default class Courier {
 
       let transfer: Transferable[] = []
 
-      if ('MessageChannel' in self) {
+      if ('MessageChannel' in global) {
         const channel = new MessageChannel()
 
         channel.port1.onmessage = (event: any): void => {
