@@ -31,8 +31,7 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             compact: true,
-            presets: [['@babel/preset-env']],
-            plugins: ['@babel/plugin-proposal-class-properties']
+            presets: [['@babel/preset-env']]
           }
         }
       }
