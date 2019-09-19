@@ -10,7 +10,8 @@
   ],
   "scripts": {
     "clean": "rm -rf dist docs temp",
-    "build": "yarn clean && tsc && webpack",
+    "build": "yarn clean && webpack",
+    "postbuild": "tsc --emitDeclarationOnly"
     "prepack": "yarn api:extract && yarn api:document",
     "api:extract": "api-extractor run",
     "api:document": "api-documenter markdown -i temp -o docs"
