@@ -1,6 +1,5 @@
 import ms from 'ms'
 import queue from './queue'
-// @ts-ignore
 import Courier from '@workgrid/courier'
 import jwtDecode from 'jwt-decode'
 import { throttle } from 'lodash'
