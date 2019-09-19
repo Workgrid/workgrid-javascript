@@ -175,16 +175,15 @@ class MicroApp {
 
   /**
    * Tell the host we're ready every 100ms until the message is acknowledged.
-   * The event will be attempted 100 times (about 10s) before rejecting.
+   * The event will be attempted ~100 times (about 10s) and will reject in 20s.
    */
-  public ready = (attempt: number = 1): Promise<any> => {
+  public ready = (): Promise<any> => {
     const payload = { height: window.document.documentElement.offsetHeight }
     const sendPromises = [this.courier.send({ type: EVENTS.READY, payload })]
     const interval = setInterval(() => {
       sendPromises.push(this.courier.send({ type: EVENTS.READY, payload }))
-      attempt++
       // create a new promise every 100ms for 10s
-      if (attempt >= READY_TIMEOUT / READY_INTERVAL) {
+      if (sendPromises.length >= READY_TIMEOUT / READY_INTERVAL) {
         clearInterval(interval)
       }
     }, READY_INTERVAL)
