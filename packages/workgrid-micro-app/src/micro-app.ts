@@ -1,10 +1,12 @@
 import ms from 'ms'
+import pAny from 'p-any'
 import queue from './queue'
 import Courier from '@workgrid/courier'
+import pFinally from 'p-finally'
 import jwtDecode from 'jwt-decode'
-import { throttle } from 'lodash'
+import PCancelable from 'p-cancelable'
 import ResizeObserver from 'resize-observer-polyfill'
-import pAny from 'p-any'
+import { throttle, remove, invokeMap } from 'lodash'
 
 const EVENTS = {
   READY: 'ready',
@@ -33,11 +35,6 @@ const isExpired = (token: string): boolean => {
  */
 export interface MicroAppOptions {
   /**
-   * The target audience for the user token
-   */
-  audience: string
-
-  /**
    * Custom error handler
    */
   onError?: Function
@@ -54,18 +51,14 @@ export interface MicroAppOptions {
  * @beta
  */
 class MicroApp {
-  private audience: string
   private id: string
   public courier: any // for testing :(
   private queue: any
   private ro: any
   private token?: string
 
-  public constructor({ audience, onError, id }: MicroAppOptions) {
-    if (!audience) throw new Error('Missing required parameter: options.audience')
-
-    this.audience = audience
-    this.id = id || audience
+  public constructor({ onError, id }: MicroAppOptions) {
+    this.id = id
 
     const noop = (): void => {}
     this.courier = new Courier({ id: this.id })
@@ -121,10 +114,7 @@ class MicroApp {
    */
   public getToken = async (): Promise<string> => {
     if (this.token && !isExpired(this.token)) return this.token
-    return (this.token = (await this.send({
-      type: EVENTS.REFRESH_TOKEN,
-      payload: { audience: this.audience }
-    })) as string)
+    return (this.token = (await this.send({ type: EVENTS.REFRESH_TOKEN })) as string)
   }
 
   /**
@@ -165,10 +155,16 @@ class MicroApp {
    * Wrap the event sender in a queue that is flushed when the host is ready.
    */
   public send = (...args: [any]): Promise<any> => {
-    return new Promise((resolve: Function, reject: Function): void => {
-      this.queue.push((): void => {
+    return new PCancelable((resolve: Function, reject: Function, onCancel: Function): void => {
+      const fn = (): void => {
         this.courier.send(...args).then(resolve, reject)
+      }
+
+      onCancel((): void => {
+        remove(this.queue.queue, fn)
       })
+
+      this.queue.push(fn)
     })
   }
 
@@ -176,32 +172,25 @@ class MicroApp {
    * Tell the host we're ready every 100ms until the message is acknowledged.
    * This fires off two techniques "serial" and "cascade", Android needs serial for now; cascade is superior
    */
-  public ready = async (): Promise<any> => {
-    // Sigh.. don't ask me why Android can't do the cascade variety
-    return pAny([this.serialReady(), this.cascadeReady()])
-  }
+  public ready = (): Promise<any> => {
+    return new PCancelable((resolve: Function, reject: Function, onCancel: Function): void => {
+      const payload = { height: window.document.documentElement.offsetHeight }
+      const promises = [this.courier.send({ type: EVENTS.READY, payload })]
 
-  private serialReady = (attempt = 1): Promise<any> => {
-    const payload = { height: window.document.documentElement.offsetHeight }
-    const promise = this.courier.send({ type: EVENTS.READY, payload, timeout: READY_INTERVAL })
-    return attempt >= READY_TIMEOUT / READY_INTERVAL
-      ? promise
-      : promise.catch((): Promise<any> => this.serialReady(attempt + 1))
-  }
+      const interval = setInterval((): void => {
+        promises.push(this.courier.send({ type: EVENTS.READY, payload }))
+        if (promises.length >= READY_TIMEOUT / READY_INTERVAL) clearInterval(interval)
+      }, READY_INTERVAL)
 
-  private cascadeReady = (): Promise<any> => {
-    const payload = { height: window.document.documentElement.offsetHeight }
-    const sendPromises = [this.courier.send({ type: EVENTS.READY, payload })]
-    const interval = setInterval(() => {
-      sendPromises.push(this.courier.send({ type: EVENTS.READY, payload }))
-      // create a new promise every 100ms for 10s
-      if (sendPromises.length >= READY_TIMEOUT / READY_INTERVAL) {
-        clearInterval(interval)
-      }
-    }, READY_INTERVAL)
+      onCancel((): void => {
+        interval && clearInterval(interval)
+        invokeMap(promises, 'cancel')
+      })
 
-    return pAny(sendPromises).then(() => {
-      clearInterval(interval)
+      pFinally(pAny(promises), (): void => {
+        interval && clearInterval(interval)
+        invokeMap(promises, 'cancel')
+      }).then(resolve, reject)
     })
   }
 }

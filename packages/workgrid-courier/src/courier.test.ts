@@ -1,4 +1,3 @@
-import ms from 'ms'
 import Courier from './courier'
 
 const createSource = (courier: Courier): { postMessage: Function } => {
@@ -77,14 +76,6 @@ describe('@workgrid/courier', () => {
     courier.on('hello', () => Promise.reject('world'))
     const promise = courier.send({ type: 'hello', target: source })
 
-    await expect(promise).rejects.toThrowErrorMatchingSnapshot()
-  })
-
-  test('emitter is rejected by timeout', async () => {
-    const courier = new Courier({ timeout: ms('1 second'), hosts: [] })
-    const source = createSource(courier)
-
-    const promise = courier.send({ type: 'hello', target: source })
     await expect(promise).rejects.toThrowErrorMatchingSnapshot()
   })
 

@@ -1,8 +1,8 @@
+import PCancelable from 'p-cancelable'
 import emitter from './emitter'
 import niceTry from 'nice-try'
 import debug from 'debug/dist/debug'
 import uuid from 'uuid/v4'
-import ms from 'ms'
 import { assign, includes } from 'lodash'
 
 // Global is typically used as an alias for self thanks to browser compilers
@@ -16,20 +16,16 @@ const is = (object: any, type: string): boolean => Object.prototype.toString.cal
 // APP-11: Could not parse event
 // APP-12: Unable to post message to target
 // APP-13: Target is not an expected source
-// APP-14: Timed out waiting for a response
+// APP-14: Timed out waiting for a response (deprecated)
 // APP-15: Message received from unexpected source
 // APP-16: Handler responded with an error
 // APP-17: Reply could not be sent (missing `id`)
+// APP-18: Request was canceled
 
 /**
  * @beta
  */
 export interface CourierOptions {
-  /**
-   * Duration to wait for a response
-   */
-  timeout?: number
-
   /**
    * Predefined list of expected message sources
    */
@@ -53,7 +49,6 @@ export interface CourierOptions {
  */
 export default class Courier {
   private debug: any
-  private timeout: number
   private sources: any[]
   private hosts: any[]
   private internal: any
@@ -61,11 +56,10 @@ export default class Courier {
 
   public static debug = debug // TODO: Replace with `logger` instance variable
 
-  public constructor({ timeout, sources, hosts, id }: CourierOptions = {}) {
+  public constructor({ sources, hosts, id }: CourierOptions = {}) {
     this.debug = id ? logger.extend(id) : logger // ¯\_(ツ)_/¯
-    this.debug('constructor', { timeout, sources, hosts })
+    this.debug('constructor', { sources, hosts })
 
-    this.timeout = timeout || ms('10 seconds')
     this.sources = sources || [global.window.parent]
     this.hosts = hosts || [global.window]
 
@@ -152,30 +146,18 @@ export default class Courier {
   /**
    * Send a message (response expected).
    */
-  public send = ({
-    type,
-    payload,
-    target,
-    timeout
-  }: {
-    type: string
-    payload?: any
-    target?: any
-    timeout?: number
-  }): Promise<any> => {
-    this.debug('send', { type, payload, target, timeout })
+  public send = ({ type, payload, target }: { type: string; payload?: any; target?: any }): Promise<any> => {
+    this.debug('send', { type, payload, target })
 
     const message = { id: uuid(), type, payload }
     const event = { data: message } // for errors
 
-    const promise = new Promise((resolve: Function, reject: Function): void => {
-      const timeoutId = setTimeout((): void => {
+    const promise = new PCancelable((resolve: Function, reject: Function, onCancel: Function): void => {
+      onCancel((): void => {
         this.internal.off(message.id)
-        reject(this.error('APP-14', { event }))
-      }, timeout || this.timeout)
+      })
 
       this.internal.on(message.id, (error: any, data: any): void => {
-        clearTimeout(timeoutId)
         this.internal.off(message.id)
         if (!error) return resolve(data)
         reject(this.error('APP-16', { event, error, data }))
@@ -199,6 +181,10 @@ export default class Courier {
 
       this.sendMessage(message, target, transfer)
     })
+
+    // Wrap promise.cancel so we reject with our own error
+    const cancel = promise.cancel.bind(promise)
+    promise.cancel = (): void => cancel(this.error('APP-18', { event }))
 
     return promise
   }
