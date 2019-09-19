@@ -4,9 +4,6 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
-
-    "target": "ES3",
-    "module": "umd",
     "lib": ["es6", "dom"]
   }
 }
