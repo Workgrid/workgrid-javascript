@@ -20,7 +20,7 @@ module.exports = {
           options: {
             compact: true,
             presets: [['@babel/preset-env'], ['@babel/preset-typescript']],
-            plugins: ['@babel/plugin-proposal-class-properties']
+            plugins: ['@babel/plugin-proposal-class-properties', 'babel-plugin-lodash']
           }
         }
       },

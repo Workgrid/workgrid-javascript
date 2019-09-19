@@ -30,17 +30,7 @@
     "p-any": "^2.1.0",
     "resize-observer-polyfill": "^1.5.1"
   },
-  "devDependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/preset-env": "^7.6.0",
-    "@babel/preset-typescript": "^7.6.0",
-    "babel-loader": "^8.0.6",
-    "ts-loader": "^6.1.0",
-    "webpack": "^4.40.2",
-    "webpack-bundle-analyzer": "^3.5.0",
-    "webpack-cli": "^3.3.9",
-    "webpack-merge": "^4.2.2"
-  },
+  "devDependencies": {},
   "eslintConfig": {
     "extends": [
       "./eslint.config.js"
