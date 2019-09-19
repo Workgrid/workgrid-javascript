@@ -4,6 +4,7 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
+    "emitDeclarationOnly": true,
     "lib": ["es6", "dom"]
   }
 }
