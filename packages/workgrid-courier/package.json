@@ -21,7 +21,7 @@
     "url": "https://github.com/Workgrid/workgrid-javascript"
   },
   "dependencies": {
-    "@babel/runtime": "^7.4.4",
+    "@babel/runtime": "^7.6.0",
     "@types/debug": "^4.1.5",
     "@types/lodash": "^4.14.137",
     "@types/ms": "^0.7.30",
