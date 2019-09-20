@@ -28,10 +28,8 @@
     "lodash": "^4.17.11",
     "ms": "^2.1.1",
     "p-any": "^2.1.0",
+    "regenerator-runtime": "^0.13.3",
     "resize-observer-polyfill": "^1.5.1"
-  },
-  "devDependencies": {
-    "regenerator-runtime": "^0.13.3"
   },
   "eslintConfig": {
     "extends": [
