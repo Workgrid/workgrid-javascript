@@ -4,6 +4,7 @@ import Courier from '@workgrid/courier'
 import jwtDecode from 'jwt-decode'
 import { throttle } from 'lodash'
 import ResizeObserver from 'resize-observer-polyfill'
+import pAny from 'p-any'
 
 const EVENTS = {
   READY: 'ready',
@@ -16,7 +17,7 @@ const EVENTS = {
 }
 
 const READY_TIMEOUT = ms('10s')
-const READY_INTERNVAL = ms('100ms')
+const READY_INTERVAL = ms('100ms')
 
 const isExpired = (token: string): boolean => {
   try {
@@ -173,14 +174,20 @@ class MicroApp {
 
   /**
    * Tell the host we're ready every 100ms until the message is acknowledged.
-   * The event will be attempted 100 times (about 10s) before rejecting.
+   * The event will be attempted ~100 times (about 10s) and will reject in 20s.
    */
-  public ready = (attempt: number = 1): Promise<any> => {
+  public ready = (): Promise<any> => {
     const payload = { height: window.document.documentElement.offsetHeight }
-    const promise = this.courier.send({ type: EVENTS.READY, payload, timeout: READY_INTERNVAL })
-    return attempt >= READY_TIMEOUT / READY_INTERNVAL
-      ? promise
-      : promise.catch((): Promise<any> => this.ready(attempt + 1))
+    const sendPromises = [this.courier.send({ type: EVENTS.READY, payload })]
+    const interval = setInterval(() => {
+      sendPromises.push(this.courier.send({ type: EVENTS.READY, payload }))
+      // create a new promise every 100ms for 10s
+      if (sendPromises.length >= READY_TIMEOUT / READY_INTERVAL) {
+        clearInterval(interval)
+      }
+    }, READY_INTERVAL)
+
+    return pAny(sendPromises).then(() => clearInterval(interval))
   }
 }
 

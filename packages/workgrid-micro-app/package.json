@@ -1,7 +1,6 @@
 {
-  "private": true,
   "name": "@workgrid/micro-app",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "",
   "main": "dist/micro-app.js",
   "types": "dist/micro-app.d.ts",
@@ -11,7 +10,7 @@
   ],
   "scripts": {
     "clean": "rm -rf dist docs temp",
-    "build": "yarn clean && tsc",
+    "build": "yarn clean && tsc && webpack",
     "prepack": "yarn api:extract && yarn api:document",
     "api:extract": "api-extractor run",
     "api:document": "api-documenter markdown -i temp -o docs"
@@ -28,6 +27,7 @@
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.11",
     "ms": "^2.1.1",
+    "p-any": "^2.1.0",
     "resize-observer-polyfill": "^1.5.1"
   },
   "devDependencies": {},
@@ -36,5 +36,13 @@
       "./eslint.config.js"
     ]
   },
-  "license": "ISC"
+  "license": "ISC",
+  "browserslist": [
+    "last 2 chrome versions",
+    "last 2 firefox versions",
+    "last 2 edge versions",
+    "last 2 opera versions",
+    "IE 11",
+    "not op_mini all"
+  ]
 }
