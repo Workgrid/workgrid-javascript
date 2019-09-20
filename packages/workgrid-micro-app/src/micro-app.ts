@@ -51,17 +51,14 @@ export interface MicroAppOptions {
  * @beta
  */
 class MicroApp {
-  private id: string
   public courier: any // for testing :(
   private queue: any
   private ro: any
   private token?: string
 
-  public constructor({ onError, id }: MicroAppOptions) {
-    this.id = id
-
+  public constructor({ onError, id }: MicroAppOptions = {}) {
     const noop = (): void => {}
-    this.courier = new Courier({ id: this.id })
+    this.courier = new Courier({ id })
     this.courier.on('error', onError || noop)
 
     this.queue = queue()
