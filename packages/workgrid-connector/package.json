@@ -20,7 +20,7 @@
     "url": "https://github.com/Workgrid/workgrid-javascript"
   },
   "dependencies": {
-    "@types/lodash": "^4.14.137",
+    "@types/lodash": "^4.14.138",
     "@workgrid/request": "^0.0.4",
     "@workgrid/webhook-validation": "^0.0.3",
     "lodash": "^4.17.15"
