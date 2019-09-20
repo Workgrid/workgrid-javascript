@@ -1,3 +1,5 @@
+import 'core-js'
+import 'regenerator-runtime/runtime'
 import emitter from './emitter'
 import niceTry from 'nice-try'
 import debug from 'debug/dist/debug'
