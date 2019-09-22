@@ -19,7 +19,7 @@ const EVENTS = {
 }
 
 const READY_TIMEOUT = ms('10s')
-const READY_INTERVAL = ms('100ms')
+const READY_INTERVAL = ms('1000ms')
 
 const isExpired = (token: string): boolean => {
   try {
@@ -176,9 +176,22 @@ class MicroApp {
 
   /**
    * Tell the host we're ready every 100ms until the message is acknowledged.
-   * The event will be attempted ~100 times (about 10s) and will reject in 20s.
+   * This fires off two techniques "serial" and "cascade", Android needs serial for now; cascade is superior
    */
-  public ready = (): Promise<any> => {
+  public ready = async (): Promise<any> => {
+    // Sigh.. don't ask me why Android can't do the cascade variety
+    return pAny([this.serialReady(), this.cascadeReady()])
+  }
+
+  private serialReady = (attempt = 1): Promise<any> => {
+    const payload = { height: window.document.documentElement.offsetHeight }
+    const promise = this.courier.send({ type: EVENTS.READY, payload, timeout: READY_INTERVAL })
+    return attempt >= READY_TIMEOUT / READY_INTERVAL
+      ? promise
+      : promise.catch((): Promise<any> => this.serialReady(attempt + 1))
+  }
+
+  private cascadeReady = (): Promise<any> => {
     const payload = { height: window.document.documentElement.offsetHeight }
     const sendPromises = [this.courier.send({ type: EVENTS.READY, payload })]
     const interval = setInterval(() => {
@@ -189,7 +202,10 @@ class MicroApp {
       }
     }, READY_INTERVAL)
 
-    return pAny(sendPromises).then(() => clearInterval(interval))
+    return pAny(sendPromises).then(() => {
+      sendPromises.map((sendProm: any) => sendProm.cancel())
+      clearInterval(interval)
+    })
   }
 }
 
