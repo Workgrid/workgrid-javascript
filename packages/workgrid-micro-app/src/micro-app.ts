@@ -203,7 +203,6 @@ class MicroApp {
     }, READY_INTERVAL)
 
     return pAny(sendPromises).then(() => {
-      sendPromises.map((sendProm: any) => sendProm.cancel())
       clearInterval(interval)
     })
   }

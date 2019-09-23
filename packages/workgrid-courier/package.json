@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/courier",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "",
   "main": "dist/courier.js",
   "types": "dist/courier.d.ts",
@@ -30,7 +30,6 @@
     "lodash": "^4.17.11",
     "ms": "^2.1.1",
     "nice-try": "^2.0.0",
-    "p-cancelable": "^2.0.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {},

@@ -1,12 +1,9 @@
-import 'core-js'
-import 'regenerator-runtime/runtime'
 import emitter from './emitter'
 import niceTry from 'nice-try'
 import debug from 'debug/dist/debug'
 import uuid from 'uuid/v4'
 import ms from 'ms'
 import { assign, includes } from 'lodash'
-import PCancelable from 'p-cancelable'
 
 // Global is typically used as an alias for self thanks to browser compilers
 declare let global: NodeJS.Global & Window & typeof globalThis
@@ -165,13 +162,13 @@ export default class Courier {
     payload?: any
     target?: any
     timeout?: number
-  }): PCancelable<any> => {
+  }): Promise<any> => {
     this.debug('send', { type, payload, target, timeout })
 
     const message = { id: uuid(), type, payload }
     const event = { data: message } // for errors
 
-    const promise = new PCancelable((resolve: Function, reject: Function): void => {
+    const promise = new Promise((resolve: Function, reject: Function): void => {
       const timeoutId = setTimeout((): void => {
         this.internal.off(message.id)
         reject(this.error('APP-14', { event }))
