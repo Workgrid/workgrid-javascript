@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/micro-app",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "description": "",
   "main": "dist/micro-app.js",
   "types": "dist/micro-app.d.ts",
@@ -25,13 +25,14 @@
     "@types/lodash": "^4.14.137",
     "@types/ms": "^0.7.30",
     "@workgrid/courier": "^0.6.0",
+    "core-js": "^3.2.1",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.11",
     "ms": "^2.1.1",
     "p-any": "^2.1.0",
+    "regenerator-runtime": "^0.13.3",
     "resize-observer-polyfill": "^1.5.1"
   },
-  "devDependencies": {},
   "eslintConfig": {
     "extends": [
       "./eslint.config.js"
