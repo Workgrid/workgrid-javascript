@@ -19,7 +19,7 @@ const EVENTS = {
 }
 
 const READY_TIMEOUT = ms('10s')
-const READY_INTERVAL = ms('1000ms')
+const READY_INTERVAL = ms('100ms')
 
 const isExpired = (token: string): boolean => {
   try {
