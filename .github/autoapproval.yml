@@ -3,4 +3,4 @@ from_owner:
 required_labels:
   - dependencies
 apply_labels:
-  - autoapproved
+  - autoapproval
