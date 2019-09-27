@@ -142,14 +142,14 @@ class MicroApp {
    */
   public showDetail = ({ url, title }: { url: string; title?: string }): void => {
     if (!url) throw new Error('URL is required to show details')
-    this.send({ type: EVENTS.SHOW_DETAIL, payload: { title, url } })
+    this.emit({ type: EVENTS.SHOW_DETAIL, payload: { title, url } })
   }
 
   /**
    * Hide the detail if it's visible.
    */
   public hideDetail = (): void => {
-    this.send({ type: EVENTS.HIDE_DETAIL })
+    this.emit({ type: EVENTS.HIDE_DETAIL })
   }
 
   // Private API
