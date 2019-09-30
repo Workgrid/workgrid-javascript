@@ -55,7 +55,7 @@
     "webpack-bundle-analyzer": "^3.5.2",
     "webpack-command": "^0.5.0",
     "webpack-merge": "^4.2.2",
-    "wsrun": "^5.0.0"
+    "wsrun": "^5.0.2"
   },
   "eslintConfig": {
     "extends": [
