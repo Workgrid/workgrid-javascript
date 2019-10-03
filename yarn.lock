@@ -1667,12 +1667,12 @@ axios-mock-adapter@^1.17.0:
   dependencies:
     deep-equal "^1.0.1"
 
-axios-oauth-client@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/axios-oauth-client/-/axios-oauth-client-1.1.1.tgz#8b0adb1c919eecdbf9774df2e16ea0df771f917a"
-  integrity sha1-iwrbHJGe7Nv5d03y4W6g33cfkXo=
+axios-oauth-client@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/axios-oauth-client/-/axios-oauth-client-1.2.0.tgz#8c29f4ca89419f4bf74ee153e4ce3f3684141041"
+  integrity sha512-cEsXM/LWF8qXUTq2uyj13AHICIJK8sF2MhqjV1yu+eXnqjjHl9ywxZz2vlE7Xuns09WtuF8adLHYXN2rF6pymg==
   dependencies:
-    qs "^6.5.2"
+    qs "^6.8.0"
 
 axios-token-interceptor@^0.1.0:
   version "0.1.0"
@@ -6444,10 +6444,10 @@ qs@6.7.0:
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
   integrity sha512-VCdBRNFTX1fyE7Nb6FYoURo/SPe62QCaAyzJvUjwRaIsc+NePBEniHlvxFmmX56+HZphIGtV0XeCirBtpDrTyQ==
 
-qs@^6.5.2:
-  version "6.8.0"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-6.8.0.tgz#87b763f0d37ca54200334cd57bb2ef8f68a1d081"
-  integrity sha1-h7dj8NN8pUIAM0zVe7Lvj2ih0IE=
+qs@^6.8.0:
+  version "6.9.0"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.9.0.tgz#d1297e2a049c53119cb49cca366adbbacc80b409"
+  integrity sha512-27RP4UotQORTpmNQDX8BHPukOnBP3p1uUJY5UnDhaJB+rMt9iMsok724XL+UHU23bEFOHRMQ2ZhI99qOWUMGFA==
 
 qs@~6.5.2:
   version "6.5.2"

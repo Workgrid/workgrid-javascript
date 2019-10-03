@@ -22,7 +22,7 @@
   "dependencies": {
     "@types/axios-token-interceptor": "^0.1.2",
     "axios": "^0.18.0",
-    "axios-oauth-client": "^1.1.1",
+    "axios-oauth-client": "^1.2.0",
     "axios-token-interceptor": "^0.1.0",
     "mem": "^5.1.1"
   },
