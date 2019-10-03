@@ -1,16 +1,16 @@
 {
   "name": "@workgrid/micro-app",
-  "version": "0.9.2",
-  "description": "",
+  "version": "0.9.3",
   "main": "dist/micro-app.js",
   "types": "dist/micro-app.d.ts",
+  "browser": "dist/micro-app.umd.js",
   "files": [
     "dist",
     "docs"
   ],
   "scripts": {
     "clean": "rm -rf dist docs temp",
-    "build": "yarn clean && webpack",
+    "build": "yarn clean && rollup -c",
     "prepack": "yarn api:extract && yarn api:document",
     "postbuild": "tsc --emitDeclarationOnly",
     "api:extract": "api-extractor run",
@@ -22,14 +22,16 @@
   },
   "dependencies": {
     "@workgrid/courier": "^0.6.0",
-    "bluebird": "^3.7.0",
-    "core-js": "^3.2.1",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.11",
     "ms": "^2.1.1",
     "p-any": "^2.1.0",
-    "regenerator-runtime": "^0.13.3",
     "resize-observer-polyfill": "^1.5.1"
+  },
+  "devDependencies": {
+    "@types/jwt-decode": "^2.2.1",
+    "@types/lodash": "^4.14.141",
+    "@types/ms": "^0.7.31"
   },
   "eslintConfig": {
     "extends": [
@@ -44,11 +46,5 @@
     "last 2 opera versions",
     "IE 11",
     "not op_mini all"
-  ],
-  "devDependencies": {
-    "@types/bluebird": "^3.5.27",
-    "@types/jwt-decode": "^2.2.1",
-    "@types/lodash": "^4.14.139",
-    "@types/ms": "^0.7.31"
-  }
+  ]
 }

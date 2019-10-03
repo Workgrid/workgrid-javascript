@@ -1,4 +1,4 @@
 {
-  "extends": "@workgrid/typescript/api-extractor.json",
+  "extends": "shared/api-extractor.json",
   "mainEntryPointFilePath": "dist/courier.d.ts"
 }

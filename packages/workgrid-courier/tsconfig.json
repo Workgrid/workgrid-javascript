@@ -1,9 +1,4 @@
 {
-  "extends": "@workgrid/typescript",
-  "exclude": ["**/*.test.ts", "dist"],
-  "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "lib": ["es6", "dom"]
-  }
+  "extends": "./tsconfig.eslint.json",
+  "exclude": ["**/*.test.ts", "dist"]
 }

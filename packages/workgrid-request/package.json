@@ -1,7 +1,6 @@
 {
   "name": "@workgrid/request",
-  "version": "0.0.4",
-  "description": "",
+  "version": "0.0.5",
   "main": "dist/request.js",
   "types": "dist/request.d.ts",
   "files": [
@@ -10,8 +9,9 @@
   ],
   "scripts": {
     "clean": "rm -rf dist docs temp",
-    "build": "yarn clean && tsc",
+    "build": "yarn clean && rollup -c",
     "prepack": "yarn api:extract && yarn api:document",
+    "postbuild": "tsc --emitDeclarationOnly",
     "api:extract": "api-extractor run",
     "api:document": "api-documenter markdown -i temp -o docs"
   },
@@ -20,13 +20,13 @@
     "url": "https://github.com/Workgrid/workgrid-javascript"
   },
   "dependencies": {
-    "@types/axios-token-interceptor": "^0.1.2",
-    "axios": "^0.18.0",
-    "axios-oauth-client": "^1.1.1",
+    "axios": "^0.19.0",
+    "axios-oauth-client": "^1.2.0",
     "axios-token-interceptor": "^0.1.0",
     "mem": "^5.1.1"
   },
   "devDependencies": {
+    "@types/axios-token-interceptor": "^0.1.2",
     "axios-mock-adapter": "^1.17.0"
   },
   "eslintConfig": {

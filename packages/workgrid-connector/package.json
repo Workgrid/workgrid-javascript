@@ -1,7 +1,6 @@
 {
   "name": "@workgrid/connector",
-  "version": "0.0.5",
-  "description": "",
+  "version": "0.0.6",
   "main": "dist/connector.js",
   "types": "dist/connector.d.ts",
   "files": [
@@ -10,8 +9,9 @@
   ],
   "scripts": {
     "clean": "rm -rf dist docs temp",
-    "build": "yarn clean && tsc",
+    "build": "yarn clean && rollup -c",
     "prepack": "yarn api:extract && yarn api:document",
+    "postbuild": "tsc --emitDeclarationOnly",
     "api:extract": "api-extractor run",
     "api:document": "api-documenter markdown -i temp -o docs"
   },
@@ -20,12 +20,13 @@
     "url": "https://github.com/Workgrid/workgrid-javascript"
   },
   "dependencies": {
-    "@types/lodash": "^4.14.139",
-    "@workgrid/request": "^0.0.4",
-    "@workgrid/webhook-validation": "^0.0.3",
+    "@workgrid/request": "^0.0.5",
+    "@workgrid/webhook-validation": "^0.0.4",
     "lodash": "^4.17.15"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/lodash": "^4.14.141"
+  },
   "eslintConfig": {
     "extends": [
       "./eslint.config.js"
