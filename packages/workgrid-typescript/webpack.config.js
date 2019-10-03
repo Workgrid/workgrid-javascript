@@ -23,18 +23,6 @@ module.exports = {
             plugins: ['@babel/plugin-proposal-class-properties', 'babel-plugin-lodash']
           }
         }
-      },
-      {
-        test: /\.js$/,
-        include: /node_modules/,
-        exclude: /core-js/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            compact: true,
-            presets: [['@babel/preset-env']]
-          }
-        }
       }
     ]
   },

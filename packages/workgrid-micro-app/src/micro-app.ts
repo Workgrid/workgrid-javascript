@@ -1,4 +1,3 @@
-import 'core-js'
 import 'regenerator-runtime/runtime'
 import ms from 'ms'
 import queue from './queue'
@@ -6,7 +5,7 @@ import Courier from '@workgrid/courier'
 import jwtDecode from 'jwt-decode'
 import { throttle } from 'lodash'
 import ResizeObserver from 'resize-observer-polyfill'
-import pAny from 'p-any'
+import BlueProm from 'bluebird'
 
 const EVENTS = {
   READY: 'ready',
@@ -180,7 +179,7 @@ class MicroApp {
    */
   public ready = async (): Promise<any> => {
     // Sigh.. don't ask me why Android can't do the cascade variety
-    return pAny([this.serialReady(), this.cascadeReady()])
+    return BlueProm.any([this.serialReady(), this.cascadeReady()])
   }
 
   private serialReady = (attempt = 1): Promise<any> => {
@@ -202,7 +201,7 @@ class MicroApp {
       }
     }, READY_INTERVAL)
 
-    return pAny(sendPromises).then(() => {
+    return BlueProm.any(sendPromises).then(() => {
       clearInterval(interval)
     })
   }
