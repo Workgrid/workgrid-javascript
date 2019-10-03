@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/courier",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "",
   "main": "dist/courier.js",
   "types": "dist/courier.d.ts",
@@ -10,9 +10,8 @@
   ],
   "scripts": {
     "clean": "rm -rf dist docs temp",
-    "build": "yarn clean && webpack",
+    "build": "yarn clean && tsc",
     "prepack": "yarn api:extract && yarn api:document",
-    "postbuild": "tsc --emitDeclarationOnly",
     "api:extract": "api-extractor run",
     "api:document": "api-documenter markdown -i temp -o docs"
   },
