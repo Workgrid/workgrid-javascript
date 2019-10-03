@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime'
 import ms from 'ms'
 import queue from './queue'
 import Courier from '@workgrid/courier'
