@@ -1,8 +1,9 @@
-import request, { RequestOptions, RequestResponse, RequestError } from '@workgrid/request'
+import request, { RequestOptions, RequestResponse /*, RequestError*/ } from '@workgrid/request'
 import validate from '@workgrid/webhook-validation'
 import { merge } from 'lodash'
 
-export { RequestResponse, RequestError }
+// TODO: Figure out why rollup crashes
+// export { RequestResponse, RequestError }
 
 /**
  * Interface representing a job
