@@ -17,19 +17,30 @@ const visualizer = require('rollup-plugin-visualizer')
 const builtinModules = require('builtin-modules')
 const { _, keys, split, includes } = require('lodash')
 
+const fs = require('fs-extra')
 const path = require('path')
 const semver = require('semver')
 const readPkgUp = require('read-pkg-up')
+const browserify = require('browserify')
+const { promisify } = require('util')
 const { get, upperFirst, camelCase } = require('lodash')
 
-module.exports = input => {
+module.exports = async input => {
   const source = path.resolve(process.cwd(), input)
   const cwd = path.dirname(source)
 
-  const { packageJson: pkg } = readPkgUp.sync({ cwd })
+  const { packageJson: pkg } = await readPkgUp({ cwd })
   const amdName = pkg.amdName || upperFirst(camelCase(pkg.name))
   const node = semver.major(semver.minVersion(get(pkg, 'engines.node', '8.0.0')))
-  const dependencies = [...keys(pkg.dependencies), ...keys(pkg.peerDependencies)]
+  const externalDependencies = [...keys(pkg.dependencies), ...keys(pkg.peerDependencies)]
+
+  // crypto-browserify
+  const cryptoBrowserify = require.resolve('crypto-browserify')
+  const cryptoBrowserifyPath = path.resolve(__dirname, 'temp/crypto-browserify.js')
+
+  const b = browserify([cryptoBrowserify], { standalone: 'crypto-browserify' })
+  await promisify(b.bundle.bind(b))().then(data => fs.outputFile(cryptoBrowserifyPath, data))
+  // crypto-browserify
 
   return [
     // cjs
@@ -43,7 +54,7 @@ module.exports = input => {
         }
       ],
       preserveSymlinks: true, // yarn workspaces
-      external: id => includes([...builtinModules, ...dependencies], split(id, '/')[0]),
+      external: id => includes([...builtinModules, ...externalDependencies], split(id, '/')[0]),
       plugins: [
         resolve({
           // extensions: ['.ts', '.js'],
@@ -108,7 +119,7 @@ module.exports = input => {
       preserveSymlinks: true, // yarn workspaces
       plugins: [
         alias({
-          entries: [{ find: 'crypto', replacement: require.resolve('@workgrid/crypto') }]
+          entries: [{ find: 'crypto', replacement: cryptoBrowserifyPath }]
         }),
 
         resolve({
