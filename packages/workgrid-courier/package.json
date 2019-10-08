@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@types/debug": "^4.1.5",
-    "@types/lodash": "^4.14.141",
+    "@types/lodash": "^4.14.142",
     "@types/ms": "^0.7.31",
     "@types/uuid": "^3.4.5"
   },

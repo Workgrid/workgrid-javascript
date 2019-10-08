@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@types/jwt-decode": "^2.2.1",
-    "@types/lodash": "^4.14.141",
+    "@types/lodash": "^4.14.142",
     "@types/ms": "^0.7.31"
   },
   "eslintConfig": {
