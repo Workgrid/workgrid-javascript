@@ -15,7 +15,7 @@ const bundleSize = require('rollup-plugin-bundle-size')
 const visualizer = require('rollup-plugin-visualizer')
 
 const builtinModules = require('builtin-modules')
-const { _, keys, split, includes } = require('lodash')
+const { _, keys, includes } = require('lodash')
 
 const path = require('path')
 const semver = require('semver')
@@ -43,7 +43,7 @@ module.exports = input => {
         }
       ],
       preserveSymlinks: true, // yarn workspaces
-      external: id => includes([...builtinModules, ...dependencies], split(id, '/')[0]),
+      external: id => includes([...builtinModules, ...dependencies], id.match('(@[^/]+/[^/]+|[^/]+)')[0]),
       plugins: [
         resolve({
           // extensions: ['.ts', '.js'],
