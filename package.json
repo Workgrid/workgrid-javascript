@@ -12,7 +12,6 @@
     "pretest": "yarn build",
     "precommit": "yarn version-check && lint-staged",
     "prerelease": "yarn version-check",
-    "postinstall": "wsrun --exclude-missing postinstall",
     "version-check": "node ./scripts/version-check.js"
   },
   "repository": {
