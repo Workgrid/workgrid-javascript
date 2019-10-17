@@ -7,7 +7,7 @@ const resolve = require('rollup-plugin-node-resolve')
 const commonjs = require('rollup-plugin-commonjs')
 
 const json = require('rollup-plugin-json')
-const typescript = require('rollup-plugin-typescript')
+const typescript = require('@wessberg/rollup-plugin-ts')
 const babel = require('rollup-plugin-babel')
 
 // const { terser } = require('rollup-plugin-terser')
@@ -57,24 +57,22 @@ module.exports = input => {
 
         json(),
         typescript({
-          target: 'ES2015',
-          module: 'ES2015'
-        }),
-        babel({
-          compact: false,
-          extensions: ['.ts', '.js'],
+          transpiler: 'babel',
+          browserslist: false,
           exclude: [/node_modules/],
-          presets: [
-            [
-              require.resolve('@babel/preset-env'),
-              { modules: false, exclude: ['transform-typeof-symbol'], targets: { node } }
+          babelConfig: {
+            presets: [
+              [
+                require.resolve('@babel/preset-env'),
+                { modules: false, exclude: ['transform-typeof-symbol'], targets: { node } }
+              ]
+              // [require.resolve('@babel/preset-typescript')]
+            ],
+            plugins: [
+              // [require.resolve('@babel/plugin-proposal-class-properties')],
+              [require.resolve('babel-plugin-lodash')]
             ]
-            // [require.resolve('@babel/preset-typescript')]
-          ],
-          plugins: [
-            // [require.resolve('@babel/plugin-proposal-class-properties')],
-            [require.resolve('babel-plugin-lodash')]
-          ]
+          }
         }),
         babel({
           compact: false,
@@ -128,23 +126,19 @@ module.exports = input => {
 
         json(),
         typescript({
-          target: 'ES2015',
-          module: 'ES2015'
-        }),
-        babel({
-          compact: false,
-          runtimeHelpers: true,
-          extensions: ['.ts', '.js'],
+          transpiler: 'babel',
           exclude: [/node_modules/],
-          presets: [
-            [require.resolve('@babel/preset-env'), { modules: false, exclude: ['transform-typeof-symbol'] }]
-            // ['@babel/preset-typescript']
-          ],
-          plugins: [
-            [require.resolve('@babel/plugin-transform-runtime'), { corejs: 3, useESModules: true }],
-            // [require.resolve('@babel/plugin-proposal-class-properties')],
-            [require.resolve('babel-plugin-lodash')]
-          ]
+          babelConfig: {
+            presets: [
+              [require.resolve('@babel/preset-env'), { modules: false, exclude: ['transform-typeof-symbol'] }]
+              // ['@babel/preset-typescript']
+            ],
+            plugins: [
+              [require.resolve('@babel/plugin-transform-runtime'), { corejs: 3, useESModules: true }],
+              // [require.resolve('@babel/plugin-proposal-class-properties')],
+              [require.resolve('babel-plugin-lodash')]
+            ]
+          }
         }),
         babel({
           compact: false,
