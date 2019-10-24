@@ -329,7 +329,7 @@ export default class Connector {
   public async getCategories(categoryOptions?: { location?: string }): Promise<{ items: Category[] }> {
     const response = await this.request({
       method: 'get',
-      url: '/v2/sources',
+      url: '/v2/categories',
       params: categoryOptions
     })
     return response.data as { items: Category[] }
