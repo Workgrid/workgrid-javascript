@@ -263,13 +263,13 @@ export default class Connector {
     cursor?: string
     eventStatus?: string
     eventType?: string
-  }): Promise<Event[]> {
+  }): Promise<{ items: Event[]; cursor?: string }> {
     const response = await this.request({
       method: 'get',
       url: '/v2/events',
       params: eventOptions
     })
-    return response.data as Event[]
+    return response.data as { items: Event[]; cursor?: string }
   }
 
   /**
@@ -310,13 +310,13 @@ export default class Connector {
    *
    * @beta
    */
-  public async getSources(sourceOptions?: {}): Promise<Source[]> {
+  public async getSources(sourceOptions?: {}): Promise<{ items: Source[] }> {
     const response = await this.request({
       method: 'get',
       url: '/v2/sources',
       params: sourceOptions
     })
-    return response.data as Source[]
+    return response.data as { items: Source[] }
   }
 
   /**
@@ -326,13 +326,13 @@ export default class Connector {
    *
    * @beta
    */
-  public async getCategories(categoryOptions?: { location?: string }): Promise<Category[]> {
+  public async getCategories(categoryOptions?: { location?: string }): Promise<{ items: Category[] }> {
     const response = await this.request({
       method: 'get',
       url: '/v2/sources',
       params: categoryOptions
     })
-    return response.data as Category[]
+    return response.data as { items: Category[] }
   }
 
   /**
