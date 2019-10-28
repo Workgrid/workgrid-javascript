@@ -48,10 +48,10 @@ describe('@workgrid/connector', () => {
 
   describe('getEvents', () => {
     test('getEvents returns expected data on successful call', async () => {
-      mockedRequest.mockResolvedValue({ data: [{ eventId: '1234' }] })
+      mockedRequest.mockResolvedValue({ data: { items: [{ eventId: '1234' }] } })
 
       const promise = connector.getEvents()
-      await expect(promise).resolves.toEqual([{ eventId: '1234' }])
+      await expect(promise).resolves.toEqual({ items: [{ eventId: '1234' }] })
     })
   })
 
@@ -70,6 +70,24 @@ describe('@workgrid/connector', () => {
 
       const promise = connector.updateEventStatus('1234', 'processed')
       await expect(promise).resolves.toEqual({ eventId: '1234' })
+    })
+  })
+
+  describe('getSources', () => {
+    test('getSources returns expected data on successful call', async () => {
+      mockedRequest.mockResolvedValue({ data: { items: [{ key: 'source' }] } })
+
+      const promise = connector.getSources()
+      await expect(promise).resolves.toEqual({ items: [{ key: 'source' }] })
+    })
+  })
+
+  describe('getCategories', () => {
+    test('getCategories returns expected data on successful call', async () => {
+      mockedRequest.mockResolvedValue({ data: { items: [{ key: 'category' }] } })
+
+      const promise = connector.getCategories()
+      await expect(promise).resolves.toEqual({ items: [{ key: 'category' }] })
     })
   })
 

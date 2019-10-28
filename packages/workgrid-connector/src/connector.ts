@@ -60,6 +60,65 @@ export interface Event {
 }
 
 /**
+ * Interface representing a source
+ *
+ * @beta
+ */
+export interface Source {
+  /**
+   * The source id
+   */
+  id: string
+
+  /**
+   * The source key
+   */
+  key: string
+
+  /**
+   * The source title
+   */
+  title: string
+
+  /**
+   * The source iconUrl
+   */
+  iconUrl: string
+
+  /**
+   * Whether this is the default source
+   */
+  isDefault: boolean
+}
+
+/**
+ * Interface representing a category
+ *
+ * @beta
+ */
+export interface Category {
+  /**
+   * The category id
+   */
+  id: string
+
+  /**
+   * The category key
+   */
+  key: string
+
+  /**
+   * The category title
+   */
+  title: string
+
+  /**
+   * The category location
+   */
+  location: string
+}
+
+/**
  * Interface representing Connector parameters
  *
  * @beta
@@ -204,14 +263,13 @@ export default class Connector {
     cursor?: string
     eventStatus?: string
     eventType?: string
-  }): Promise<Event[]> {
-    const newResponse = await this.request({
+  }): Promise<{ items: Event[]; cursor?: string }> {
+    const response = await this.request({
       method: 'get',
-
       url: '/v2/events',
-      data: eventOptions
+      params: eventOptions
     })
-    return newResponse.data as Event[]
+    return response.data as { items: Event[]; cursor?: string }
   }
 
   /**
@@ -244,6 +302,37 @@ export default class Connector {
       data: { status }
     })
     return response.data as Event
+  }
+
+  /**
+   * Get information about sources
+   * @returns - the sources available to the connector
+   *
+   * @beta
+   */
+  public async getSources(sourceOptions?: {}): Promise<{ items: Source[] }> {
+    const response = await this.request({
+      method: 'get',
+      url: '/v2/sources',
+      params: sourceOptions
+    })
+    return response.data as { items: Source[] }
+  }
+
+  /**
+   * Get information about categories
+   * @param location - The location to filter categories by
+   * @returns - the categories available to the connector
+   *
+   * @beta
+   */
+  public async getCategories(categoryOptions?: { location?: string }): Promise<{ items: Category[] }> {
+    const response = await this.request({
+      method: 'get',
+      url: '/v2/categories',
+      params: categoryOptions
+    })
+    return response.data as { items: Category[] }
   }
 
   /**

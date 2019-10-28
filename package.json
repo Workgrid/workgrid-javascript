@@ -11,6 +11,7 @@
     "release": "wsrun --stages --fast-exit --collect-logs --bin node $PWD/scripts/release.js",
     "pretest": "yarn build",
     "precommit": "yarn version-check && lint-staged",
+    "type-check": "wsrun --exclude-missing type-check",
     "prerelease": "yarn version-check",
     "postinstall": "wsrun --exclude-missing postinstall",
     "version-check": "node ./scripts/version-check.js"
