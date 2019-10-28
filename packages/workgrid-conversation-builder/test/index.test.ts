@@ -1,5 +1,5 @@
-import ConversationBuilder from "../src/conversation-builder";
-import Response, {Conversation} from "../src/response"
+import ConversationBuilder from '../src/conversation-builder'
+import Response, { Conversation } from '../src/response'
 
 const defaults = {
   title: 'jest',
@@ -13,8 +13,6 @@ const defaults = {
 }
 
 describe('@workgrid/conversation-builder', () => {
-
-
   beforeEach(() => {
     jest.resetModules()
     jest.resetAllMocks()
@@ -150,7 +148,9 @@ describe('@workgrid/conversation-builder', () => {
     test('will convert Lex Response to Workgrid response', () => {
       // Nested property-matchers don't work well, using separate snapshots instead
 
-      expect(builder.convertLexResponse({message: lexResponse.message, responseCard: lexResponse.responseCard})).toMatchSnapshot({
+      expect(
+        builder.convertLexResponse({ message: lexResponse.message, responseCard: lexResponse.responseCard })
+      ).toMatchSnapshot({
         title: expect.stringMatching('Lex Title'),
         text: expect.stringMatching('hi, this is the text'),
         image: expect.stringMatching(
