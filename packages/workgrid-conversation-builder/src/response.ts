@@ -1,4 +1,5 @@
 import { isEmpty } from 'lodash'
+
 export interface Conversation {
   image?: string
   title?: string
@@ -9,6 +10,7 @@ export interface Conversation {
   card?: boolean | false
   text?: string
 }
+
 export default class Response {
   image?: string
   title?: string

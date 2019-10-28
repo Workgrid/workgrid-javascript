@@ -1,17 +1,31 @@
 import { assign, cloneDeep } from 'lodash'
 import Response from './response'
-
-interface LexResponse {
+/**
+ * Interface representing AWS Lex response
+ *
+ * @beta
+ */
+export interface LexResponse {
   message: string
   responseCard: { genericAttachments: ResponseCard[] }
 }
-interface ResponseCard {
+/**
+ * Interface representing AWS Lex response card object
+ *
+ * @beta
+ */
+export interface ResponseCard {
   title: string
   subTitle: string
   imageUrl: string
   buttons: { text: string }[]
   attachmentLinkUrl: string
 }
+/**
+ * ConversationBuilder with helper methods for constructing a valid Workgrid conversation response.
+ *
+ * @beta
+ */
 export default class ConversationBuilder {
   image?: string
   title?: string

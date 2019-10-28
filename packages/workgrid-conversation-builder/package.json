@@ -1,8 +1,8 @@
 {
   "name": "@workgrid/conversation-builder",
   "version": "0.0.1",
-  "main": "dist/connector.js",
-  "types": "dist/connector.d.ts",
+  "main": "dist/conversation-builder.js",
+  "types": "dist/conversation-builder.ts",
   "files": [
     "dist",
     "docs"

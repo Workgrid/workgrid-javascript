@@ -1,3 +1,3 @@
 import config from 'shared/rollup.config'
 
-export default config('src/index.ts')
+export default config('src/conversation-builder.ts')

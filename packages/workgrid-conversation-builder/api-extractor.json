@@ -1,4 +1,4 @@
 {
   "extends": "shared/api-extractor.json",
-  "mainEntryPointFilePath": "dist/index.d.ts"
+  "mainEntryPointFilePath": "dist/conversation-builder.d.ts"
 }
