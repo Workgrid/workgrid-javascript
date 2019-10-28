@@ -1,3 +1,6 @@
+import ConversationBuilder from "../src/conversation-builder";
+import Response, {Conversation} from "../src/response"
+
 const defaults = {
   title: 'jest',
   text: 'Workgrid - The Intelligent Workplace Platform',
@@ -10,20 +13,16 @@ const defaults = {
 }
 
 describe('@workgrid/conversation-builder', () => {
-  let Response
-  let ConversationBuilder
+
 
   beforeEach(() => {
     jest.resetModules()
     jest.resetAllMocks()
-
-    Response = require('../src/').Response
-    ConversationBuilder = require('../src').default
   })
 
   describe('Response', () => {
-    let config
-    let create
+    let config: Conversation
+    let create: () => Response
 
     beforeEach(() => {
       config = {}
@@ -66,7 +65,7 @@ describe('@workgrid/conversation-builder', () => {
   })
 
   describe('ConversationBuilder', () => {
-    let builder
+    let builder: ConversationBuilder
 
     beforeEach(() => {
       builder = new ConversationBuilder()
@@ -95,7 +94,7 @@ describe('@workgrid/conversation-builder', () => {
   })
 
   describe('ConversationBuilder - text only', () => {
-    let builder
+    let builder: ConversationBuilder
 
     beforeEach(() => {
       builder = new ConversationBuilder()
@@ -112,7 +111,7 @@ describe('@workgrid/conversation-builder', () => {
   })
 
   describe('ConversationBuilder - Lex dialog hook response', () => {
-    let builder
+    let builder: ConversationBuilder
     const lexResponse = {
       message: 'hi, this is the text',
       messageFormat: 'CustomPayload',

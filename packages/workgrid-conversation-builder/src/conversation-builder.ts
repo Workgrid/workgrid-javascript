@@ -1,11 +1,11 @@
 import { assign, cloneDeep } from 'lodash'
 import Response from './response'
 
-interface lexResponse {
+interface LexResponse {
   message: string;
-  responseCard: {genericAttachments: responseCard[]};
+  responseCard: {genericAttachments: ResponseCard[]};
 }
-interface responseCard {
+interface ResponseCard {
   title: string,
   subTitle: string,
   imageUrl: string,
@@ -65,7 +65,7 @@ export default class ConversationBuilder  {
     return assign(this, cloneDeep(config))
   }
 
-  convertLexResponse({message, responseCard}: lexResponse) {
+  convertLexResponse({message, responseCard}: LexResponse) {
     this.withText(message)
 
     if (responseCard) {
