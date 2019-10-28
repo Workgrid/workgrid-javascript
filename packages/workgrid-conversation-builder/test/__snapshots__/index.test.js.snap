@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`@workgrid/conversation-builder ConversationBuilder - Lex dialog hook response will convert Lex Response to Workgrid response 1`] = `
+Object {
+  "card": true,
+  "detail": StringMatching /This is the subtitle/,
+  "image": StringMatching /https:\\\\/\\\\/www\\.google\\.com\\\\/images\\\\/branding\\\\/googlelogo\\\\/1x\\\\/googlelogo_color_272x92dp\\.png/,
+  "options": ArrayContaining [
+    "Lemon",
+    "Raspberry",
+    "Raspberry",
+  ],
+  "text": StringMatching /hi, this is the text/,
+  "title": StringMatching /Lex Title/,
+  "url": StringMatching /Link to attachment/,
+}
+`;
+
+exports[`@workgrid/conversation-builder ConversationBuilder - text only will create a new Response 1`] = `
+Object {
+  "card": false,
+  "text": StringMatching /Workgrid - The Intelligent Workplace Platform/,
+}
+`;
+
+exports[`@workgrid/conversation-builder ConversationBuilder will create a new Response 1`] = `
+Object {
+  "card": false,
+  "detail": StringMatching /Unleash the power of your workforce/,
+  "image": StringMatching /https:\\\\/\\\\/www\\.messengerpeople\\.com\\\\/wp-content\\\\/uploads\\\\/2018\\\\/08\\\\/knowhow-chatbots2-5bots\\.png/,
+  "options": ArrayContaining [
+    "Option 1",
+    "Option 2",
+    "Option 3",
+  ],
+  "suggestions": ArrayContaining [
+    "Suggestion 1",
+    "Suggestion 2",
+    "Suggestion 3",
+  ],
+  "text": StringMatching /Workgrid - The Intelligent Workplace Platform/,
+  "title": StringMatching /jest/,
+  "url": StringMatching /https:\\\\/\\\\/www\\.workgrid\\.com\\\\//,
+}
+`;
+
+exports[`@workgrid/conversation-builder Response will create a new Response 1`] = `
+Object {
+  "card": false,
+  "detail": StringMatching /Unleash the power of your workforce/,
+  "image": StringMatching /https:\\\\/\\\\/www\\.messengerpeople\\.com\\\\/wp-content\\\\/uploads\\\\/2018\\\\/08\\\\/knowhow-chatbots2-5bots\\.png/,
+  "options": ArrayContaining [
+    "Option 1",
+    "Option 2",
+    "Option 3",
+  ],
+  "suggestions": ArrayContaining [
+    "Suggestion 1",
+    "Suggestion 2",
+    "Suggestion 3",
+  ],
+  "text": StringMatching /Workgrid - The Intelligent Workplace Platform/,
+  "title": StringMatching /jest/,
+  "url": StringMatching /https:\\\\/\\\\/www\\.workgrid\\.com\\\\//,
+}
+`;

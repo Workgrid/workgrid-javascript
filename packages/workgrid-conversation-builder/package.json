@@ -1,0 +1,35 @@
+{
+  "name": "@workgrid/conversation-builder",
+  "version": "0.0.1",
+  "main": "dist/connector.js",
+  "types": "dist/connector.d.ts",
+  "files": [
+    "dist",
+    "docs"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist docs temp",
+    "build": "yarn clean && rollup -c",
+    "prepack": "yarn api:extract && yarn api:document",
+    "postbuild": "tsc --emitDeclarationOnly",
+    "type-check": "tsc --noEmit",
+    "api:extract": "api-extractor run",
+    "api:document": "api-documenter markdown -i temp -o docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Workgrid/workgrid-javascript"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.143"
+  },
+  "eslintConfig": {
+    "extends": [
+      "./eslint.config.js"
+    ]
+  },
+  "license": "ISC"
+}
