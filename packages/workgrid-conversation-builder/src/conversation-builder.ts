@@ -1,4 +1,4 @@
-import { assign, cloneDeep } from 'lodash'
+import { assign, cloneDeep, map } from 'lodash'
 import Response from './response'
 /**
  * Interface representing AWS Lex response
@@ -87,7 +87,7 @@ export default class ConversationBuilder {
       this.withTitle(responseCard.genericAttachments[0].title)
       this.withDetail(responseCard.genericAttachments[0].subTitle)
       this.withImage(responseCard.genericAttachments[0].imageUrl)
-      this.withOptions(responseCard.genericAttachments[0].buttons.map(button => button.text))
+      this.withOptions(map(responseCard.genericAttachments[0].buttons, 'text'))
       this.withUrl(responseCard.genericAttachments[0].attachmentLinkUrl)
     }
     return this.build()

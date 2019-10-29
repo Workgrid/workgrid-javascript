@@ -7,7 +7,7 @@ export interface Conversation {
   detail?: string
   options?: string[]
   suggestions?: string[]
-  card?: boolean | false
+  card?: boolean
   text?: string
 }
 
