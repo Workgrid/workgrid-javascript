@@ -1,6 +1,6 @@
 # Conversation Builder
 
-![Latest version](https://shields.lmig.com/npm/version/@workgrid/conversation-builder.svg)
+![Latest version](https://img.shields.io/npm/v/@workgrid/conversation-builder.svg)
 
 The <b>ConversationBuilder</b> includes helper methods for constructing the response.
 A Response may contain multiple elements, and the helper methods aid in generating responses, reducing the need to initialize and set the elements of each response.
