@@ -25,7 +25,7 @@
   ],
   "dependencies": {
     "@microsoft/api-documenter": "^7.4.8",
-    "@microsoft/api-extractor": "^7.4.6",
+    "@microsoft/api-extractor": "^7.6.2",
     "@types/jest": "^24.0.18",
     "@types/node": "^12.7.9",
     "@typescript-eslint/eslint-plugin": "^2.3.2",
