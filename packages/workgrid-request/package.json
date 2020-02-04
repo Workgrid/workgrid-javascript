@@ -27,8 +27,8 @@
     "mem": "^5.1.1"
   },
   "devDependencies": {
-    "@types/axios-token-interceptor": "^0.1.2",
-    "axios-mock-adapter": "^1.17.0"
+    "@types/axios-token-interceptor": "0.1.2",
+    "axios-mock-adapter": "1.17.0"
   },
   "eslintConfig": {
     "extends": [
