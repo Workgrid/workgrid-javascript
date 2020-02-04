@@ -3,5 +3,11 @@
     "config:base"
   ],
   "masterIssue": true,
-  "rangeStrategy": "bump"
+  "rangeStrategy": "bump",
+  "packageRules": [
+    {
+      "managers": ["nvm"],
+      "enabled": false
+    }
+  ]
 }
