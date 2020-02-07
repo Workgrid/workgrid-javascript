@@ -54,8 +54,8 @@ export interface MicroAppOptions {
  * @beta
  */
 class MicroApp {
-  private audience: string
-  private id: string
+  private audience?: string
+  private id?: string
   public courier: any // for testing :(
   private queue: any
   private ro: any
