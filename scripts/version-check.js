@@ -1,4 +1,4 @@
-const chalk = require('chalk').default
+const chalk = require('chalk')
 const { resolve } = require('path')
 const { readPkg, getWorkspaces, getWorkspaceConfig } = require('./utils')
 

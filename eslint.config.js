@@ -13,17 +13,17 @@ module.exports = {
     },
 
     {
-      files: ['*.js'],
+      files: ['*.{js,ts}'],
       rules: {
-        '@typescript-eslint/no-var-requires': 'off'
+        '@typescript-eslint/no-var-requires': 'off',
+        '@typescript-eslint/no-empty-function': 'off'
       }
     },
     {
       files: ['*.test.{js,ts}'],
       extends: ['plugin:jest/recommended'],
       rules: {
-        '@typescript-eslint/explicit-function-return-type': 'off',
-        '@typescript-eslint/no-var-requires': 'off'
+        '@typescript-eslint/explicit-function-return-type': 'off'
       }
     }
   ]
