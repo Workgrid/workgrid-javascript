@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/micro-app",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "main": "dist/micro-app.js",
   "types": "dist/micro-app.d.ts",
   "browser": "dist/micro-app.umd.js",
