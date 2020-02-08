@@ -1573,7 +1573,7 @@ axios-mock-adapter@^1.17.0:
   dependencies:
     deep-equal "^1.0.1"
 
-axios-oauth-client@^1.2.0:
+axios-oauth-client@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/axios-oauth-client/-/axios-oauth-client-1.2.1.tgz#503041a0da65927cea5ec90cc8fb83fb94c691b1"
   integrity sha512-Fbg4I68R4KxBDlEUQPKNXEZtbZs3xfL98Tr5r3Xcl7LKvHJssg1v2KKnQ3QARCp+FK1IsOymXvHluPaQZBL10w==
