@@ -80,7 +80,8 @@ const createInstance = mem(
     const interceptor = oauth.interceptor(tokenProvider, oauthClient)
     instance.interceptors.request.use(interceptor)
     return instance
-  }
+  },
+  { cacheKey: JSON.stringify }
 )
 
 /**
