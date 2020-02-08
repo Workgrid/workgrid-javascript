@@ -46,7 +46,7 @@
     "rollup": "^1.22.0",
     "ts-jest": "^25.2.0",
     "tslib": "^1.10.0",
-    "typescript": "^3.6.3",
+    "typescript": "^3.7.5",
     "wsrun": "^5.2.0"
   },
   "eslintConfig": {
