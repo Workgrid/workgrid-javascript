@@ -35,7 +35,7 @@ export interface MicroAppOptions {
   /**
    * The target audience for the user token
    */
-  audience: string
+  audience?: string
 
   /**
    * Custom error handler
@@ -54,15 +54,15 @@ export interface MicroAppOptions {
  * @beta
  */
 class MicroApp {
-  private audience: string
-  private id: string
+  private audience?: string
+  private id?: string
   public courier: any // for testing :(
   private queue: any
   private ro: any
   private token?: string
 
   public constructor({ audience, onError, id }: MicroAppOptions) {
-    if (!audience) throw new Error('Missing required parameter: options.audience')
+    if (audience) console && console.warn('Providing an audience is deprecated')
 
     this.audience = audience
     this.id = id || audience
