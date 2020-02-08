@@ -1210,10 +1210,10 @@
   resolved "https://registry.yarnpkg.com/@types/argparse/-/argparse-1.0.33.tgz#2728669427cdd74a99e53c9f457ca2866a37c52d"
   integrity sha1-JyhmlCfN10qZ5TyfRXyihmo3xS0=
 
-"@types/axios-token-interceptor@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@types/axios-token-interceptor/-/axios-token-interceptor-0.1.2.tgz#78d1f520c2d9da7b492013f834111efc1979513c"
-  integrity sha1-eNH1IMLZ2ntJIBP4NBEe/Bl5UTw=
+"@types/axios-token-interceptor@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@types/axios-token-interceptor/-/axios-token-interceptor-0.2.0.tgz#4ac8cbb39cfc5606ce8eead2d6773b58c5f8ce55"
+  integrity sha512-E1bQnFuRU+/yLEr/BkaBnAmFID3Z4Jud9/UMyJBPZCYV9FRv9xxpiFNotbEr0iSNwRzvdCNRQ/MjxKLb+hgDQA==
   dependencies:
     axios "*"
 
@@ -1735,12 +1735,12 @@ axios-oauth-client@^1.2.0:
   dependencies:
     qs "^6.8.0"
 
-axios-token-interceptor@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/axios-token-interceptor/-/axios-token-interceptor-0.1.0.tgz#e848bbc57fa694ddb83e4ad0982db3304b88a926"
-  integrity sha1-6Ei7xX+mlN24PkrQmC2zMEuIqSY=
+axios-token-interceptor@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/axios-token-interceptor/-/axios-token-interceptor-0.2.0.tgz#07e79f01f414c196bc84b07556cc84e02ed676bd"
+  integrity sha512-la74OEsXBH1IS9yI6p2oTIynPtBzs0PVUSOwOBgFg2kBwTeDqQ+YJ6jaOWxsTYyqJO510OzHTfnzAn3GFuf9xA==
   dependencies:
-    lock "^0.1.4"
+    lock "^1.1.0"
 
 axios@*, axios@^0.19.0:
   version "0.19.0"
@@ -4903,10 +4903,10 @@ locate-path@^5.0.0:
   dependencies:
     p-locate "^4.1.0"
 
-lock@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/lock/-/lock-0.1.4.tgz#fec7deaef17e7c3a0a55e1da042803e25d91745d"
-  integrity sha1-/sfervF+fDoKVeHaBCgD4l2RdF0=
+lock@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/lock/-/lock-1.1.0.tgz#53157499d1653b136ca66451071fca615703fa55"
+  integrity sha1-UxV0mdFlOxNspmRRBx/KYVcD+lU=
 
 lodash.get@^4.0.0:
   version "4.4.2"
