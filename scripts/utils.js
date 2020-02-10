@@ -10,7 +10,8 @@ const git = async (args, opts) => {
 
 const yarn = async (args, opts) => {
   const result = await execa('yarn', [...args, '--json'], opts)
-  return JSON.parse(result.stdout || result.stderr).data
+  const { type, data } = JSON.parse(result.stdout || result.stderr)
+  return type != null ? data : result.stdout || resolve.stderr
 }
 
 const isPublished = async (name, version) => {
