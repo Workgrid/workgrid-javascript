@@ -15,7 +15,7 @@ describe('@workgrid/micro-app', () => {
 
   describe('constructor', () => {
     test('will create a new instance of courier', () => {
-      const microApp = new MicroApp({ audience: 'https://www.workgrid.com' })
+      const microApp = new MicroApp()
       expect(microApp.courier).toBeInstanceOf(Courier)
     })
   })

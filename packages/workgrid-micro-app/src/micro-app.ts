@@ -61,7 +61,7 @@ class MicroApp {
   private ro: any
   private token?: string
 
-  public constructor({ audience, onError, id }: MicroAppOptions) {
+  public constructor({ audience, onError, id }: MicroAppOptions = {}) {
     if (audience) console && console.warn('Providing an audience is deprecated')
 
     this.audience = audience
