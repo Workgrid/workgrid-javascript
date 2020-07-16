@@ -37,7 +37,7 @@
     "eslint-plugin-prettier": "^3.1.2",
     "execa": "^4.0.0",
     "fs-extra": "^8.1.0",
-    "husky": "^4.2.1",
+    "husky": "^4.2.5",
     "jest": "^25.1.0",
     "jest-junit": "^10.0.0",
     "lint-staged": "^10.0.7",
