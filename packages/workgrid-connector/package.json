@@ -23,7 +23,7 @@
   "dependencies": {
     "@workgrid/request": "^0.0.7",
     "@workgrid/webhook-validation": "^0.0.5",
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.19"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.149"
