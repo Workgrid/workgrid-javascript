@@ -2,25 +2,19 @@ interface QueueArray<T> extends Array<T> {
   flushed?: boolean
 }
 
-interface Queue {
-  queue: QueueArray<Function>
-  push: Function
-  flush: Function
-}
-
-export default (): Queue => {
-  const queue: QueueArray<Function> = []
+export default () => {
+  const queue: QueueArray<() => void> = []
 
   return {
     queue,
 
-    push(fn: Function): void {
+    push(fn: () => void) {
       if (queue.flushed) fn()
       else queue.push(fn)
     },
-    flush(): void {
+    flush() {
       queue.flushed = true
-      queue.map((fn: Function): void => fn())
-    }
+      queue.map((fn) => fn())
+    },
   }
 }

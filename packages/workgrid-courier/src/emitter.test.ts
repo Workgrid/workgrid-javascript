@@ -2,7 +2,7 @@ import emitter from './emitter'
 
 describe('emitter', () => {
   // let emitter
-  let getHandlers: Function
+  let getHandlers: (...args: any[]) => any
 
   beforeEach(() => {
     jest.resetModules()

@@ -14,7 +14,7 @@ const { getWorkspaces, getWorkspaceConfig } = require('./utils')
     console.log(name)
     await execa.node(require.resolve('./release'), args, {
       cwd: path.resolve(workspaceRootFolder, location),
-      stdio: 'inherit'
+      stdio: 'inherit',
     })
   }
 })()

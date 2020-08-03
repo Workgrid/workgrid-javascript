@@ -13,7 +13,7 @@ const EVENTS = {
   SHOW_DETAIL: 'showDetail',
   HIDE_DETAIL: 'hideDetail',
   UPDATE_TITLE: 'updateTitle',
-  REFRESH_TOKEN: 'refreshToken'
+  REFRESH_TOKEN: 'refreshToken',
 }
 
 const READY_TIMEOUT = ms('10s')
@@ -40,7 +40,7 @@ export interface MicroAppOptions {
   /**
    * Custom error handler
    */
-  onError?: Function
+  onError?: (...args: any[]) => any
 
   /**
    * Custom log group
@@ -57,7 +57,7 @@ class MicroApp {
   private audience?: string
   private id?: string
   public courier: any // for testing :(
-  private queue: any
+  private queue: ReturnType<typeof queue>
   private ro: any
   private token?: string
 
@@ -93,7 +93,7 @@ class MicroApp {
   /**
    * Start the resize observer
    */
-  private subscribe = (): Function => {
+  private subscribe = (): (() => void) => {
     this.ro.observe(window.document.documentElement)
     return this.unsubscribe // why not... lol
   }
@@ -123,7 +123,7 @@ class MicroApp {
     if (this.token && !isExpired(this.token)) return this.token
     return (this.token = (await this.send({
       type: EVENTS.REFRESH_TOKEN,
-      payload: { audience: this.audience }
+      payload: { audience: this.audience },
     })) as string)
   }
 
@@ -164,8 +164,8 @@ class MicroApp {
   /**
    * Wrap the event sender in a queue that is flushed when the host is ready.
    */
-  public send = (...args: [any]): Promise<any> => {
-    return new Promise((resolve: Function, reject: Function): void => {
+  public send = (...args: any[]): Promise<any> => {
+    return new Promise((resolve, reject) => {
       this.queue.push((): void => {
         this.courier.send(...args).then(resolve, reject)
       })

@@ -1,7 +1,7 @@
 import emitter from './emitter'
 import niceTry from 'nice-try'
 import debug from 'debug/dist/debug'
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 import ms from 'ms'
 import { assign, includes } from 'lodash'
 
@@ -56,8 +56,8 @@ export default class Courier {
   private timeout: number
   private sources: any[]
   private hosts: any[]
-  private internal: any
-  private emitter: any
+  private internal: ReturnType<typeof emitter>
+  private emitter: ReturnType<typeof emitter>
 
   public static debug = debug // TODO: Replace with `logger` instance variable
 
@@ -124,7 +124,7 @@ export default class Courier {
   /**
    * Start listening for an event.
    */
-  public on = (type: string, handler: Function): void => {
+  public on = (type: string, handler: (...args: any[]) => any): void => {
     this.debug('on', { type, handler })
 
     this.emitter.on(type, handler)
@@ -133,7 +133,7 @@ export default class Courier {
   /**
    * Stop listening for an event.
    */
-  public off = (type: string, handler?: Function): void => {
+  public off = (type: string, handler?: (...args: any[]) => any): void => {
     this.debug('off', { type, handler })
 
     this.emitter.off(type, handler)
@@ -156,7 +156,7 @@ export default class Courier {
     type,
     payload,
     target,
-    timeout
+    timeout,
   }: {
     type: string
     payload?: any
@@ -168,7 +168,7 @@ export default class Courier {
     const message = { id: uuid(), type, payload }
     const event = { data: message } // for errors
 
-    const promise = new Promise((resolve: Function, reject: Function): void => {
+    const promise = new Promise((resolve, reject) => {
       const timeoutId = setTimeout((): void => {
         this.internal.off(message.id)
         reject(this.error('APP-14', { event }))
@@ -278,7 +278,7 @@ export default class Courier {
     if (data && data.type) {
       this.emitter.invoke(
         data.type,
-        async (handler: Function): Promise<void> => {
+        async (handler: (...args: any[]) => any): Promise<void> => {
           let payload
           let error
 

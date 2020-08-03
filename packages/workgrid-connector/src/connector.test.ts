@@ -20,7 +20,7 @@ describe('@workgrid/connector', () => {
       clientId: 'client-id',
       clientSecret: 'client-secret',
       grantType: 'client_credentials',
-      scopes: ['com.workgrid.api/notifications.all']
+      scopes: ['com.workgrid.api/notifications.all'],
     })
 
     // TODO: Figure out jest.Mocked<typeof request>
