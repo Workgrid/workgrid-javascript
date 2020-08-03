@@ -40,6 +40,7 @@ module.exports = (input) => {
           file: pkg.main,
           format: 'cjs',
           sourcemap: true,
+          exports: 'auto',
         },
       ],
       preserveSymlinks: true, // yarn workspaces
@@ -57,8 +58,8 @@ module.exports = (input) => {
 
         json(),
         typescript({
-          target: 'ES2015',
-          module: 'ES2015',
+          target: 'ESNEXT',
+          module: 'ESNEXT',
         }),
         babel({
           compact: false,
@@ -103,6 +104,7 @@ module.exports = (input) => {
           format: 'umd',
           name: amdName,
           sourcemap: true,
+          exports: 'auto',
         },
       ],
       preserveSymlinks: true, // yarn workspaces
@@ -128,8 +130,8 @@ module.exports = (input) => {
 
         json(),
         typescript({
-          target: 'ES2015',
-          module: 'ES2015',
+          target: 'ESNEXT',
+          module: 'ESNEXT',
         }),
         babel({
           compact: false,

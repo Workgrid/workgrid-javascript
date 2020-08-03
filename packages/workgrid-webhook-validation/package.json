@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/webhook-validation",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "main": "dist/webhook-validation.js",
   "types": "dist/webhook-validation.d.ts",
   "files": [
