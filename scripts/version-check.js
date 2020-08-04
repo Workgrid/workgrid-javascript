@@ -6,8 +6,8 @@ const { readPkg, getWorkspaces, getWorkspaceConfig } = require('./utils')
   const { workspaceRootFolder } = await getWorkspaceConfig()
   const workspaces = await getWorkspaces()
 
-  const getWorkspace = name => resolve(workspaceRootFolder, workspaces[name].location)
-  const getWorkspacePackage = name => readPkg(getWorkspace(name))
+  const getWorkspace = (name) => resolve(workspaceRootFolder, workspaces[name].location)
+  const getWorkspacePackage = (name) => readPkg(getWorkspace(name))
 
   let exitCode = 0
 
@@ -18,7 +18,7 @@ const { readPkg, getWorkspaces, getWorkspaceConfig } = require('./utils')
     const {
       dependencies: dep = {},
       devDependencies: dev = {},
-      optionalDependencies: opt = {}
+      optionalDependencies: opt = {},
     } = await getWorkspacePackage(name)
 
     for (const dependencyName of mismatchedWorkspaceDependencies) {

@@ -68,15 +68,13 @@ export interface RequestError extends AxiosError {
 const createInstance = mem(
   (oauthOptions: OAuthOptions): AxiosInstance => {
     const instance: AxiosInstance = axios.create()
-    /* eslint-disable @typescript-eslint/camelcase */
     const oauthClient = oauth.client(axios.create(), {
       client_id: oauthOptions.clientId,
       client_secret: oauthOptions.clientSecret,
       url: oauthOptions.tokenUrl,
       grant_type: oauthOptions.grantType,
-      scope: oauthOptions.scopes.join(' ')
+      scope: oauthOptions.scopes.join(' '),
     })
-    /* eslint-enable @typescript-eslint/camelcase */
     const interceptor = oauth.interceptor(tokenProvider, oauthClient)
     instance.interceptors.request.use(interceptor)
     return instance

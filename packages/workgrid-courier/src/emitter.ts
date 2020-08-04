@@ -83,36 +83,28 @@ import { map, remove } from 'lodash'
 // No Wildcard Support
 // ================================================================
 
-interface Emitter {
-  listeners: any
-  on: Function
-  off: Function
-  emit: Function
-  invoke: Function
-}
-
-export default (): Emitter => {
+export default () => {
   const listeners = Object.create(null)
 
   return {
     listeners,
 
-    on(type: string, handler: Function): void {
+    on(type: string, handler: (...args: any[]) => any): void {
       listeners[type] = listeners[type] || []
       listeners[type].push(handler)
     },
 
-    off(type: string, handler?: Function): void {
+    off(type: string, handler?: (...args: any[]) => any): void {
       if (!handler) delete listeners[type]
-      else remove(listeners[type], (value: Function): boolean => value === handler)
+      else remove(listeners[type], (value: (...args: any[]) => any): boolean => value === handler)
     },
 
-    emit(type: string, ...args: [any]): void {
-      map(listeners[type], (handler: Function): any => handler(...args))
+    emit(type: string, ...args: any[]): void {
+      map(listeners[type], (handler: (...args: any[]) => any): any => handler(...args))
     },
 
-    invoke(type: string, callback: Function): void {
-      map(listeners[type], (handler: Function): any => callback(handler))
-    }
+    invoke(type: string, callback: (...args: any[]) => any): void {
+      map(listeners[type], (handler: (...args: any[]) => any): any => callback(handler))
+    },
   }
 }

@@ -17,7 +17,10 @@ describe('@workgrid/request', () => {
       scopes: ['com.workgrid.api/notifications.all'],
       tokenUrl: 'https://auth.acme.workgrid.com/oauth2/token',
       grantType: 'client_credentials',
-      baseURL: 'https://acme.workgrid.com/'
+      baseURL: 'https://acme.workgrid.com/',
+
+      // axios-mock-adapter expects url to always be defined...
+      url: '',
     }
   })
 
@@ -45,7 +48,6 @@ describe('@workgrid/request', () => {
   })
 
   test('will request new oauth tokes when they expire', async () => {
-    // eslint-disable-next-line @typescript-eslint/camelcase
     const createOauthResponse = jest.fn(() => ({ expires_in: 0 }))
 
     mockedAdapter.onPost(requestOptions.tokenUrl).reply(() => [200, createOauthResponse()])
@@ -58,7 +60,6 @@ describe('@workgrid/request', () => {
   })
 
   test('will reuse oauth tokes while they are valid', async () => {
-    // eslint-disable-next-line @typescript-eslint/camelcase
     const createOauthResponse = jest.fn(() => ({ expires_in: 5000 }))
 
     mockedAdapter.onPost(requestOptions.tokenUrl).reply(() => [200, createOauthResponse()])

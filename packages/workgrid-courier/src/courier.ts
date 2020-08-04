@@ -1,7 +1,7 @@
 import emitter from './emitter'
 import niceTry from 'nice-try'
 import debug from 'debug/dist/debug'
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 import ms from 'ms'
 import { assign, includes } from 'lodash'
 
@@ -56,8 +56,8 @@ export default class Courier {
   private timeout: number
   private sources: any[]
   private hosts: any[]
-  private internal: any
-  private emitter: any
+  private internal: ReturnType<typeof emitter>
+  private emitter: ReturnType<typeof emitter>
 
   public static debug = debug // TODO: Replace with `logger` instance variable
 
@@ -78,7 +78,7 @@ export default class Courier {
   /**
    * Set up the host message listeners.
    */
-  public setup = (): void => {
+  public setup(): void {
     this.debug('setup', {})
 
     this.hosts.forEach((host: any): void => {
@@ -89,7 +89,7 @@ export default class Courier {
   /**
    * Tear down the host message listeners.
    */
-  public teardown = (): void => {
+  public teardown(): void {
     this.debug('teardown', {})
 
     this.hosts.forEach((host: any): void => {
@@ -100,7 +100,7 @@ export default class Courier {
   /**
    * Add a message source.
    */
-  public register = (source: any): void => {
+  public register(source: any): void {
     this.debug('register', { source })
 
     if (!source) return
@@ -112,7 +112,7 @@ export default class Courier {
   /**
    * Remove a message source.
    */
-  public unregister = (source: any): void => {
+  public unregister(source: any): void {
     this.debug('unregister', { source })
 
     if (!source) return
@@ -124,7 +124,7 @@ export default class Courier {
   /**
    * Start listening for an event.
    */
-  public on = (type: string, handler: Function): void => {
+  public on(type: string, handler: (...args: any[]) => any): void {
     this.debug('on', { type, handler })
 
     this.emitter.on(type, handler)
@@ -133,7 +133,7 @@ export default class Courier {
   /**
    * Stop listening for an event.
    */
-  public off = (type: string, handler?: Function): void => {
+  public off(type: string, handler?: (...args: any[]) => any): void {
     this.debug('off', { type, handler })
 
     this.emitter.off(type, handler)
@@ -142,7 +142,7 @@ export default class Courier {
   /**
    * Send a message (response ignored).
    */
-  public emit = ({ type, payload, target }: { type: string; payload?: any; target?: any }): void => {
+  public emit({ type, payload, target }: { type: string; payload?: any; target?: any }): void {
     this.debug('emit', { type, payload, target })
 
     const message = { type, payload }
@@ -152,23 +152,23 @@ export default class Courier {
   /**
    * Send a message (response expected).
    */
-  public send = ({
+  public send({
     type,
     payload,
     target,
-    timeout
+    timeout,
   }: {
     type: string
     payload?: any
     target?: any
     timeout?: number
-  }): Promise<any> => {
+  }): Promise<any> {
     this.debug('send', { type, payload, target, timeout })
 
     const message = { id: uuid(), type, payload }
     const event = { data: message } // for errors
 
-    const promise = new Promise((resolve: Function, reject: Function): void => {
+    const promise = new Promise((resolve, reject) => {
       const timeoutId = setTimeout((): void => {
         this.internal.off(message.id)
         reject(this.error('APP-14', { event }))
@@ -206,7 +206,7 @@ export default class Courier {
   /**
    * Create a new error object with the given arguments, and fire an internal error event.
    */
-  private error = (code: string, ...args: any[]): any => {
+  private error(code: string, ...args: any[]): any {
     this.debug('error', { code, args })
 
     const error = new Error(code)
@@ -220,7 +220,7 @@ export default class Courier {
    * Send a message to the given target, with the given data and trasferables.
    * If the target supplied is not a registered source, an error will be thrown.
    */
-  private sendMessage = (data: any, target?: any, transfer?: Transferable[]): void => {
+  private sendMessage(data: any, target?: any, transfer?: Transferable[]): void {
     this.debug('sendMessage', { data, target })
 
     target = target || this.sources[0]
@@ -247,9 +247,7 @@ export default class Courier {
    * Process a message event and emit or invoke to the appropriate handlers.
    * This method will be called when the registered hosts receive a message.
    */
-  public handleMessage = (
-    event: { source: any; ports?: any[] } & ({ data: any } | { nativeEvent: { data: any } })
-  ): any => {
+  public handleMessage(event: { source: any; ports?: any[] } & ({ data: any } | { nativeEvent: { data: any } })): any {
     this.debug('handleMessage', { event })
 
     // event.source will be null in tests
@@ -278,7 +276,7 @@ export default class Courier {
     if (data && data.type) {
       this.emitter.invoke(
         data.type,
-        async (handler: Function): Promise<void> => {
+        async (handler: (...args: any[]) => any): Promise<void> => {
           let payload
           let error
 

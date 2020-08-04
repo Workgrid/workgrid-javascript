@@ -9,16 +9,16 @@ module.exports = {
   preset: 'ts-jest',
   globals: {
     'ts-jest': {
-      tsConfig: require.resolve('./tsconfig.json')
-    }
+      tsConfig: require.resolve('./tsconfig.json'),
+    },
   },
   reporters: [
     'default',
     [
       'jest-junit',
       {
-        output: `<rootDir>/test-reports/${basename(__dirname)}.xml`
-      }
-    ]
-  ]
+        output: `<rootDir>/test-reports/${basename(__dirname)}.xml`,
+      },
+    ],
+  ],
 }

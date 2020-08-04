@@ -206,7 +206,7 @@ export default class Connector {
       tokenUrl,
       grantType,
       scopes,
-      baseURL: apiUrl
+      baseURL: apiUrl,
     }
   }
 
@@ -228,7 +228,7 @@ export default class Connector {
     const response = await this.request({
       method: 'post',
       url: '/v2/jobs',
-      data: jobs
+      data: jobs,
     })
     return response.data as Job[]
   }
@@ -243,7 +243,7 @@ export default class Connector {
   public async getJob(jobId: string): Promise<Job> {
     const response = await this.request({
       method: 'get',
-      url: `/v2/jobs/${jobId}`
+      url: `/v2/jobs/${jobId}`,
     })
     return response.data as Job
   }
@@ -267,7 +267,7 @@ export default class Connector {
     const response = await this.request({
       method: 'get',
       url: '/v2/events',
-      params: eventOptions
+      params: eventOptions,
     })
     return response.data as { items: Event[]; cursor?: string }
   }
@@ -282,7 +282,7 @@ export default class Connector {
   public async getEvent(eventId: string): Promise<Event> {
     const response = await this.request({
       method: 'get',
-      url: `/v2/events/${eventId}`
+      url: `/v2/events/${eventId}`,
     })
     return response.data as Event
   }
@@ -299,7 +299,7 @@ export default class Connector {
     const response = await this.request({
       method: 'put',
       url: `/v2/events/${eventId}/status`,
-      data: { status }
+      data: { status },
     })
     return response.data as Event
   }
@@ -310,11 +310,11 @@ export default class Connector {
    *
    * @beta
    */
-  public async getSources(sourceOptions?: {}): Promise<{ items: Source[] }> {
+  public async getSources(sourceOptions?: any): Promise<{ items: Source[] }> {
     const response = await this.request({
       method: 'get',
       url: '/v2/sources',
-      params: sourceOptions
+      params: sourceOptions,
     })
     return response.data as { items: Source[] }
   }
@@ -330,7 +330,7 @@ export default class Connector {
     const response = await this.request({
       method: 'get',
       url: '/v2/categories',
-      params: categoryOptions
+      params: categoryOptions,
     })
     return response.data as { items: Category[] }
   }

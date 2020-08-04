@@ -9,7 +9,7 @@ const defaults = {
   detail: 'Unleash the power of your workforce',
   options: ['Option 1', 'Option 2', 'Option 3'],
   suggestions: ['Suggestion 1', 'Suggestion 2', 'Suggestion 3'],
-  card: false
+  card: false,
 }
 
 describe('@workgrid/conversation-builder', () => {
@@ -45,7 +45,7 @@ describe('@workgrid/conversation-builder', () => {
         url: expect.stringMatching(defaults.url),
         detail: expect.stringMatching(defaults.detail),
         options: expect.arrayContaining(defaults.options),
-        suggestions: expect.arrayContaining(defaults.suggestions)
+        suggestions: expect.arrayContaining(defaults.suggestions),
       })
     })
 
@@ -86,7 +86,7 @@ describe('@workgrid/conversation-builder', () => {
         url: expect.stringMatching(defaults.url),
         detail: expect.stringMatching(defaults.detail),
         options: expect.arrayContaining(defaults.options),
-        suggestions: expect.arrayContaining(defaults.suggestions)
+        suggestions: expect.arrayContaining(defaults.suggestions),
       })
     })
   })
@@ -103,7 +103,7 @@ describe('@workgrid/conversation-builder', () => {
       // Nested property-matchers don't work well, using separate snapshots instead
 
       expect(builder.build()).toMatchSnapshot({
-        text: expect.stringMatching(defaults.text)
+        text: expect.stringMatching(defaults.text),
       })
     })
   })
@@ -121,24 +121,24 @@ describe('@workgrid/conversation-builder', () => {
             buttons: [
               {
                 text: 'Lemon',
-                value: 'lemon'
+                value: 'lemon',
               },
               {
                 text: 'Raspberry',
-                value: 'raspberry'
+                value: 'raspberry',
               },
               {
                 text: 'Raspberry',
-                value: 'plain'
-              }
+                value: 'plain',
+              },
             ],
             imageUrl: 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
             subTitle: 'This is the subtitle',
-            title: 'Lex Title'
-          }
+            title: 'Lex Title',
+          },
         ],
-        version: '1'
-      }
+        version: '1',
+      },
     }
 
     beforeEach(() => {
@@ -158,7 +158,7 @@ describe('@workgrid/conversation-builder', () => {
         ),
         url: expect.stringMatching('Link to attachment'),
         detail: expect.stringMatching('This is the subtitle'),
-        options: expect.arrayContaining(['Lemon', 'Raspberry', 'Raspberry'])
+        options: expect.arrayContaining(['Lemon', 'Raspberry', 'Raspberry']),
       })
     })
   })

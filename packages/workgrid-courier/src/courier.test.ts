@@ -1,7 +1,7 @@
 import ms from 'ms'
 import Courier from './courier'
 
-const createSource = (courier: Courier): { postMessage: Function } => {
+const createSource = (courier: Courier) => {
   const source = {
     postMessage: (data: any): void => {
       try {
@@ -9,7 +9,7 @@ const createSource = (courier: Courier): { postMessage: Function } => {
       } catch (error) {
         // Swallow errors :)
       }
-    }
+    },
   }
 
   courier.register(source)
@@ -67,7 +67,7 @@ describe('@workgrid/courier', () => {
     })
     const promise = courier.send({ type: 'hello', target: source })
 
-    await expect(promise).rejects.toThrowErrorMatchingSnapshot()
+    await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(`"APP-16"`)
   })
 
   test('emitter is rejected by async handler', async () => {
@@ -77,7 +77,7 @@ describe('@workgrid/courier', () => {
     courier.on('hello', () => Promise.reject('world'))
     const promise = courier.send({ type: 'hello', target: source })
 
-    await expect(promise).rejects.toThrowErrorMatchingSnapshot()
+    await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(`"APP-16"`)
   })
 
   test('emitter is rejected by timeout', async () => {
@@ -85,7 +85,7 @@ describe('@workgrid/courier', () => {
     const source = createSource(courier)
 
     const promise = courier.send({ type: 'hello', target: source })
-    await expect(promise).rejects.toThrowErrorMatchingSnapshot()
+    await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(`"APP-14"`)
   })
 
   test('target is not a member of sources', async () => {
@@ -95,7 +95,7 @@ describe('@workgrid/courier', () => {
     courier.unregister(source)
 
     const promise = courier.send({ type: 'hello', target: source })
-    await expect(promise).rejects.toThrowErrorMatchingSnapshot()
+    await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(`"APP-13"`)
   })
 
   test('target.postMessage or JSON.stringify throws', async () => {
@@ -107,7 +107,7 @@ describe('@workgrid/courier', () => {
     }
 
     const promise = courier.send({ type: 'hello', target: source })
-    await expect(promise).rejects.toThrowErrorMatchingSnapshot()
+    await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(`"APP-12"`)
   })
 
   test('error is emitted if a message is received from an unexpected source', async () => {
@@ -122,7 +122,7 @@ describe('@workgrid/courier', () => {
     expect(errorHandler).toHaveBeenCalled()
     expect(() => {
       throw errorHandler.mock.calls[0][0]
-    }).toThrowErrorMatchingSnapshot()
+    }).toThrowErrorMatchingInlineSnapshot(`"APP-15"`)
   })
 
   test('error is emitted if data cannot be parsed', async () => {
@@ -136,7 +136,7 @@ describe('@workgrid/courier', () => {
     expect(errorHandler).toHaveBeenCalled()
     expect(() => {
       throw errorHandler.mock.calls[0][0]
-    }).toThrowErrorMatchingSnapshot()
+    }).toThrowErrorMatchingInlineSnapshot(`"APP-11"`)
   })
 
   test('error is emitted if data does not have type or parentId', async () => {
@@ -150,6 +150,6 @@ describe('@workgrid/courier', () => {
     expect(errorHandler).toHaveBeenCalled()
     expect(() => {
       throw errorHandler.mock.calls[0][0]
-    }).toThrowErrorMatchingSnapshot()
+    }).toThrowErrorMatchingInlineSnapshot(`"APP-10"`)
   })
 })

@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/connector",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "main": "dist/connector.js",
   "types": "dist/connector.d.ts",
   "files": [
@@ -21,8 +21,8 @@
     "url": "https://github.com/Workgrid/workgrid-javascript"
   },
   "dependencies": {
-    "@workgrid/request": "^0.0.7",
-    "@workgrid/webhook-validation": "^0.0.5",
+    "@workgrid/request": "^0.1.0",
+    "@workgrid/webhook-validation": "^0.1.0",
     "lodash": "^4.17.15"
   },
   "devDependencies": {

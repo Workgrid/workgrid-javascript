@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/courier",
-  "version": "0.6.3",
+  "version": "0.7.0",
   "main": "dist/courier.js",
   "types": "dist/courier.d.ts",
   "browser": "dist/courier.umd.js",
@@ -26,13 +26,13 @@
     "lodash": "^4.17.11",
     "ms": "^2.1.1",
     "nice-try": "^2.0.0",
-    "uuid": "^3.3.2"
+    "uuid": "^8.3.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.5",
     "@types/lodash": "^4.14.149",
     "@types/ms": "^0.7.31",
-    "@types/uuid": "^3.4.5"
+    "@types/uuid": "^8.0.0"
   },
   "eslintConfig": {
     "extends": [

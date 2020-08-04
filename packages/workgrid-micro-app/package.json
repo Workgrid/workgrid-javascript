@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/micro-app",
-  "version": "0.9.6",
+  "version": "0.10.0",
   "main": "dist/micro-app.js",
   "types": "dist/micro-app.d.ts",
   "browser": "dist/micro-app.umd.js",
@@ -22,11 +22,11 @@
     "url": "https://github.com/Workgrid/workgrid-javascript"
   },
   "dependencies": {
-    "@workgrid/courier": "^0.6.3",
+    "@workgrid/courier": "^0.7.0",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.11",
     "ms": "^2.1.1",
-    "p-any": "^2.1.0",
+    "p-any": "^3.0.0",
     "resize-observer-polyfill": "^1.5.1"
   },
   "devDependencies": {
