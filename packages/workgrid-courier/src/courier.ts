@@ -72,6 +72,7 @@ export default class Courier {
     this.internal = emitter()
     this.emitter = emitter()
 
+    this.handleMessage = this.handleMessage.bind(this)
     this.setup()
   }
 
