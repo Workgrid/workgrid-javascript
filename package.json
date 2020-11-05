@@ -33,6 +33,7 @@
     "chalk": "^4.1.0",
     "eslint": "^7.6.0",
     "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-header": "^3.1.0",
     "eslint-plugin-jest": "^23.6.0",
     "eslint-plugin-prettier": "^3.1.2",
     "execa": "^4.0.0",
@@ -54,5 +55,5 @@
       "./eslint.config.js"
     ]
   },
-  "license": "ISC"
+  "license": "Apache-2.0"
 }

@@ -39,7 +39,7 @@
       "./eslint.config.js"
     ]
   },
-  "license": "ISC",
+  "license": "Apache-2.0",
   "browserslist": [
     "last 2 chrome versions",
     "last 2 firefox versions",

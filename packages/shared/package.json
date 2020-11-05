@@ -11,6 +11,7 @@
     "babel-plugin-lodash": "^3.3.4",
     "builtin-modules": "^3.1.0",
     "lodash": "^4.17.15",
+    "outdent": "^0.7.1",
     "read-pkg-up": "^7.0.0",
     "rollup-plugin-alias": "^2.0.1",
     "rollup-plugin-babel": "^4.3.3",
