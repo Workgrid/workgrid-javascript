@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import config from 'shared/rollup.config'
-
-export default config('src/client.ts')
+export declare type Location = 'toknow' | 'todo';
+export declare type Notification = {
+    [key: string]: unknown;
+};
+export declare type App = {
+    [key: string]: unknown;
+};
+//# sourceMappingURL=types.d.ts.map
