@@ -12,7 +12,8 @@ $ npm install @workgrid/client
 
 ```js
 import Client from '@workgrid/client'
-const client = new Client()
 
-const notifications = await client.query('getNotifications', { variables: { location: 'toknow' } })
+const client = new Client({ ... })
+
+const notifications = await client.query(['getNotifications', { location: 'toknow' }])
 ```

@@ -1,3 +1,19 @@
+/**
+ * Copyright 2021 Workgrid Software
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import ms from 'ms'
 import { EventEmitter } from 'events'
 
@@ -27,7 +43,7 @@ class State<
     data?: any
     error?: any
   } = {
-    status: 'loading'
+    status: 'loading',
   }
 
   constructor(handler: HandlerType, client: WorkgridClient, config: ConfigType) {
@@ -90,19 +106,19 @@ class State<
           this.state = {
             ...this.state,
             data: action.data,
-            status: 'success'
+            status: 'success',
           }
           break
         case 'error':
           this.state = {
             ...this.state,
             error: action.error,
-            status: 'error'
+            status: 'error',
           }
           break
         case 'reset':
           this.state = {
-            status: 'loading'
+            status: 'loading',
           }
           break
       }
@@ -122,7 +138,7 @@ export class QueryState extends State<QueryHandler, QueryConfig> {
     return getFetchMore(variables, data.slice(-1)[0])
   }
 
-  stale?: Number | Boolean
+  stale?: number | boolean
 
   // Extend State for "stale" queries
   get isStale() {
@@ -168,7 +184,7 @@ export class QueryState extends State<QueryHandler, QueryConfig> {
     // }
   }
 
-  execute(options: { fetchMore?: Boolean } = {}) {
+  execute(options: { fetchMore?: boolean } = {}) {
     if (this.promise) return this.promise
     if (this.config.enabled === false) return
 
@@ -176,7 +192,7 @@ export class QueryState extends State<QueryHandler, QueryConfig> {
     if (!this.isStale && !options.fetchMore) return
 
     this.promise = (async () => {
-      let variables = options.fetchMore ? this.getFetchMore()! : this.config.variables // getFetchMore will not be undefind if fetchMore is true
+      const variables = options.fetchMore ? this.getFetchMore()! : this.config.variables // getFetchMore will not be undefind if fetchMore is true
 
       let optimisticUpdate // capture the update for success commit / error revert
       if (this.handler.onQuery) optimisticUpdate = this.handler.onQuery(this.client, variables)
