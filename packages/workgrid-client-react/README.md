@@ -18,7 +18,7 @@ import { WorkgridProvider, useQuery } from '@workgrid/client-react'
 const client = new WorkgridClient({ ... })
 
 function Notifications({ location }) {
-  const notifications = useQuery('getNotifications', { variables: { location } })
+  const { data: notifications } = useQuery(['getNotifications', { location }])
 
   return (
     <ul>

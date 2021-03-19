@@ -1,88 +1,141 @@
-import * as React from 'react'
-import { merge } from 'lodash'
+/**
+ * Copyright 2021 Workgrid Software
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import { QueryState, MutationState, SubscriptionState, MutationConfig } from '@workgrid/client'
-import WorkgridClient, { QueryParameters, MutateParameters, SubscribeParameters } from '@workgrid/client'
+import WorkgridClient, {
+  Queries,
+  Query,
+  QueryKey,
+  Mutations,
+  Mutation,
+  MutationKey,
+  defaultSelect,
+} from '@workgrid/client'
+import {
+  QueryClientProvider,
+  QueryKey as CustomQueryKey,
+  useInfiniteQuery as _useCustomQuery,
+  UseInfiniteQueryOptions as UseQueryOptions,
+  MutationKey as CustomMutationKey,
+  useMutation as _useCustomMutation,
+  UseMutationOptions as UseMutationOptions,
+  MutationFunction,
+  QueryFunction,
+} from 'react-query'
+import { createElement as h, createContext, useContext, ReactNode } from 'react'
 
-const WorkgridContext = React.createContext<WorkgridClient>(undefined!)
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const Context = createContext<WorkgridClient>(undefined!)
 
-export function WorkgridProvider({ client, children }: { client: WorkgridClient; children: React.ReactNode }) {
-  return React.createElement(WorkgridContext.Provider, { value: client }, children)
-}
-
-export function useWorkgridClient() {
-  const workgrid = React.useContext(WorkgridContext)
+/**
+ * Ensure we are in a WorkgridProvider
+ *
+ * @param label The custom hook label
+ * @returns The workgrid context
+ */
+function useWorkgridContext(label = 'useWorkgridContext') {
+  const workgrid = useContext(Context)
 
   if (workgrid === undefined) {
-    throw new Error('useWorkgrid must be within a WorkgridProvider')
+    throw new Error(`${label} must be within a WorkgridProvider`)
   }
 
   return workgrid
 }
 
-export function useQuery(...args: QueryParameters) {
-  const state = useCacheState<QueryState>(args, (workgrid) => {
-    workgrid.query(...args)
-  })
-
-  return state
+/**
+ * Setup context for workgrid
+ *
+ * @param props Component properties
+ * @param props.client The workgrid client instance
+ * @param props.children The react children to render
+ * @returns The workgrid and query client providers
+ */
+export function WorkgridProvider({ client, children }: { client: WorkgridClient; children?: ReactNode }) {
+  return h(Context.Provider, { value: client }, h(QueryClientProvider, { client: client.queryClient }, children))
 }
 
-export function useMutation(...args: MutateParameters) {
-  const state = useCacheState<MutationState>(args, (workgrid) => {
-    workgrid.mutate(args[0], merge({}, args[1], { enabled: false }))
-  })
-
-  const workgrid = useWorkgridClient()
-  const mutate = (variables: MutationConfig['variables']) => workgrid.mutate(args[0], merge({}, args[1], { variables }))
-
-  return [mutate, state] as const
+/**
+ * Fetch the workgrid client from context
+ *
+ * @returns The workgrid client instance
+ */
+export function useWorkgridClient() {
+  return useWorkgridContext('useWorkgridClient')
 }
 
-export function useSubscription(...args: SubscribeParameters) {
-  const state = useCacheState<SubscriptionState>(args, (workgrid) => {
-    workgrid.subscribe(...args)
-  })
-
-  return state
+/**
+ * Invoke a query
+ *
+ * @param queryKey The query key (must be pre-defined)
+ * @param options Any additional query options
+ * @returns The query result
+ */
+export function useQuery<K extends keyof Queries, Q extends Query = Queries[K]>(
+  queryKey: QueryKey<K, Q>,
+  options?: UseQueryOptions<Q['TQueryFnData'], Q['TError'], Q['TData']>
+) {
+  useWorkgridContext('useQuery') // Ensure we have a WorkgridProvider
+  return _useCustomQuery<Q['TQueryFnData'], Q['TError'], Q['TData']>(queryKey, options)
 }
 
-// Utils
-// ================================================================
-
-function useMountedCallback(callback: Function) {
-  const mounted = React.useRef(false)
-
-  React.useLayoutEffect(() => {
-    mounted.current = true
-    return () => {
-      mounted.current = false
-    }
-  }, [])
-
-  return React.useCallback((...args: any[]) => (mounted.current ? callback(...args) : void 0), [callback])
+/**
+ * Invoke a custom query (should be used sparingly and never in production)
+ *
+ * @param queryKey A unique cache key
+ * @param options Any additional query options
+ * @returns The query result
+ */
+export function useCustomQuery<TQueryFnData = unknown, TError = unknown, TData = TQueryFnData>(
+  queryKey: CustomQueryKey,
+  options?: UseQueryOptions<TQueryFnData, TError, TData>
+) {
+  useWorkgridContext('useCustomQuery') // Ensure we have a WorkgridProvider
+  options = defaultSelect(options) // Apply the default select method
+  return _useCustomQuery<TQueryFnData, TError, TData>(queryKey, options)
 }
 
-function useRerenderer() {
-  const rerender = useMountedCallback(React.useState()[1])
-  return React.useCallback(() => rerender({}), [rerender])
+/**
+ * Prepare a mutation
+ *
+ * @param mutationKey The mutation key (must be pre-defined)
+ * @param options Any additional mutation options
+ * @returns The mutation executor
+ */
+export function useMutation<K extends keyof Mutations, M extends Mutation = Mutations[K]>(
+  mutationKey: MutationKey<K, M>,
+  options?: UseMutationOptions<M['TData'], M['TError'], M['TVariables'], M['TContext']>
+) {
+  useWorkgridContext('useMutation') // Ensure we have a WorkgridProvider
+  return _useCustomMutation<M['TData'], M['TError'], M['TVariables'], M['TContext']>(mutationKey, options)
 }
 
-function useCacheState<State extends QueryState | MutationState | SubscriptionState>(
-  [key, config]: QueryParameters | MutateParameters | SubscribeParameters,
-  initializer: (workgrid: WorkgridClient) => void
-): State {
-  const rerender = useRerenderer()
-  const workgrid = useWorkgridClient()
-
-  // Prime the cache
-  if (initializer) initializer(workgrid)
-
-  // Grab the cached state
-  const state = workgrid.cache.get<State>([key, config?.variables])
-
-  // Rerender when the state updates
-  React.useEffect(() => state && state.subscribe(rerender), [state, rerender])
-
-  return state
+/**
+ * Prepare a custom mutation (should be used sparingly and never in production)
+ *
+ * @param mutationKey A unique cache key
+ * @param options Any additional mutation options
+ * @returns The mutation executor
+ */
+export function useCustomMutation<TData = unknown, TError = unknown, TVariables = void, TContext = unknown>(
+  mutationKey: CustomMutationKey,
+  options?: UseMutationOptions<TData, TError, TVariables, TContext> & {
+    // TODO: Not sure why mutationFn isn't just part of UseMutationOptions...
+    mutationFn?: MutationFunction<TData, TVariables>
+  }
+) {
+  useWorkgridContext('useCustomMutation') // Ensure we have a WorkgridProvider
+  return _useCustomMutation<TData, TError, TVariables, TContext>(mutationKey, options?.mutationFn, options)
 }

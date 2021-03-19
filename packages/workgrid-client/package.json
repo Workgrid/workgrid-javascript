@@ -21,10 +21,12 @@
     "url": "https://github.com/Workgrid/workgrid-javascript"
   },
   "dependencies": {
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "react-query": "^3.12.2"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.149"
+    "@types/lodash": "^4.14.149",
+    "msw": "^0.27.1"
   },
   "eslintConfig": {
     "extends": [

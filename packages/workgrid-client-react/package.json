@@ -21,13 +21,17 @@
     "url": "https://github.com/Workgrid/workgrid-javascript"
   },
   "dependencies": {
+    "@testing-library/react-hooks": "^5.1.0",
     "@workgrid/client": "^0.0.1",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "react-query": "^3.12.2"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.149",
-    "@types/react": "^16.9.53",
-    "react": "^16.14.0"
+    "@types/react": "^16.14.5",
+    "msw": "^0.27.1",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0"
   },
   "peerDependencies": {
     "react": ">=16.0.0"

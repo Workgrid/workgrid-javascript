@@ -13,7 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import config from 'shared/rollup.config'
-
-export default config('src/client.ts')
+import type { Handler } from './index';
+import WorkgridClient from '../client';
+import { Location } from '../types';
+export declare type SubscriptionHandler<Variables = {}, Data = any> = Handler<Data> & {
+    execute(client: WorkgridClient, variables: Variables, callback: (data: Data) => void): Promise<Data>;
+    onSubscriptionData?(client: WorkgridClient, variables: Variables, data: Data): void;
+};
+export declare const badgeUpdate: SubscriptionHandler<{}>;
+export declare const newNotification: SubscriptionHandler<{
+    location: Location;
+}>;
+//# sourceMappingURL=subscriptions.d.ts.map

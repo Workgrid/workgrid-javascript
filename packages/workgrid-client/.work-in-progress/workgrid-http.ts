@@ -1,5 +1,17 @@
-/*
- * Think of this like a generic HTTP adapter (with some convience methods)
+/**
+ * Copyright 2021 Workgrid Software
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 import axios, { AxiosInstance } from 'axios'
@@ -22,7 +34,7 @@ class WorkgridHTTP {
   private createInstance() {
     const instance = axios.create()
 
-    instance.interceptors.request.use(async config => {
+    instance.interceptors.request.use(async (config) => {
       const { token, spaceId, companyCode } = typeof this.context === 'function' ? await this.context() : this.context
 
       config.baseURL = `https://${companyCode}.workgrid.com/`
@@ -32,7 +44,7 @@ class WorkgridHTTP {
       return config
     })
 
-    instance.interceptors.response.use(response => response.data)
+    instance.interceptors.response.use((response) => response.data)
 
     return instance
   }
@@ -45,7 +57,7 @@ class WorkgridHTTP {
    * @param options.limit number of results
    * @param options.cursor result offset
    */
-  async getNotifications(location: Location, { limit, cursor }: { limit?: Number; cursor?: string } = {}) {
+  async getNotifications(location: Location, { limit, cursor }: { limit?: number; cursor?: string } = {}) {
     const response = await this.instance.get(`/v1/${location}`, { params: { limit, cursor } })
     return response.data as { cursor?: string; notifications: Notification[] }
   }
@@ -88,7 +100,7 @@ class WorkgridHTTP {
    * @param options.limit number of results
    * @param options.cursor result offset
    */
-  async getActivity({ limit, cursor }: { limit?: Number; cursor?: string } = {}) {
+  async getActivity({ limit, cursor }: { limit?: number; cursor?: string } = {}) {
     const response = await this.instance.get(`/v1/activity`, { params: { limit, cursor } })
     return response.data
   }
@@ -100,7 +112,7 @@ class WorkgridHTTP {
    * @param options.limit number of results
    * @param options.cursor result offset
    */
-  async getApps({ limit, cursor }: { limit?: Number; cursor?: string } = {}) {
+  async getApps({ limit, cursor }: { limit?: number; cursor?: string } = {}) {
     const response = await this.instance.get(`/v1/microapps`, { params: { limit, cursor } })
     return response.data as { cursor?: string; apps: App[] }
   }
