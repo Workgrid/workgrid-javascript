@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
-import config from 'shared/rollup.config'
+export type Location = 'toknow' | 'todo'
 
-export default config('src/client.ts')
+export type Notification = {
+  [key: string]: unknown
+}
+
+export type App = {
+  [key: string]: unknown
+}
