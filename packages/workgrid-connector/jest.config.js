@@ -24,7 +24,7 @@ module.exports = {
   preset: 'ts-jest',
   globals: {
     'ts-jest': {
-      tsConfig: require.resolve('./tsconfig.json'),
+      tsconfig: require.resolve('./tsconfig.json'),
     },
   },
   reporters: [
