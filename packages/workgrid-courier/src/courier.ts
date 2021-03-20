@@ -16,7 +16,7 @@
 
 import emitter from './emitter'
 import niceTry from 'nice-try'
-import debug from 'debug/dist/debug'
+import debug from 'debug'
 import { v4 as uuid } from 'uuid'
 import ms from 'ms'
 import { assign, includes } from 'lodash'
