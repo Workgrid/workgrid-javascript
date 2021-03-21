@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
+// Explicit import avoids `import() types` in .d.ts (https://github.com/microsoft/rushstack/issues/2140)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { Context } from './client'
 
+/**
+ * @beta
+ */
 class WorkgridHTTP {
   private context: () => Promise<Context>
   private instance: AxiosInstance
@@ -55,8 +60,11 @@ class WorkgridHTTP {
   /**
    * Make an http get request
    *
-   * @param url The request url
-   * @param config Additional request config
+   * @param url - The request url
+   * @param config - Additional request config
+   * @returns - The response data
+   *
+   * @beta
    */
   get(url: string, config?: AxiosRequestConfig) {
     return this.instance.get(url, config)
@@ -65,9 +73,12 @@ class WorkgridHTTP {
   /**
    * Make an http post request
    *
-   * @param url The request url
-   * @param data The request payload
-   * @param config Additional request config
+   * @param url - The request url
+   * @param data - The request payload
+   * @param config - Additional request config
+   * @returns - The response data
+   *
+   * @beta
    */
   post(url: string, data?: unknown, config?: AxiosRequestConfig) {
     return this.instance.post(url, data, config)
@@ -76,9 +87,12 @@ class WorkgridHTTP {
   /**
    * Make an http put request
    *
-   * @param url The request url
-   * @param data The request payload
-   * @param config Additional request config
+   * @param url - The request url
+   * @param data - The request payload
+   * @param config - Additional request config
+   * @returns - The response data
+   *
+   * @beta
    */
   put(url: string, data?: unknown, config?: AxiosRequestConfig) {
     return this.instance.put(url, data, config)
@@ -87,8 +101,11 @@ class WorkgridHTTP {
   /**
    * Make an http delete request
    *
-   * @param url The request url
-   * @param config Additional request config
+   * @param url - The request url
+   * @param config - Additional request config
+   * @returns - The response data
+   *
+   * @beta
    */
   delete(url: string, config?: AxiosRequestConfig) {
     return this.instance.delete(url, config)
