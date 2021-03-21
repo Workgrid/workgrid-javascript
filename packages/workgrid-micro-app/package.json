@@ -22,12 +22,12 @@
     "url": "https://github.com/Workgrid/workgrid-javascript"
   },
   "dependencies": {
+    "@juggle/resize-observer": "^3.3.0",
     "@workgrid/courier": "^0.7.1",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.11",
     "ms": "^2.1.1",
-    "p-any": "^3.0.0",
-    "resize-observer-polyfill": "^1.5.1"
+    "p-any": "^3.0.0"
   },
   "devDependencies": {
     "@types/jwt-decode": "^2.2.1",

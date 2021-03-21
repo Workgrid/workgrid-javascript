@@ -19,7 +19,7 @@ import queue from './queue'
 import Courier from '@workgrid/courier'
 import jwtDecode from 'jwt-decode'
 import { throttle } from 'lodash'
-import ResizeObserver from 'resize-observer-polyfill'
+import { ResizeObserver } from '@juggle/resize-observer'
 import pAny from 'p-any'
 
 const EVENTS = {
@@ -74,7 +74,7 @@ class MicroApp {
   private id?: string
   public courier: any // for testing :(
   private queue: ReturnType<typeof queue>
-  private ro: any
+  private ro: ResizeObserver
   private token?: string
 
   public constructor({ audience, onError, id }: MicroAppOptions = {}) {
