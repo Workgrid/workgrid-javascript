@@ -31,8 +31,12 @@ import { flatMap } from 'lodash'
 import HttpClient from './client-http'
 import WsClient from './client-ws'
 
+// Export types for downstream use
+export { HttpClient, WsClient }
+
 const pkg = JSON.parse(require('fs').readFileSync(require('path').resolve(__dirname, '../package.json'), 'utf8'))
 
+/** @beta */
 export type Context = {
   token: string
   spaceId: string
@@ -42,11 +46,13 @@ export type Context = {
   clientAgent: string
 }
 
-type PartialContext =
+/** @beta */
+export type PartialContext =
   | (Pick<Context, 'token' | 'spaceId'> & { apiHost: string; wssHost?: string })
   | (Pick<Context, 'token' | 'spaceId'> & { companyCode: string })
 
-type ClientOptions = {
+/** @beta */
+export type ClientOptions = {
   context: PartialContext | (() => Promise<PartialContext>)
   queryClient?: QueryClient
   httpClient?: HttpClient
@@ -59,6 +65,15 @@ const mutations: ((client: Client) => void)[] = []
 // type LengthOfTuple<T extends unknown[]> = T extends { length: infer L } ? L : never
 // type DropFirstInTuple<T extends unknown[]> = T extends [arg: unknown, ...rest: infer U] ? U : T
 
+/**
+ * Support a string, or an array with one item, if given a string or single item array (otherwise return K)
+ * TODO: Can we determine if everything after the first value is optional, and accept a single string then?
+ *
+ * @beta
+ */
+export type Key<K extends string | unknown[]> = K extends string ? K | [K] : K['length'] extends 1 ? K[0] | K : K
+
+/** @beta */
 export type Query<
   TQueryKey = string | unknown[],
   TQueryFnData = unknown,
@@ -73,12 +88,10 @@ export type Query<
   TData: TData
 }
 
-// Support a string, or an array with one item, if given a string or single item array (otherwise return K)
-// TODO: Can we determine if everything after the first value is optional, and accept a single string then?
-type Key<K extends string | unknown[]> = K extends string ? K | [K] : K['length'] extends 1 ? K[0] | K : K
-
+/** @beta */
 export type QueryKey<K extends keyof Queries, Q extends Query = Queries[K]> = Key<Q['TQueryKey']>
 
+/** @beta */
 export type Mutation<
   TMutationKey = string | unknown[],
   TVariables = unknown,
@@ -93,8 +106,10 @@ export type Mutation<
   TData: TData
 }
 
+/** @beta */
 export type MutationKey<K extends keyof Mutations, M extends Mutation = Mutations[K]> = Key<M['TMutationKey']>
 
+/** @beta */
 class Client {
   readonly queryClient: QueryClient
   readonly httpClient: HttpClient
@@ -114,9 +129,11 @@ class Client {
   /**
    * Invoke a query
    *
-   * @param queryKey The query key (must be pre-defined)
-   * @param options Any additional query options
-   * @returns The query result
+   * @param queryKey - The query key (must be pre-defined)
+   * @param options - Any additional query options
+   * @returns - The query result
+   *
+   * @beta
    */
   query<K extends keyof Queries, Q extends Query = Queries[K]>(
     queryKey: QueryKey<K, Q>,
@@ -132,9 +149,11 @@ class Client {
   /**
    * Invoke a custom query (should be used sparingly and never in production)
    *
-   * @param queryKey A unique cache key
-   * @param options Any additional query options
-   * @returns The query result
+   * @param queryKey - A unique cache key
+   * @param options - Any additional query options
+   * @returns - The query result
+   *
+   * @beta
    */
   customQuery<TQueryFnData = unknown, TError = unknown, TData = TQueryFnData>(
     queryKey: CustomQueryKey,
@@ -143,17 +162,19 @@ class Client {
     const promise = this.queryClient.fetchInfiniteQuery<TQueryFnData, TError, TData>(queryKey, options)
 
     // react-query only applies `select` option to hooks usage, manually apply it here
-    const { select } = defaultSelect(options) // Apply the default select method
+    const { select } = _defaultSelect(options) // Apply the default select method
     return promise.then((result) => (select ? select(result) : result))
   }
 
   /**
    * Invoke a mutation
    *
-   * @param mutationKey The mutation key (must be pre-defined)
-   * @param variables The appropriate variables
-   * @param options Any additional mutation options
-   * @returns The mutation result
+   * @param mutationKey - The mutation key (must be pre-defined)
+   * @param variables - The appropriate variables
+   * @param options - Any additional mutation options
+   * @returns - The mutation result
+   *
+   * @beta
    */
   mutate<K extends keyof Mutations, M extends Mutation = Mutations[K]>(
     mutationKey: MutationKey<K, M>,
@@ -170,10 +191,12 @@ class Client {
   /**
    * Invoke a custom mutation (should be used sparingly and never in production)
    *
-   * @param mutationKey A unique cache key
-   * @param variables The appropriate variables
-   * @param options Any additional mutation options
-   * @returns The mutation result
+   * @param mutationKey - A unique cache key
+   * @param variables - The appropriate variables
+   * @param options - Any additional mutation options
+   * @returns - The mutation result
+   *
+   * @beta
    */
   customMutate<TData = unknown, TError = unknown, TVariables = void, TContext = unknown>(
     mutationKey: CustomMutationKey,
@@ -193,8 +216,8 @@ export default Client
 /**
  * Normalize context to always return a consistent set of fields (apiHost and wssHost)
  *
- * @param context The provided context options
- * @returns A normalized context object
+ * @param context - The provided context options
+ * @returns - A normalized context object
  */
 async function normalizeContext(context: ClientOptions['context']): Promise<Context> {
   const { token, spaceId, ...partial } = typeof context === 'function' ? await context() : context
@@ -212,10 +235,12 @@ async function normalizeContext(context: ClientOptions['context']): Promise<Cont
  * Attach a default select callback to normalize data
  * (We always use infinite query and the flatten the page data)
  *
- * @param options The query defaults options
- * @returns The query defaults options (with default select)
+ * @param options - The query defaults options
+ * @returns - The query defaults options (with default select)
+ *
+ * @internal
  */
-export function defaultSelect<Q extends Query, O>(options: O) {
+export function _defaultSelect<Q extends Query, O>(options: O) {
   return {
     select(data: Q['TQueryData']) {
       if (Array.isArray(data.pages[0])) {
@@ -230,7 +255,10 @@ export function defaultSelect<Q extends Query, O>(options: O) {
   }
 }
 
-// This interface is populated inline as query defaults are applied
+/** This interface is populated inline as query defaults are applied
+ *
+ * @beta
+ */
 export interface Queries {}
 
 interface SetQueryDefaultsOptions<Q extends Query>
@@ -241,20 +269,23 @@ interface SetQueryDefaultsOptions<Q extends Query>
 /**
  * Define a built-in query
  *
- * @param queryKey The string cache key
- * @param callback A function that returns default options
+ * @param queryKey - The string cache key
+ * @param callback - A function that returns default options
  */
 function setTypedQueryDefaults<K extends keyof Queries>(
   queryKey: K,
   callback: (client: Client) => SetQueryDefaultsOptions<Queries[K]>
 ) {
   queries.push((client) => {
-    const options = defaultSelect(callback(client))
+    const options = _defaultSelect(callback(client))
     client.queryClient.setQueryDefaults(queryKey, options)
   })
 }
 
-// This interface is populated inline as mutation defaults are applied
+/** This interface is populated inline as mutation defaults are applied
+ *
+ * @beta
+ */
 export interface Mutations {}
 interface SetMutationDefaultsOptions<M extends Mutation>
   extends MutationObserverOptions<M['TData'], M['TError'], M['TVariables'], M['TContext']> {}
@@ -262,8 +293,8 @@ interface SetMutationDefaultsOptions<M extends Mutation>
 /**
  * Define a built-in mutation
  *
- * @param mutationKey The string cache key
- * @param callback A function that returns default options
+ * @param mutationKey - The string cache key
+ * @param callback - A function that returns default options
  */
 function setTypedMutationDefaults<Key extends keyof Mutations>(
   mutationKey: Key,
@@ -275,21 +306,20 @@ function setTypedMutationDefaults<Key extends keyof Mutations>(
   })
 }
 
+/** @beta */
 export type Location = 'toknow' | 'todo'
-
-export type Notification = {
-  [key: string]: unknown
-}
-
-export type App = {
-  [key: string]: unknown
-}
+/** @beta */
+export type Notification = { [key: string]: unknown }
+/** @beta */
+export type App = { [key: string]: unknown }
 
 // getNotifications
 // ================================================================================================================================
 
-type NotificationsPage = { notifications: Notification[]; cursor?: string }
+/** @beta */
+export type NotificationsPage = { notifications: Notification[]; cursor?: string }
 
+/** @beta */
 export interface Queries {
   getNotifications: Query<
     ['getNotifications', { location: Location; limit?: number }],
@@ -318,6 +348,7 @@ setTypedQueryDefaults('getNotifications', (client) => ({
 // getNotification
 // ================================================================================================================================
 
+/** @beta */
 export interface Queries {
   getNotification: Query<['getNotification', string], Notification>
 }
@@ -334,6 +365,7 @@ setTypedQueryDefaults('getNotification', (client) => ({
 // actionNotification
 // ================================================================================================================================
 
+/** @beta */
 export interface Mutations {
   actionNotification: Mutation<['actionNotification'], { id: string; data: unknown }, Notification>
 }
@@ -350,6 +382,7 @@ setTypedMutationDefaults('actionNotification', (client) => ({
 // deleteNotification
 // ================================================================================================================================
 
+/** @beta */
 export interface Mutations {
   deleteNotification: Mutation<['deleteNotification'], { id: string }, Notification>
 }
@@ -366,8 +399,10 @@ setTypedMutationDefaults('deleteNotification', (client) => ({
 // getActivity
 // ================================================================================================================================
 
-type ActivityPage = { activity: unknown[]; cursor?: string }
+/** @beta */
+export type ActivityPage = { activity: unknown[]; cursor?: string }
 
+/** @beta */
 export interface Queries {
   getActivity: Query<['getActivity', { limit?: number }?], ActivityPage, unknown, ActivityPage['activity']>
 }
@@ -391,8 +426,10 @@ setTypedQueryDefaults('getActivity', (client) => ({
 // getApps
 // ================================================================================================================================
 
-type AppsPage = { apps: App[]; cursor?: string }
+/** @beta */
+export type AppsPage = { apps: App[]; cursor?: string }
 
+/** @beta */
 export interface Queries {
   getApps: Query<['getApps', { limit?: number }?], AppsPage, unknown, AppsPage['apps']>
 }
@@ -418,6 +455,7 @@ setTypedQueryDefaults('getApps', (client) => ({
 // notificationViewed
 // ================================================================================================================================
 
+/** @beta */
 export interface Mutations {
   notificationViewed: Mutation<['notificationViewed'], { id: string }, Notification>
 }
@@ -434,6 +472,7 @@ setTypedMutationDefaults('notificationViewed', (client) => ({
 // notificationDetailViewed
 // ================================================================================================================================
 
+/** @beta */
 export interface Mutations {
   notificationDetailViewed: Mutation<['notificationDetailViewed'], { id: string }, Notification>
 }
