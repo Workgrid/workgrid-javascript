@@ -20,6 +20,9 @@ import { rest } from 'msw'
 import WorkgridClient from './client'
 
 const server = setupServer(
+  rest.post(`https://company-code.workgrid.com/v1/flags`, (req, res, ctx) => {
+    return res(ctx.json({ data: { flag1: { value: true }, flag2: { value: null } } }))
+  }),
   rest.get(`https://company-code.workgrid.com/v1/toknow`, (req, res, ctx) => {
     return res(ctx.json({ data: { notifications: [{ title: `${req.method} ${req.url.pathname}` }] } }))
   }),
@@ -104,6 +107,17 @@ describe('@workgrid/client', () => {
   })
 
   describe('queries & mutations', () => {
+    test('getFlags', async () => {
+      const result = await client.query(['getFlags'])
+
+      expect(result).toMatchInlineSnapshot(`
+        Object {
+          "flag1": true,
+          "flag2": null,
+        }
+      `)
+    })
+
     test('getNotifications', async () => {
       const result = await client.query(['getNotifications', { location: 'toknow' }])
 
