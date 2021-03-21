@@ -21,20 +21,37 @@ import WorkgridClient, {
   Mutations,
   Mutation,
   MutationKey,
-  defaultSelect,
+  _defaultSelect,
 } from '@workgrid/client'
 import {
   QueryClientProvider,
   QueryKey as CustomQueryKey,
   useInfiniteQuery as _useCustomQuery,
+  QueryFunction,
   UseInfiniteQueryOptions as UseQueryOptions,
+  // Explicit import avoids `import() types` in .d.ts (https://github.com/microsoft/rushstack/issues/2140)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  UseInfiniteQueryResult as UseQueryResult,
   MutationKey as CustomMutationKey,
   useMutation as _useCustomMutation,
-  UseMutationOptions as UseMutationOptions,
   MutationFunction,
-  QueryFunction,
+  UseMutationOptions as UseMutationOptions,
+  // Explicit import avoids `import() types` in .d.ts (https://github.com/microsoft/rushstack/issues/2140)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  UseMutationResult as UseMutationResult,
 } from 'react-query'
-import { createElement as h, createContext, useContext, ReactNode } from 'react'
+import {
+  createElement as h,
+  createContext,
+  useContext,
+  ReactNode,
+  // Explicit import avoids `import() types` in .d.ts (https://github.com/microsoft/rushstack/issues/2140)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  FunctionComponentElement,
+  // Explicit import avoids `import() types` in .d.ts (https://github.com/microsoft/rushstack/issues/2140)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ProviderProps,
+} from 'react'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const Context = createContext<WorkgridClient>(undefined!)
@@ -42,8 +59,10 @@ const Context = createContext<WorkgridClient>(undefined!)
 /**
  * Ensure we are in a WorkgridProvider
  *
- * @param label The custom hook label
- * @returns The workgrid context
+ * @param label - The custom hook label
+ * @returns - The workgrid context
+ *
+ * @beta
  */
 function useWorkgridContext(label = 'useWorkgridContext') {
   const workgrid = useContext(Context)
@@ -58,10 +77,10 @@ function useWorkgridContext(label = 'useWorkgridContext') {
 /**
  * Setup context for workgrid
  *
- * @param props Component properties
- * @param props.client The workgrid client instance
- * @param props.children The react children to render
- * @returns The workgrid and query client providers
+ * @param props - Component properties
+ * @returns - The workgrid and query client providers
+ *
+ * @beta
  */
 export function WorkgridProvider({ client, children }: { client: WorkgridClient; children?: ReactNode }) {
   return h(Context.Provider, { value: client }, h(QueryClientProvider, { client: client.queryClient }, children))
@@ -70,7 +89,9 @@ export function WorkgridProvider({ client, children }: { client: WorkgridClient;
 /**
  * Fetch the workgrid client from context
  *
- * @returns The workgrid client instance
+ * @returns - The workgrid client instance
+ *
+ * @beta
  */
 export function useWorkgridClient() {
   return useWorkgridContext('useWorkgridClient')
@@ -79,9 +100,11 @@ export function useWorkgridClient() {
 /**
  * Invoke a query
  *
- * @param queryKey The query key (must be pre-defined)
- * @param options Any additional query options
- * @returns The query result
+ * @param queryKey - The query key (must be pre-defined)
+ * @param options - Any additional query options
+ * @returns - The query result
+ *
+ * @beta
  */
 export function useQuery<K extends keyof Queries, Q extends Query = Queries[K]>(
   queryKey: QueryKey<K, Q>,
@@ -94,25 +117,29 @@ export function useQuery<K extends keyof Queries, Q extends Query = Queries[K]>(
 /**
  * Invoke a custom query (should be used sparingly and never in production)
  *
- * @param queryKey A unique cache key
- * @param options Any additional query options
- * @returns The query result
+ * @param queryKey - A unique cache key
+ * @param options - Any additional query options
+ * @returns - The query result
+ *
+ * @beta
  */
 export function useCustomQuery<TQueryFnData = unknown, TError = unknown, TData = TQueryFnData>(
   queryKey: CustomQueryKey,
   options?: UseQueryOptions<TQueryFnData, TError, TData>
 ) {
   useWorkgridContext('useCustomQuery') // Ensure we have a WorkgridProvider
-  options = defaultSelect(options) // Apply the default select method
+  options = _defaultSelect(options) // Apply the default select method
   return _useCustomQuery<TQueryFnData, TError, TData>(queryKey, options)
 }
 
 /**
  * Prepare a mutation
  *
- * @param mutationKey The mutation key (must be pre-defined)
- * @param options Any additional mutation options
- * @returns The mutation executor
+ * @param mutationKey - The mutation key (must be pre-defined)
+ * @param options - Any additional mutation options
+ * @returns - The mutation executor
+ *
+ * @beta
  */
 export function useMutation<K extends keyof Mutations, M extends Mutation = Mutations[K]>(
   mutationKey: MutationKey<K, M>,
@@ -125,9 +152,11 @@ export function useMutation<K extends keyof Mutations, M extends Mutation = Muta
 /**
  * Prepare a custom mutation (should be used sparingly and never in production)
  *
- * @param mutationKey A unique cache key
- * @param options Any additional mutation options
- * @returns The mutation executor
+ * @param mutationKey - A unique cache key
+ * @param options - Any additional mutation options
+ * @returns - The mutation executor
+ *
+ * @beta
  */
 export function useCustomMutation<TData = unknown, TError = unknown, TVariables = void, TContext = unknown>(
   mutationKey: CustomMutationKey,

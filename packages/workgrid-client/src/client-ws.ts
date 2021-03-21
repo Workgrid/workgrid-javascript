@@ -17,6 +17,9 @@
 import { EventEmitter } from 'events'
 import { Context } from './client'
 
+/**
+ * @beta
+ */
 class WorkgridWS {
   private context: () => Promise<Context>
   private emitter: EventEmitter
@@ -71,8 +74,11 @@ class WorkgridWS {
   /**
    * Listen to events for the given trigger
    *
-   * @param trigger event name
-   * @param callback listener
+   * @param trigger - The event name
+   * @param callback - The event listener
+   * @returns - An unsubscribe method
+   *
+   * @beta
    */
   subscribe(trigger: string, callback: (...args: unknown[]) => void) {
     this.connect()
@@ -84,8 +90,10 @@ class WorkgridWS {
   /**
    * Publish an event
    *
-   * @param type event name
-   * @param data event payload
+   * @param type - The event type
+   * @param data - The event payload
+   *
+   * @beta
    */
   publish(type: string, data?: unknown) {
     const message = JSON.stringify({ type, data })
