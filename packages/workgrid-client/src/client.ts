@@ -27,7 +27,7 @@ import {
   MutationKey as CustomMutationKey,
   MutationOptions as MutationOptions,
 } from 'react-query'
-import { flatMap } from 'lodash'
+import { flatMap, mapValues } from 'lodash'
 import HttpClient from './client-http'
 import WsClient from './client-ws'
 
@@ -313,6 +313,24 @@ export type Location = 'toknow' | 'todo'
 export type Notification = { [key: string]: unknown }
 /** @beta */
 export type App = { [key: string]: unknown }
+
+// getFlags
+// ================================================================================================================================
+
+/** @beta */
+export type Flags = { [key: string]: boolean | string | number | null }
+
+/** @beta */
+export interface Queries {
+  getFlags: Query<['getFlags'], Flags>
+}
+
+setTypedQueryDefaults('getFlags', (client) => ({
+  queryFn: async () => {
+    const response = await client.httpClient.post(`/v1/flags`)
+    return mapValues(response.data, 'value')
+  },
+}))
 
 // getNotifications
 // ================================================================================================================================
