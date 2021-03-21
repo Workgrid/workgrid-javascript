@@ -34,7 +34,8 @@ import WsClient from './client-ws'
 // Export types for downstream use
 export { HttpClient, WsClient }
 
-const pkg = JSON.parse(require('fs').readFileSync(require('path').resolve(__dirname, '../package.json'), 'utf8'))
+// Use require to avoid ts6059
+const pkg = require('../package.json')
 
 /** @beta */
 export type Context = {
