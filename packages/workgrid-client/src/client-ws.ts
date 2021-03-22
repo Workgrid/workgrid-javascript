@@ -76,7 +76,7 @@ class WorkgridWS {
    *
    * @param trigger - The event name
    * @param callback - The event listener
-   * @returns - An unsubscribe method
+   * @returns An unsubscribe method
    *
    * @beta
    */

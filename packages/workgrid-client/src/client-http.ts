@@ -62,7 +62,7 @@ class WorkgridHTTP {
    *
    * @param url - The request url
    * @param config - Additional request config
-   * @returns - The response data
+   * @returns The response data
    *
    * @beta
    */
@@ -76,7 +76,7 @@ class WorkgridHTTP {
    * @param url - The request url
    * @param data - The request payload
    * @param config - Additional request config
-   * @returns - The response data
+   * @returns The response data
    *
    * @beta
    */
@@ -90,7 +90,7 @@ class WorkgridHTTP {
    * @param url - The request url
    * @param data - The request payload
    * @param config - Additional request config
-   * @returns - The response data
+   * @returns The response data
    *
    * @beta
    */
@@ -103,7 +103,7 @@ class WorkgridHTTP {
    *
    * @param url - The request url
    * @param config - Additional request config
-   * @returns - The response data
+   * @returns The response data
    *
    * @beta
    */

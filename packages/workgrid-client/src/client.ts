@@ -72,7 +72,7 @@ const mutations: ((client: Client) => void)[] = []
  *
  * @beta
  */
-export type Key<K extends string | unknown[]> = K extends string ? K | [K] : K['length'] extends 1 ? K[0] | K : K
+// export type Key<K extends string | unknown[]> = K extends string ? K | [K] : K['length'] extends 1 ? K[0] | K : K
 
 /** @beta */
 export type Query<
@@ -90,7 +90,12 @@ export type Query<
 }
 
 /** @beta */
-export type QueryKey<K extends keyof Queries, Q extends Query = Queries[K]> = Key<Q['TQueryKey']>
+// export type QueryKey<K extends keyof Queries, Q extends Query = Queries[K]> = Key<Q['TQueryKey']>
+export type QueryKey<K extends keyof Queries, Q extends Query = Queries[K]> = Q['TQueryKey'] extends string | [string]
+  ? K | [K]
+  : Q['TQueryKey'] extends [string, ...infer R]
+  ? [K, ...R]
+  : never
 
 /** @beta */
 export type Mutation<
@@ -108,7 +113,14 @@ export type Mutation<
 }
 
 /** @beta */
-export type MutationKey<K extends keyof Mutations, M extends Mutation = Mutations[K]> = Key<M['TMutationKey']>
+// export type MutationKey<K extends keyof Mutations, M extends Mutation = Mutations[K]> = Key<M['TMutationKey']>
+export type MutationKey<K extends keyof Mutations, Q extends Mutation = Mutations[K]> = Q['TMutationKey'] extends
+  | string
+  | [string]
+  ? K | [K]
+  : Q['TMutationKey'] extends [string, ...infer R]
+  ? [K, ...R]
+  : never
 
 /** @beta */
 class Client {
@@ -132,14 +144,14 @@ class Client {
    *
    * @param queryKey - The query key (must be pre-defined)
    * @param options - Any additional query options
-   * @returns - The query result
+   * @returns The query result
    *
    * @beta
    */
   query<K extends keyof Queries, Q extends Query = Queries[K]>(
     queryKey: QueryKey<K, Q>,
     options?: QueryOptions<Q['TQueryFnData'], Q['TError'], Q['TData']>
-  ) {
+  ): Promise<Q['TData']> {
     const promise = this.queryClient.fetchInfiniteQuery<Q['TQueryFnData'], Q['TError'], Q['TData']>(queryKey, options)
 
     // react-query only applies `select` option to hooks usage, manually apply it here
@@ -152,19 +164,19 @@ class Client {
    *
    * @param queryKey - A unique cache key
    * @param options - Any additional query options
-   * @returns - The query result
+   * @returns The query result
    *
    * @beta
    */
   customQuery<TQueryFnData = unknown, TError = unknown, TData = TQueryFnData>(
     queryKey: CustomQueryKey,
     options?: QueryOptions<TQueryFnData, TError, TData>
-  ) {
+  ): Promise<TData> {
     const promise = this.queryClient.fetchInfiniteQuery<TQueryFnData, TError, TData>(queryKey, options)
 
     // react-query only applies `select` option to hooks usage, manually apply it here
     const { select } = _defaultSelect(options) // Apply the default select method
-    return promise.then((result) => (select ? select(result) : result))
+    return promise.then((result) => (select ? select(result) : result) as TData)
   }
 
   /**
@@ -173,7 +185,7 @@ class Client {
    * @param mutationKey - The mutation key (must be pre-defined)
    * @param variables - The appropriate variables
    * @param options - Any additional mutation options
-   * @returns - The mutation result
+   * @returns The mutation result
    *
    * @beta
    */
@@ -181,7 +193,7 @@ class Client {
     mutationKey: MutationKey<K, M>,
     variables?: M['TVariables'],
     options?: MutationOptions<M['TData'], M['TError'], M['TVariables'], M['TContext']>
-  ) {
+  ): Promise<M['TData']> {
     return this.queryClient.executeMutation<M['TData'], M['TError'], M['TVariables'], M['TContext']>({
       mutationKey,
       variables,
@@ -195,7 +207,7 @@ class Client {
    * @param mutationKey - A unique cache key
    * @param variables - The appropriate variables
    * @param options - Any additional mutation options
-   * @returns - The mutation result
+   * @returns The mutation result
    *
    * @beta
    */
@@ -203,7 +215,7 @@ class Client {
     mutationKey: CustomMutationKey,
     variables?: TVariables,
     options?: MutationOptions<TData, TError, TVariables, TContext>
-  ) {
+  ): Promise<TData> {
     return this.queryClient.executeMutation<TData, TError, TVariables, TContext>({
       mutationKey,
       variables,
@@ -218,7 +230,7 @@ export default Client
  * Normalize context to always return a consistent set of fields (apiHost and wssHost)
  *
  * @param context - The provided context options
- * @returns - A normalized context object
+ * @returns A normalized context object
  */
 async function normalizeContext(context: ClientOptions['context']): Promise<Context> {
   const { token, spaceId, ...partial } = typeof context === 'function' ? await context() : context
@@ -237,7 +249,7 @@ async function normalizeContext(context: ClientOptions['context']): Promise<Cont
  * (We always use infinite query and the flatten the page data)
  *
  * @param options - The query defaults options
- * @returns - The query defaults options (with default select)
+ * @returns The query defaults options (with default select)
  *
  * @internal
  */
@@ -386,7 +398,7 @@ setTypedQueryDefaults('getNotification', (client) => ({
 
 /** @beta */
 export interface Mutations {
-  actionNotification: Mutation<['actionNotification'], { id: string; data: unknown }, Notification>
+  actionNotification: Mutation<['actionNotification'], { id: string; data?: unknown }, Notification>
 }
 
 setTypedMutationDefaults('actionNotification', (client) => ({
