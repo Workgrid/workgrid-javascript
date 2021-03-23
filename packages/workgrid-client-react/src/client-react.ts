@@ -27,18 +27,18 @@ import {
   QueryClientProvider,
   QueryKey as CustomQueryKey,
   useInfiniteQuery as _useCustomQuery,
-  QueryFunction,
   UseInfiniteQueryOptions as UseQueryOptions,
   // Explicit import avoids `import() types` in .d.ts (https://github.com/microsoft/rushstack/issues/2140)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   UseInfiniteQueryResult as _UseQueryResult,
   MutationKey as CustomMutationKey,
   useMutation as _useCustomMutation,
-  MutationFunction,
-  UseMutationOptions as UseMutationOptions,
+  UseMutationOptions as _UseMutationOptions,
   // Explicit import avoids `import() types` in .d.ts (https://github.com/microsoft/rushstack/issues/2140)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   UseMutationResult as UseMutationResult,
+  // UseMutationOptions does not include mutationFn by default...
+  MutationFunction,
 } from 'react-query'
 import {
   createElement as h,
@@ -55,6 +55,17 @@ import {
 
 /** @beta */
 export type UseQueryResult<TData, TError> = Omit<_UseQueryResult<TData, TError>, 'data'> & { data: TData }
+
+/** @beta */
+export type UseMutationOptions<TData, TError, TVariables, TContext> = _UseMutationOptions<
+  TData,
+  TError,
+  TVariables,
+  TContext
+> & {
+  // UseMutationOptions does not include mutationFn by default...
+  mutationFn?: MutationFunction<TData, TVariables>
+}
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const Context = createContext<WorkgridClient>(undefined!)
@@ -86,6 +97,7 @@ function useWorkgridContext(label = 'useWorkgridContext') {
  * @beta
  */
 export function WorkgridProvider({ client, children }: { client: WorkgridClient; children?: ReactNode }) {
+  // Using `h` to avoid needing the jsx transform just for this (https://reactjs.org/docs/react-without-jsx.html)
   return h(Context.Provider, { value: client }, h(QueryClientProvider, { client: client.queryClient }, children))
 }
 
@@ -169,10 +181,7 @@ export function useMutation<K extends keyof Mutations, M extends Mutation = Muta
  */
 export function useCustomMutation<TData = unknown, TError = unknown, TVariables = void, TContext = unknown>(
   mutationKey: CustomMutationKey,
-  options?: UseMutationOptions<TData, TError, TVariables, TContext> & {
-    // TODO: Not sure why mutationFn isn't just part of UseMutationOptions...
-    mutationFn?: MutationFunction<TData, TVariables>
-  }
+  options?: UseMutationOptions<TData, TError, TVariables, TContext>
 ): UseMutationResult<TData, TError, TVariables, TContext> {
   useWorkgridContext('useCustomMutation') // Ensure we have a WorkgridProvider
   return _useCustomMutation<TData, TError, TVariables, TContext>(mutationKey, options?.mutationFn, options)
