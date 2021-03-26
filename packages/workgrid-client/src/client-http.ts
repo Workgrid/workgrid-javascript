@@ -39,14 +39,15 @@ class WorkgridHTTP {
     const instance = axios.create()
 
     instance.interceptors.request.use(async (config) => {
-      const { token, spaceId, apiHost, userAgent, clientAgent } = await this.context()
+      const { token, spaceId, apiHost, /*userAgent,*/ clientAgent } = await this.context()
 
       config.baseURL = apiHost
 
       config.headers['authorization'] = `Bearer ${token}`
       config.headers['x-workgrid-space'] = spaceId
 
-      config.headers['user-agent'] = userAgent
+      // Explicitly setting the user-agent logs an error
+      // config.headers['user-agent'] = userAgent
       config.headers['x-client-agent'] = clientAgent
 
       return config
