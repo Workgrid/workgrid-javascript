@@ -236,7 +236,7 @@ export default class Connector {
   /**
    * Submit one or more job requests
    * @param jobs - the jobs to be created by the Workgrid API
-   * @returns - information for each created job
+   * @returns information for each created job
    *
    * @beta
    */
@@ -252,7 +252,7 @@ export default class Connector {
   /**
    * Get the job and its current status
    * @param jobId - jobId of job to get
-   * @returns - information about the requested job
+   * @returns information about the requested job
    *
    * @beta
    */
@@ -270,7 +270,7 @@ export default class Connector {
    * @param cursor - An opaque cursor used for pagination
    * @param eventStatus - Eventstatus to filter by
    * @param eventType - Event type to filter by
-   * @returns - information about a set of events based on filters
+   * @returns information about a set of events based on filters
    *
    * @beta
    */
@@ -291,7 +291,7 @@ export default class Connector {
   /**
    * Get information about a specific event
    * @param eventId - eventId of job to get
-   * @returns - information about a single event
+   * @returns information about a single event
    *
    * @beta
    */
@@ -307,7 +307,7 @@ export default class Connector {
    * Update the status of the event
    * @param eventId - Event to update the status of
    * @param status - The status (likely "processed")
-   * @returns - information about the updated event
+   * @returns information about the updated event
    *
    * @beta
    */
@@ -322,7 +322,7 @@ export default class Connector {
 
   /**
    * Get information about sources
-   * @returns - the sources available to the connector
+   * @returns the sources available to the connector
    *
    * @beta
    */
@@ -338,7 +338,7 @@ export default class Connector {
   /**
    * Get information about categories
    * @param location - The location to filter categories by
-   * @returns - the categories available to the connector
+   * @returns the categories available to the connector
    *
    * @beta
    */
