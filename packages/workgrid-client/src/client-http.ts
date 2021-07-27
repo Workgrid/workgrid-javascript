@@ -36,7 +36,7 @@ class WorkgridHTTP {
    * Populate the baseURL and headers from the context, directly return the response data.
    */
   private createInstance() {
-    const instance = axios.create()
+    const instance = axios.create({ withCredentials: true })
 
     instance.interceptors.request.use(async (config) => {
       const { token, spaceId, apiHost, /*userAgent,*/ clientAgent } = await this.context()
