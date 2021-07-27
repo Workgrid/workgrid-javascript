@@ -26,7 +26,7 @@ import {
   FetchInfiniteQueryOptions as QueryOptions,
   MutationKey as CustomMutationKey,
   MutationOptions as MutationOptions,
-} from 'react-query'
+} from 'react-query/core'
 import { flatMap, mapValues } from 'lodash'
 import HttpClient from './client-http'
 import WsClient from './client-ws'
