@@ -40,7 +40,6 @@ const pkg = require('../package.json')
 /** @beta */
 export type Context = {
   token: string
-  spaceId: string
   apiHost: string
   wssHost: string
   userAgent: string
@@ -49,8 +48,8 @@ export type Context = {
 
 /** @beta */
 export type PartialContext =
-  | (Pick<Context, 'token' | 'spaceId'> & { apiHost: string; wssHost?: string })
-  | (Pick<Context, 'token' | 'spaceId'> & { companyCode: string })
+  | (Pick<Context, 'token'> & { apiHost: string; wssHost?: string })
+  | (Pick<Context, 'token'> & { companyCode: string })
 
 /** @beta */
 export type ClientOptions = {
@@ -233,7 +232,7 @@ export default Client
  * @returns A normalized context object
  */
 async function normalizeContext(context: ClientOptions['context']): Promise<Context> {
-  const { token, spaceId, ...partial } = typeof context === 'function' ? await context() : context
+  const { token, ...partial } = typeof context === 'function' ? await context() : context
 
   const apiHost = 'apiHost' in partial ? partial.apiHost : `https://${partial.companyCode}.workgrid.com`
   const wssHost = 'wssHost' in partial && partial.wssHost ? partial.wssHost : apiHost.replace('https://', 'wss://')
@@ -241,7 +240,7 @@ async function normalizeContext(context: ClientOptions['context']): Promise<Cont
   const userAgent = navigator.userAgent
   const clientAgent = `${pkg.name}/${pkg.version}`
 
-  return { token, spaceId, apiHost, wssHost, userAgent, clientAgent }
+  return { token, apiHost, wssHost, userAgent, clientAgent }
 }
 
 /**
@@ -326,6 +325,24 @@ export type Notification = { [key: string]: unknown }
 /** @beta */
 export type App = { [key: string]: unknown }
 
+// getSpaces
+// ================================================================================================================================
+
+/** @beta */
+export type Spaces = { id: string; name: string; default: boolean }[]
+
+/** @beta */
+export interface Queries {
+  getSpaces: Query<['getSpaces'], Spaces>
+}
+
+setTypedQueryDefaults('getSpaces', (client) => ({
+  queryFn: async () => {
+    const response = await client.httpClient.post(`/v1/userspaces`)
+    return response.data
+  },
+}))
+
 // getFlags
 // ================================================================================================================================
 
@@ -334,12 +351,15 @@ export type Flags = { [key: string]: boolean | string | number | null }
 
 /** @beta */
 export interface Queries {
-  getFlags: Query<['getFlags'], Flags>
+  getFlags: Query<['getFlags', { spaceId: string }], Flags>
 }
 
 setTypedQueryDefaults('getFlags', (client) => ({
-  queryFn: async () => {
-    const response = await client.httpClient.post(`/v1/flags`)
+  queryFn: async (context) => {
+    const { spaceId } = context.queryKey[1]
+    const response = await client.httpClient.post(`/v1/flags`, {
+      headers: { 'x-workgrid-space': spaceId },
+    })
     return mapValues(response.data, 'value')
   },
 }))
@@ -353,7 +373,7 @@ export type NotificationsPage = { notifications: Notification[]; cursor?: string
 /** @beta */
 export interface Queries {
   getNotifications: Query<
-    ['getNotifications', { location: Location; limit?: number }],
+    ['getNotifications', { spaceId: string; location: Location; limit?: number }],
     NotificationsPage,
     unknown,
     NotificationsPage['notifications']
@@ -362,10 +382,13 @@ export interface Queries {
 
 setTypedQueryDefaults('getNotifications', (client) => ({
   queryFn: async (context) => {
-    const { location, limit } = context.queryKey[1]
+    const { spaceId, location, limit } = context.queryKey[1]
     const cursor = context.pageParam
 
-    const response = await client.httpClient.get(`/v1/${location}`, { params: { limit, cursor } })
+    const response = await client.httpClient.get(`/v1/${location}`, {
+      headers: { 'x-workgrid-space': spaceId },
+      params: { limit, cursor },
+    })
     return response.data
   },
   getNextPageParam: (lastPage) => {
@@ -381,14 +404,16 @@ setTypedQueryDefaults('getNotifications', (client) => ({
 
 /** @beta */
 export interface Queries {
-  getNotification: Query<['getNotification', string], Notification>
+  getNotification: Query<['getNotification', { spaceId: string; id: string }], Notification>
 }
 
 setTypedQueryDefaults('getNotification', (client) => ({
   queryFn: async (context) => {
-    const id = context.queryKey[1]
+    const { spaceId, id } = context.queryKey[1]
 
-    const response = await client.httpClient.get(`/v1/usernotifications/${id}`)
+    const response = await client.httpClient.get(`/v1/usernotifications/${id}`, {
+      headers: { 'x-workgrid-space': spaceId },
+    })
     return response.data
   },
 }))
@@ -398,14 +423,16 @@ setTypedQueryDefaults('getNotification', (client) => ({
 
 /** @beta */
 export interface Mutations {
-  actionNotification: Mutation<['actionNotification'], { id: string; data?: unknown }, Notification>
+  actionNotification: Mutation<['actionNotification'], { spaceId: string; id: string; data?: unknown }, Notification>
 }
 
 setTypedMutationDefaults('actionNotification', (client) => ({
   mutationFn: async (variables) => {
-    const { id, data } = variables
+    const { spaceId, id, data } = variables
 
-    const response = await client.httpClient.post(`/v1/usernotifications/${id}/action`, data)
+    const response = await client.httpClient.post(`/v1/usernotifications/${id}/action`, data, {
+      headers: { 'x-workgrid-space': spaceId },
+    })
     return response.data
   },
 }))
@@ -415,14 +442,16 @@ setTypedMutationDefaults('actionNotification', (client) => ({
 
 /** @beta */
 export interface Mutations {
-  deleteNotification: Mutation<['deleteNotification'], { id: string }, Notification>
+  deleteNotification: Mutation<['deleteNotification'], { spaceId: string; id: string }, Notification>
 }
 
 setTypedMutationDefaults('deleteNotification', (client) => ({
   mutationFn: async (variables) => {
-    const { id } = variables
+    const { spaceId, id } = variables
 
-    const response = await client.httpClient.delete(`/v1/usernotifications/${id}`)
+    const response = await client.httpClient.delete(`/v1/usernotifications/${id}`, {
+      headers: { 'x-workgrid-space': spaceId },
+    })
     return response.data
   },
 }))
@@ -435,15 +464,23 @@ export type ActivityPage = { activity: unknown[]; cursor?: string }
 
 /** @beta */
 export interface Queries {
-  getActivity: Query<['getActivity', { limit?: number }?], ActivityPage, unknown, ActivityPage['activity']>
+  getActivity: Query<
+    ['getActivity', { spaceId: string; limit?: number }],
+    ActivityPage,
+    unknown,
+    ActivityPage['activity']
+  >
 }
 
 setTypedQueryDefaults('getActivity', (client) => ({
   queryFn: async (context) => {
-    const { limit } = context.queryKey[1] || {}
+    const { spaceId, limit } = context.queryKey[1]
     const cursor = context.pageParam
 
-    const response = await client.httpClient.get(`/v1/activity`, { params: { limit, cursor } })
+    const response = await client.httpClient.get(`/v1/activity`, {
+      headers: { 'x-workgrid-space': spaceId },
+      params: { limit, cursor },
+    })
     return response.data
   },
   getNextPageParam: (lastPage) => {
@@ -462,15 +499,18 @@ export type AppsPage = { apps: App[]; cursor?: string }
 
 /** @beta */
 export interface Queries {
-  getApps: Query<['getApps', { limit?: number }?], AppsPage, unknown, AppsPage['apps']>
+  getApps: Query<['getApps', { spaceId: string; limit?: number }], AppsPage, unknown, AppsPage['apps']>
 }
 
 setTypedQueryDefaults('getApps', (client) => ({
   queryFn: async (context) => {
-    const { limit } = context.queryKey[1] || {}
+    const { spaceId, limit } = context.queryKey[1]
     const cursor = context.pageParam
 
-    const response = await client.httpClient.get(`/v1/microapps`, { params: { limit, cursor } })
+    const response = await client.httpClient.get(`/v1/microapps`, {
+      headers: { 'x-workgrid-space': spaceId },
+      params: { limit, cursor },
+    })
     return response.data
   },
   getNextPageParam: (lastPage) => {
@@ -488,14 +528,16 @@ setTypedQueryDefaults('getApps', (client) => ({
 
 /** @beta */
 export interface Mutations {
-  notificationViewed: Mutation<['notificationViewed'], { id: string }, Notification>
+  notificationViewed: Mutation<['notificationViewed'], { spaceId: string; id: string }, Notification>
 }
 
 setTypedMutationDefaults('notificationViewed', (client) => ({
   mutationFn: async (variables) => {
-    const { id } = variables
+    const { spaceId, id } = variables
 
-    const response = await client.httpClient.put(`/v1/usernotifications/${id}/view`)
+    const response = await client.httpClient.put(`/v1/usernotifications/${id}/view`, undefined, {
+      headers: { 'x-workgrid-space': spaceId },
+    })
     return response.data
   },
 }))
@@ -505,14 +547,16 @@ setTypedMutationDefaults('notificationViewed', (client) => ({
 
 /** @beta */
 export interface Mutations {
-  notificationDetailViewed: Mutation<['notificationDetailViewed'], { id: string }, Notification>
+  notificationDetailViewed: Mutation<['notificationDetailViewed'], { spaceId: string; id: string }, Notification>
 }
 
 setTypedMutationDefaults('notificationDetailViewed', (client) => ({
   mutationFn: async (variables) => {
-    const { id } = variables
+    const { spaceId, id } = variables
 
-    const response = await client.httpClient.put(`/v1/usernotifications/${id}/view-detail`)
+    const response = await client.httpClient.put(`/v1/usernotifications/${id}/view-detail`, undefined, {
+      headers: { 'x-workgrid-space': spaceId },
+    })
     return response.data
   },
 }))

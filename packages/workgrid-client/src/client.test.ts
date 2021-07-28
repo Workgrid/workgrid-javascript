@@ -20,6 +20,9 @@ import { rest } from 'msw'
 import WorkgridClient from './client'
 
 const server = setupServer(
+  rest.post(`https://company-code.workgrid.com/v1/userspaces`, (req, res, ctx) => {
+    return res(ctx.json({ data: [{ id: 'space1', name: 'Space 1', default: true }] }))
+  }),
   rest.post(`https://company-code.workgrid.com/v1/flags`, (req, res, ctx) => {
     return res(ctx.json({ data: { flag1: { value: true }, flag2: { value: null } } }))
   }),
@@ -63,11 +66,11 @@ describe('@workgrid/client', () => {
   let client: WorkgridClient
 
   beforeEach(() => {
-    client = new WorkgridClient({ context: { token: 'token', spaceId: 'space-id', companyCode: 'company-code' } })
+    client = new WorkgridClient({ context: { token: 'token', companyCode: 'company-code' } })
   })
 
   test('query', async () => {
-    const result = await client.query(['getNotification', '1234'])
+    const result = await client.query(['getNotification', { spaceId: 'space-id', id: '1234' }])
 
     expect(result).toMatchInlineSnapshot(`
       Object {
@@ -89,7 +92,7 @@ describe('@workgrid/client', () => {
   })
 
   test('mutate', async () => {
-    const result = await client.mutate('notificationViewed', { id: '1234' })
+    const result = await client.mutate('notificationViewed', { spaceId: 'space-id', id: '1234' })
 
     expect(result).toMatchInlineSnapshot(`
       Object {
@@ -107,8 +110,22 @@ describe('@workgrid/client', () => {
   })
 
   describe('queries & mutations', () => {
+    test('getSpaces', async () => {
+      const result = await client.query(['getSpaces'])
+
+      expect(result).toMatchInlineSnapshot(`
+        Array [
+          Object {
+            "default": true,
+            "id": "space1",
+            "name": "Space 1",
+          },
+        ]
+      `)
+    })
+
     test('getFlags', async () => {
-      const result = await client.query(['getFlags'])
+      const result = await client.query(['getFlags', { spaceId: 'space-id' }])
 
       expect(result).toMatchInlineSnapshot(`
         Object {
@@ -119,7 +136,7 @@ describe('@workgrid/client', () => {
     })
 
     test('getNotifications', async () => {
-      const result = await client.query(['getNotifications', { location: 'toknow' }])
+      const result = await client.query(['getNotifications', { spaceId: 'space-id', location: 'toknow' }])
 
       expect(result).toMatchInlineSnapshot(`
         Array [
@@ -131,7 +148,7 @@ describe('@workgrid/client', () => {
     })
 
     test('getNotification', async () => {
-      const result = await client.query(['getNotification', '1234'])
+      const result = await client.query(['getNotification', { spaceId: 'space-id', id: '1234' }])
 
       expect(result).toMatchInlineSnapshot(`
         Object {
@@ -142,7 +159,7 @@ describe('@workgrid/client', () => {
     })
 
     test('actionNotification', async () => {
-      const result = await client.mutate('actionNotification', { id: '1234' })
+      const result = await client.mutate('actionNotification', { spaceId: 'space-id', id: '1234' })
 
       expect(result).toMatchInlineSnapshot(`
         Object {
@@ -153,7 +170,7 @@ describe('@workgrid/client', () => {
     })
 
     test('deleteNotification', async () => {
-      const result = await client.mutate('deleteNotification', { id: '1234' })
+      const result = await client.mutate('deleteNotification', { spaceId: 'space-id', id: '1234' })
 
       expect(result).toMatchInlineSnapshot(`
         Object {
@@ -164,7 +181,7 @@ describe('@workgrid/client', () => {
     })
 
     test('getActivity', async () => {
-      const result = await client.query(['getActivity'])
+      const result = await client.query(['getActivity', { spaceId: 'space-id' }])
 
       expect(result).toMatchInlineSnapshot(`
         Array [
@@ -176,7 +193,7 @@ describe('@workgrid/client', () => {
     })
 
     test('getApps', async () => {
-      const result = await client.query(['getApps'])
+      const result = await client.query(['getApps', { spaceId: 'space-id' }])
 
       expect(result).toMatchInlineSnapshot(`
         Array [
@@ -188,7 +205,7 @@ describe('@workgrid/client', () => {
     })
 
     test('notificationViewed', async () => {
-      const result = await client.mutate('notificationViewed', { id: '1234' })
+      const result = await client.mutate('notificationViewed', { spaceId: 'space-id', id: '1234' })
 
       expect(result).toMatchInlineSnapshot(`
         Object {
@@ -199,7 +216,7 @@ describe('@workgrid/client', () => {
     })
 
     test('notificationDetailViewed', async () => {
-      const result = await client.mutate('notificationViewed', { id: '1234' })
+      const result = await client.mutate('notificationViewed', { spaceId: 'space-id', id: '1234' })
 
       expect(result).toMatchInlineSnapshot(`
         Object {
