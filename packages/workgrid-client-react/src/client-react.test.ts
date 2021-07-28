@@ -56,7 +56,7 @@ describe('@workgrid/client-react', () => {
   let renderHook: typeof _renderHook
 
   beforeEach(() => {
-    client = new WorkgridClient({ context: { token: 'token', spaceId: 'space-id', companyCode: 'company-code' } })
+    client = new WorkgridClient({ context: { token: 'token', companyCode: 'company-code' } })
 
     renderHook = <TProps, TResult>(callback: (props: TProps) => TResult, options?: RenderHookOptions<TProps>) => {
       return _renderHook(callback, { wrapper: (props) => h(WorkgridProvider, { client, ...props }), ...options })
@@ -79,13 +79,15 @@ describe('@workgrid/client-react', () => {
 
   describe('useQuery', () => {
     test('will throw if used outside a WorkgirdProvider', () => {
-      const { result } = renderHook(() => useQuery(['getNotification', '1234']), { wrapper: undefined })
+      const { result } = renderHook(() => useQuery(['getNotification', { spaceId: 'space-id', id: '1234' }]), {
+        wrapper: undefined,
+      })
 
       expect(result.error).toMatchInlineSnapshot(`[Error: useQuery must be within a WorkgridProvider]`)
     })
 
     test('will prepare and execute the query', async () => {
-      const { result, waitFor } = renderHook(() => useQuery(['getNotification', '1234']))
+      const { result, waitFor } = renderHook(() => useQuery(['getNotification', { spaceId: 'space-id', id: '1234' }]))
 
       await waitFor(() => result.current.isSuccess)
 
@@ -131,7 +133,7 @@ describe('@workgrid/client-react', () => {
 
       expect(result.current.isIdle).toBe(true)
 
-      result.current.mutate({ id: '1234' })
+      result.current.mutate({ spaceId: 'space-id', id: '1234' })
 
       await waitFor(() => result.current.isSuccess)
 
