@@ -34,12 +34,15 @@ class WorkgridWS {
 
   /**
    * Create a new websocket connection (singleton)
+   *
+   * @param options - The connect options
    */
-  private connect() {
+  private connect(options: { spaceId: string }) {
     if (this.connection) return this.connection
 
     return (this.connection = (async () => {
-      const { token, spaceId, wssHost, userAgent, clientAgent } = await this.context()
+      const { token, wssHost, userAgent, clientAgent } = await this.context()
+      const { spaceId } = options
 
       let interval: ReturnType<typeof setTimeout>
       const connection = new WebSocket(`${wssHost}/rtm-ws`)
@@ -51,8 +54,8 @@ class WorkgridWS {
 
       // TODO: Wait to resolve until the connection is open?
       connection.onopen = async () => {
-        this.publish('authenticate', { token, spaceId, userAgent, clientAgent })
-        interval = setInterval(() => this.publish('ping'), this.pingInterval)
+        this.publish(options, 'authenticate', { token, spaceId, userAgent, clientAgent })
+        interval = setInterval(() => this.publish(options, 'ping'), this.pingInterval)
       }
 
       // TODO: Reopen connection?
@@ -74,14 +77,15 @@ class WorkgridWS {
   /**
    * Listen to events for the given trigger
    *
+   * @param connect - The connect options
    * @param trigger - The event name
    * @param callback - The event listener
    * @returns An unsubscribe method
    *
    * @beta
    */
-  subscribe(trigger: string, callback: (...args: unknown[]) => void) {
-    this.connect()
+  subscribe(connect: { spaceId: string }, trigger: string, callback: (...args: unknown[]) => void) {
+    this.connect(connect)
 
     this.emitter.on(trigger, callback)
     return () => this.emitter.off(trigger, callback)
@@ -90,14 +94,15 @@ class WorkgridWS {
   /**
    * Publish an event
    *
+   * @param connect - The connect options
    * @param type - The event type
    * @param data - The event payload
    *
    * @beta
    */
-  publish(type: string, data?: unknown) {
+  publish(connect: { spaceId: string }, type: string, data?: unknown) {
     const message = JSON.stringify({ type, data })
-    this.connect().then((connection) => connection.send(message))
+    this.connect(connect).then((connection) => connection.send(message))
   }
 }
 
