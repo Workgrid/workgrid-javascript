@@ -42,14 +42,14 @@ export type Context = {
   token: string
   apiHost: string
   wssHost: string
-  userAgent: string
+  userAgent: string // Use navigator.userAgent in browser, use a relevant string in node
   clientAgent: string
 }
 
 /** @beta */
 export type PartialContext =
-  | (Pick<Context, 'token'> & { apiHost: string; wssHost?: string })
-  | (Pick<Context, 'token'> & { companyCode: string })
+  | (Pick<Context, 'token' | 'userAgent'> & { apiHost: string; wssHost?: string })
+  | (Pick<Context, 'token' | 'userAgent'> & { companyCode: string })
 
 /** @beta */
 export type ClientOptions = {
@@ -232,12 +232,11 @@ export default Client
  * @returns A normalized context object
  */
 async function normalizeContext(context: ClientOptions['context']): Promise<Context> {
-  const { token, ...partial } = typeof context === 'function' ? await context() : context
+  const { token, userAgent, ...partial } = typeof context === 'function' ? await context() : context
 
   const apiHost = 'apiHost' in partial ? partial.apiHost : `https://${partial.companyCode}.workgrid.com`
   const wssHost = 'wssHost' in partial && partial.wssHost ? partial.wssHost : apiHost.replace('https://', 'wss://')
 
-  const userAgent = navigator.userAgent
   const clientAgent = `${pkg.name}/${pkg.version}`
 
   return { token, apiHost, wssHost, userAgent, clientAgent }
