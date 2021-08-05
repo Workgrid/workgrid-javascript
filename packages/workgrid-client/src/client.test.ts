@@ -71,7 +71,13 @@ describe('@workgrid/client', () => {
   let client: WorkgridClient
 
   beforeEach(() => {
-    client = new WorkgridClient({ context: { token: 'token', companyCode: 'company-code' } })
+    client = new WorkgridClient({
+      context: {
+        userAgent: navigator.userAgent,
+        token: 'token',
+        companyCode: 'company-code',
+      },
+    })
   })
 
   test('query', async () => {
