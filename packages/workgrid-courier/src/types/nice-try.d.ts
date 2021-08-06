@@ -14,4 +14,6 @@
  * limitations under the License.
  */
 
-declare module 'nice-try'
+declare module 'nice-try' {
+  export default function niceTry<T>(fn: () => T): T
+}

@@ -19,12 +19,13 @@ import Courier from './courier'
 
 const createSource = (courier: Courier) => {
   const source = {
-    postMessage: (data: any): void => {
-      try {
-        courier.handleMessage({ data, source })
-      } catch (error) {
-        // Swallow errors :)
-      }
+    postMessage: (data: unknown): void => {
+      courier.handleMessage(
+        new MessageEvent('message', {
+          source: source as MessageEvent['source'],
+          data,
+        })
+      )
     },
   }
 

@@ -16,9 +16,11 @@
 
 import emitter from './emitter'
 
+type Emitter = ReturnType<typeof emitter>
+
 describe('emitter', () => {
   // let emitter
-  let getHandlers: (...args: any[]) => any
+  let getHandlers: (emitter: Emitter) => Emitter['listeners']
 
   beforeEach(() => {
     jest.resetModules()
@@ -27,7 +29,7 @@ describe('emitter', () => {
     // emitter = require('./emitter').default
 
     const { flatten, values } = require('lodash')
-    getHandlers = (emitter: any): any[] => flatten(values(emitter.listeners))
+    getHandlers = (emitter) => flatten(values(emitter.listeners))
   })
 
   describe('on() / off()', () => {

@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "eslint --fix '**/*.{js,ts}' --ignore-path .gitignore",
     "unit": "jest --coverage",
-    "test": "yarn lint && yarn unit",
+    "test": "yarn lint && yarn type-check && yarn unit",
     "build": "wsrun --stages --fast-exit --exclude-missing --collect-logs build",
     "format": "prettier --write '**/*.{json,yml,md}' --ignore-path .gitignore",
     "release": "wsrun --stages --fast-exit --collect-logs --bin node $PWD/scripts/release.js",

@@ -54,27 +54,21 @@ export interface OAuthOptions {
  *
  * @beta
  */
-export interface RequestOptions extends AxiosRequestConfig, OAuthOptions {
-  internal?: any // extending a type requires at least 1 additional field
-}
+export interface RequestOptions extends AxiosRequestConfig, OAuthOptions {}
 
 /**
  * Basic interface representing response from Axios
  *
  * @beta
  */
-export interface RequestResponse extends AxiosResponse {
-  internal?: any // extending a type requires at least 1 additional field
-}
+export interface RequestResponse extends AxiosResponse {}
 
 /**
  * Basic interface representing error from Axios
  *
  * @beta
  */
-export interface RequestError extends AxiosError {
-  internal?: any // extending a type requires at least 1 additional field
-}
+export interface RequestError extends AxiosError {}
 
 /**
  * Returns the instance of axios for the provided client/secret/scope/url tuple.

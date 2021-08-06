@@ -37,7 +37,7 @@ const READY_INTERVAL = ms('100ms')
 
 const isExpired = (token: string): boolean => {
   try {
-    const decoded: any = jwtDecode(token)
+    const decoded = jwtDecode<{ exp: number }>(token)
     return decoded.exp < Date.now() / 1000
   } catch (e) {
     return true
@@ -56,7 +56,7 @@ export interface MicroAppOptions {
   /**
    * Custom error handler
    */
-  onError?: (...args: any[]) => any
+  onError?: (...args: unknown[]) => void
 
   /**
    * Custom log group
@@ -72,7 +72,7 @@ export interface MicroAppOptions {
 class MicroApp {
   private audience?: string
   private id?: string
-  public courier: any // for testing :(
+  public courier: Courier
   private queue: ReturnType<typeof queue>
   private ro: ResizeObserver
   private token?: string
@@ -124,8 +124,8 @@ class MicroApp {
   /**
    * Set the current height on resize
    */
-  private handleResize = throttle((entries: any[]): void => {
-    const mainElement = entries[0].target
+  private handleResize = throttle((entries: ResizeObserverEntry[]): void => {
+    const mainElement = entries[0].target as HTMLElement
     const height = mainElement.offsetHeight
 
     this.emit({ type: EVENTS.SET_SIZE, payload: { height } })
@@ -171,7 +171,7 @@ class MicroApp {
   /**
    * Wrap the event emitter in a queue that is flushed when the host is ready.
    */
-  private emit(...args: any[]): void {
+  private emit(...args: Parameters<typeof Courier.prototype.emit>): void {
     this.queue.push((): void => {
       this.courier.emit(...args)
     })
@@ -180,7 +180,7 @@ class MicroApp {
   /**
    * Wrap the event sender in a queue that is flushed when the host is ready.
    */
-  public send(...args: any[]): Promise<any> {
+  public send(...args: Parameters<typeof Courier.prototype.send>): Promise<unknown> {
     return new Promise((resolve, reject) => {
       this.queue.push((): void => {
         this.courier.send(...args).then(resolve, reject)
@@ -192,20 +192,18 @@ class MicroApp {
    * Tell the host we're ready every 100ms until the message is acknowledged.
    * This fires off two techniques "serial" and "cascade", Android needs serial for now; cascade is superior
    */
-  public async ready(): Promise<any> {
+  public async ready(): Promise<unknown> {
     // Sigh.. don't ask me why Android can't do the cascade variety
     return pAny([this.serialReady(), this.cascadeReady()])
   }
 
-  private serialReady(attempt = 1): Promise<any> {
+  private serialReady(attempt = 1): Promise<unknown> {
     const payload = { height: window.document.documentElement.offsetHeight }
     const promise = this.courier.send({ type: EVENTS.READY, payload, timeout: READY_INTERVAL })
-    return attempt >= READY_TIMEOUT / READY_INTERVAL
-      ? promise
-      : promise.catch((): Promise<any> => this.serialReady(attempt + 1))
+    return attempt >= READY_TIMEOUT / READY_INTERVAL ? promise : promise.catch(() => this.serialReady(attempt + 1))
   }
 
-  private cascadeReady(): Promise<any> {
+  private cascadeReady(): Promise<unknown> {
     const payload = { height: window.document.documentElement.offsetHeight }
     const sendPromises = [this.courier.send({ type: EVENTS.READY, payload })]
     const interval = setInterval(() => {

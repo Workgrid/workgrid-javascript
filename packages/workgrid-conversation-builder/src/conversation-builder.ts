@@ -91,7 +91,7 @@ export default class ConversationBuilder {
   }
 
   // Merge Attributes
-  withConfig(config: any): this {
+  withConfig(config: unknown): this {
     return assign(this, cloneDeep(config))
   }
 
