@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/micro-app",
-  "version": "0.10.3",
+  "version": "0.10.4",
   "main": "dist/micro-app.js",
   "types": "dist/micro-app.d.ts",
   "browser": "dist/micro-app.umd.js",
@@ -12,7 +12,6 @@
     "clean": "rm -rf dist docs temp",
     "build": "yarn clean && rollup -c",
     "prepack": "yarn api:extract && yarn api:document",
-    "postbuild": "tsc --emitDeclarationOnly",
     "type-check": "tsc --noEmit",
     "api:extract": "api-extractor run",
     "api:document": "api-documenter markdown -i temp -o docs"
@@ -23,14 +22,13 @@
   },
   "dependencies": {
     "@juggle/resize-observer": "^3.3.0",
-    "@workgrid/courier": "^0.7.2",
-    "jwt-decode": "^2.2.0",
+    "@workgrid/courier": "^0.7.4",
+    "jwt-decode": "^3.1.2",
     "lodash": "^4.17.11",
     "ms": "^2.1.1",
     "p-any": "^3.0.0"
   },
   "devDependencies": {
-    "@types/jwt-decode": "^2.2.1",
     "@types/lodash": "^4.14.149",
     "@types/ms": "^0.7.31"
   },

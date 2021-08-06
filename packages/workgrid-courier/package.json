@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/courier",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "main": "dist/courier.js",
   "types": "dist/courier.d.ts",
   "browser": "dist/courier.umd.js",
@@ -12,7 +12,6 @@
     "clean": "rm -rf dist docs temp",
     "build": "yarn clean && rollup -c",
     "prepack": "yarn api:extract && yarn api:document",
-    "postbuild": "tsc --emitDeclarationOnly",
     "type-check": "tsc --noEmit",
     "api:extract": "api-extractor run",
     "api:document": "api-documenter markdown -i temp -o docs"
