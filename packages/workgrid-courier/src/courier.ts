@@ -16,7 +16,7 @@
 
 import emitter from './emitter'
 import niceTry from 'nice-try'
-import debug from 'debug/dist/debug'
+import debug from 'debug'
 import { v4 as uuid } from 'uuid'
 import ms from 'ms'
 import { assign, includes } from 'lodash'
@@ -221,7 +221,7 @@ export default class Courier {
   }
 
   /**
-   * Create a new error object with the given arguments, and fire an internal error event.
+   * Create a new error object with the given arguments, and fire an error event.
    */
   private error(code: string, ...args: any[]): any {
     this.debug('error', { code, args })
@@ -270,8 +270,7 @@ export default class Courier {
     // event.source will be null in tests
     // https://github.com/jsdom/jsdom/pull/1140
     if (event.source && !includes(this.sources, event.source)) {
-      // throw this.error('APP-15', { source: event.source })
-      return this.error('APP-15', { source: event.source })
+      return this.error('APP-15', { event })
     }
 
     // https://facebook.github.io/react-native/docs/webview#onmessage
@@ -279,8 +278,7 @@ export default class Courier {
     try {
       if (typeof data === 'string') data = JSON.parse(data)
     } catch (error) {
-      // throw this.error('APP-11', { error })
-      return this.error('APP-11', { error })
+      return this.error('APP-11', { event, error })
     }
 
     // Response
@@ -305,7 +303,7 @@ export default class Courier {
             error = e
           }
 
-          if (!data.id) return this.debug('APP-17', { event, payload, error })
+          if (!data.id) return this.error('APP-17', { event, error, payload })
 
           const target = (event.ports && event.ports[0]) || event.source
           this.sendMessage({ parentId: data.id, payload, error }, target)
@@ -314,7 +312,6 @@ export default class Courier {
       return
     }
 
-    // throw this.error('APP-10', { event })
     return this.error('APP-10', { event })
   }
 }

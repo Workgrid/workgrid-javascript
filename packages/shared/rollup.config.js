@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-const alias = require('rollup-plugin-alias')
-
 const globals = require('rollup-plugin-node-globals')
 const builtins = require('rollup-plugin-node-builtins')
 
@@ -26,7 +24,7 @@ const json = require('rollup-plugin-json')
 const typescript = require('rollup-plugin-typescript')
 const babel = require('rollup-plugin-babel')
 
-// const { terser } = require('rollup-plugin-terser')
+const { terser } = require('rollup-plugin-terser')
 const bundleSize = require('rollup-plugin-bundle-size')
 const visualizer = require('rollup-plugin-visualizer')
 
@@ -64,6 +62,13 @@ module.exports = (input) => {
   const { packageJson: pkg } = readPkgUp.sync({ cwd })
   const amdName = pkg.amdName || upperFirst(camelCase(pkg.name))
   const node = semver.major(semver.minVersion(get(pkg, 'engines.node', '12.13.0')))
+  const browsers = pkg.browserslist || [
+    'last 2 chrome version',
+    'last 2 safari version',
+    'last 2 firefox version',
+    'last 2 edge version',
+    'last 2 opera version',
+  ]
   const dependencies = [...keys(pkg.dependencies), ...keys(pkg.peerDependencies)]
 
   return [
@@ -146,15 +151,10 @@ module.exports = (input) => {
       ],
       preserveSymlinks: true, // yarn workspaces
       plugins: [
-        alias({
-          entries: [{ find: 'crypto', replacement: require.resolve('@workgrid/crypto') }],
-        }),
-
         resolve({
           // extensions: ['.ts', '.js'],
           preferBuiltins: true,
-          // TODO: Unable to get property 'iterator' of undefined or null reference
-          // browser: true
+          browser: true,
         }),
         commonjs({
           namedExports: {
@@ -176,7 +176,10 @@ module.exports = (input) => {
           extensions: ['.ts', '.js'],
           exclude: [/node_modules/],
           presets: [
-            [require.resolve('@babel/preset-env'), { modules: false, exclude: ['transform-typeof-symbol'] }],
+            [
+              require.resolve('@babel/preset-env'),
+              { modules: false, exclude: ['transform-typeof-symbol'], targets: { browsers } },
+            ],
             // ['@babel/preset-typescript']
           ],
           plugins: [
@@ -190,23 +193,22 @@ module.exports = (input) => {
           runtimeHelpers: true,
           include: [/node_modules/],
           exclude: [/@babel\/runtime/, /core-js/],
-          presets: [[require.resolve('@babel/preset-env'), { modules: false, exclude: ['transform-typeof-symbol'] }]],
+          presets: [
+            [
+              require.resolve('@babel/preset-env'),
+              { modules: false, exclude: ['transform-typeof-symbol'], targets: { browsers } },
+            ],
+          ],
           plugins: [[require.resolve('@babel/plugin-transform-runtime'), { corejs: 3, useESModules: true }]],
         }),
 
-        // terser(),
+        terser(),
         bundleSize(),
         visualizer({
           filename: `${pkg.browser}.html`,
           template: 'treemap',
         }),
       ],
-
-      // Ignore crypto-browser eval warning
-      onwarn: (warning, defaultOnWarnHandler) => {
-        if (warning.code === 'EVAL') return
-        defaultOnWarnHandler(warning)
-      },
     },
   ].filter(Boolean)
 }

@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/micro-app",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "main": "dist/micro-app.js",
   "types": "dist/micro-app.d.ts",
   "browser": "dist/micro-app.umd.js",
@@ -39,13 +39,5 @@
       "./eslint.config.js"
     ]
   },
-  "license": "Apache-2.0",
-  "browserslist": [
-    "last 2 chrome versions",
-    "last 2 firefox versions",
-    "last 2 edge versions",
-    "last 2 opera versions",
-    "IE 11",
-    "not op_mini all"
-  ]
+  "license": "Apache-2.0"
 }
