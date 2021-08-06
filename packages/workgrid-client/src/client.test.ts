@@ -20,7 +20,7 @@ import { rest } from 'msw'
 import WorkgridClient from './client'
 
 const server = setupServer(
-  rest.post(`https://company-code.workgrid.com/v1/userspaces`, (req, res, ctx) => {
+  rest.get(`https://company-code.workgrid.com/v1/userspaces`, (req, res, ctx) => {
     return res(ctx.json({ data: [{ id: 'space1', name: 'Space 1', default: true }] }))
   }),
   rest.post(`https://company-code.workgrid.com/v1/flags`, (req, res, ctx) => {
@@ -49,6 +49,11 @@ const server = setupServer(
   }),
   rest.put(`https://company-code.workgrid.com/v1/usernotifications/:id/view-detail`, (req, res, ctx) => {
     return res(ctx.json({ data: { id: req.params.id, title: `${req.method} ${req.url.pathname}` } }))
+  }),
+  rest.post(`https://company-code.workgrid.com/v1/graphql`, (req, res, ctx) => {
+    return res(
+      ctx.json({ data: { currentUser: { id: '123124', name: { familyName: 'familyName', givenName: 'givenName' } } } })
+    )
   })
 )
 
@@ -121,6 +126,20 @@ describe('@workgrid/client', () => {
             "name": "Space 1",
           },
         ]
+      `)
+    })
+
+    test('me', async () => {
+      const result = await client.query(['me'])
+
+      expect(result).toMatchInlineSnapshot(`
+        Object {
+          "id": "123124",
+          "name": Object {
+            "familyName": "familyName",
+            "givenName": "givenName",
+          },
+        }
       `)
     })
 

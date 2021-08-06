@@ -37,6 +37,8 @@ export { HttpClient, WsClient }
 // Use require to avoid ts6059
 const pkg = require('../package.json')
 
+const gql = String.raw // better editor integrations
+
 /** @beta */
 export type Context = {
   token: string
@@ -338,8 +340,38 @@ export interface Queries {
 
 setTypedQueryDefaults('getSpaces', (client) => ({
   queryFn: async () => {
-    const response = await client.httpClient.post(`/v1/userspaces`)
+    const response = await client.httpClient.get(`/v1/userspaces`)
     return response.data
+  },
+}))
+
+// me
+// ================================================================================================================================
+
+/** @beta */
+export type Me = { id: string; name: { familyName: string; givenName: string } }
+
+/** @beta */
+export interface Queries {
+  me: Query<['me'], Me>
+}
+
+setTypedQueryDefaults('me', (client) => ({
+  queryFn: async () => {
+    const response = await client.httpClient.post('/v1/graphql', {
+      query: gql`
+        query currentUser($authContext: AuthContext!) {
+          currentUser(authContext: $authContext) {
+            id
+            name {
+              familyName
+              givenName
+            }
+          }
+        }
+      `,
+    })
+    return response.data.currentUser
   },
 }))
 
