@@ -96,7 +96,19 @@ module.exports = (input) => {
           browserslist: [`node ${node}`],
           transpiler: 'babel',
           babelConfig: {
-            plugins: [require.resolve('babel-plugin-lodash')],
+            presets: [
+              [
+                require.resolve('@babel/preset-env'),
+                {
+                  modules: false,
+                  targets: { browsers: [`node ${node}`] },
+                  shippedProposals: true,
+                  useBuiltIns: 'usage',
+                  corejs: require('core-js/package.json').version,
+                },
+              ],
+            ],
+            plugins: [[require.resolve('babel-plugin-lodash')]],
           },
         }),
 
@@ -136,7 +148,19 @@ module.exports = (input) => {
           browserslist: browsers,
           transpiler: 'babel',
           babelConfig: {
-            plugins: [require.resolve('babel-plugin-lodash')],
+            presets: [
+              [
+                require.resolve('@babel/preset-env'),
+                {
+                  modules: false,
+                  targets: { browsers },
+                  shippedProposals: true,
+                  useBuiltIns: 'usage',
+                  corejs: require('core-js/package.json').version,
+                },
+              ],
+            ],
+            plugins: [[require.resolve('babel-plugin-lodash')]],
           },
         }),
 
