@@ -13,7 +13,6 @@
     "lodash": "^4.17.15",
     "outdent": "^0.7.1",
     "read-pkg-up": "^7.0.0",
-    "rollup-plugin-alias": "^2.0.1",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-bundle-size": "^1.0.3",
     "rollup-plugin-commonjs": "^10.1.0",

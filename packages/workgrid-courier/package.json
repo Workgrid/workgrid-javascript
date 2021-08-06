@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/courier",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "main": "dist/courier.js",
   "types": "dist/courier.d.ts",
   "browser": "dist/courier.umd.js",
@@ -22,7 +22,7 @@
     "url": "https://github.com/Workgrid/workgrid-javascript"
   },
   "dependencies": {
-    "debug": "4.1.1",
+    "debug": "^4.3.2",
     "lodash": "^4.17.11",
     "ms": "^2.1.1",
     "nice-try": "^2.0.0",
