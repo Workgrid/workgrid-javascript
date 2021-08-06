@@ -56,7 +56,13 @@ describe('@workgrid/client-react', () => {
   let renderHook: typeof _renderHook
 
   beforeEach(() => {
-    client = new WorkgridClient({ context: { token: 'token', companyCode: 'company-code' } })
+    client = new WorkgridClient({
+      context: {
+        userAgent: navigator.userAgent,
+        token: 'token',
+        companyCode: 'company-code',
+      },
+    })
 
     renderHook = <TProps, TResult>(callback: (props: TProps) => TResult, options?: RenderHookOptions<TProps>) => {
       return _renderHook(callback, { wrapper: (props) => h(WorkgridProvider, { client, ...props }), ...options })
