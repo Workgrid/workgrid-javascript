@@ -325,6 +325,9 @@ export type Notification = { [key: string]: unknown }
 /** @beta */
 export type App = { [key: string]: unknown }
 
+/** @beta */
+export type CurrentUser = { id: string; name: { familyName: string; givenName: string } }
+
 // getSpaces
 // ================================================================================================================================
 
@@ -339,6 +342,27 @@ export interface Queries {
 setTypedQueryDefaults('getSpaces', (client) => ({
   queryFn: async () => {
     const response = await client.httpClient.post(`/v1/userspaces`)
+    return response.data
+  },
+}))
+
+// me
+// ================================================================================================================================
+
+/** @beta */
+export type Me = { currentUser: CurrentUser }
+
+/** @beta */
+export interface Queries {
+  me: Query<['me'], Me>
+}
+
+setTypedQueryDefaults('me', (client) => ({
+  queryFn: async () => {
+    const response = await client.httpClient.post('/v1/graphql', {
+      query:
+        'query currentUser($authContext: AuthContext!) { currentUser(authContext: $authContext) { id, name { familyName, givenName } } }',
+    })
     return response.data
   },
 }))
