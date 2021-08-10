@@ -96,18 +96,6 @@ module.exports = (input) => {
           browserslist: [`node ${node}`],
           transpiler: 'babel',
           babelConfig: {
-            presets: [
-              [
-                require.resolve('@babel/preset-env'),
-                {
-                  modules: false,
-                  targets: { browsers: [`node ${node}`] },
-                  shippedProposals: true,
-                  useBuiltIns: 'usage',
-                  corejs: require('core-js/package.json').version,
-                },
-              ],
-            ],
             plugins: [[require.resolve('babel-plugin-lodash')]],
           },
         }),
@@ -120,11 +108,11 @@ module.exports = (input) => {
       ],
     },
     // umd
-    pkg.browser && {
+    pkg.unpkg && {
       input,
       output: [
         {
-          file: pkg.browser,
+          file: pkg.unpkg,
           format: 'umd',
           name: amdName,
           sourcemap: true,
@@ -148,26 +136,18 @@ module.exports = (input) => {
           browserslist: browsers,
           transpiler: 'babel',
           babelConfig: {
-            presets: [
-              [
-                require.resolve('@babel/preset-env'),
-                {
-                  modules: false,
-                  targets: { browsers },
-                  shippedProposals: true,
-                  useBuiltIns: 'usage',
-                  corejs: require('core-js/package.json').version,
-                },
-              ],
+            targets: browsers,
+            plugins: [
+              [require.resolve('babel-plugin-polyfill-corejs3'), { method: 'usage-pure' }],
+              [require.resolve('babel-plugin-lodash')],
             ],
-            plugins: [[require.resolve('babel-plugin-lodash')]],
           },
         }),
 
         terser(),
         bundleSize(),
         visualizer({
-          filename: `${pkg.browser}.html`,
+          filename: `${pkg.unpkg}.html`,
           template: 'treemap',
         }),
       ],

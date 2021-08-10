@@ -19,7 +19,6 @@ import niceTry from 'nice-try'
 import debug from 'debug'
 import { v4 as uuid } from 'uuid'
 import ms from 'ms'
-import { assign, includes } from 'lodash'
 
 const logger = debug('courier') // default logger namespace
 const is = (object: unknown, type: string) => Object.prototype.toString.call(object) === `[object ${type}]`
@@ -143,7 +142,7 @@ export default class Courier {
     if (!sourceOrIFrame) return
     // const source = !is(sourceOrIFrame, 'Window') ? sourceOrIFrame.contentWindow : sourceOrIFrame
     const source = niceTry(() => (sourceOrIFrame as HTMLIFrameElement).contentWindow) || (sourceOrIFrame as Destination)
-    if (!includes(this.sources, source)) this.sources.push(source)
+    if (!this.sources.includes(source)) this.sources.push(source)
   }
 
   /**
@@ -247,7 +246,7 @@ export default class Courier {
     this.debug('error', { code, args })
 
     const error = new Error(code)
-    assign(error, ...args)
+    Object.assign(error, ...args)
 
     this.emitter.emit('error', error)
     return error
@@ -262,7 +261,7 @@ export default class Courier {
 
     target = target || this.sources[0]
 
-    if (!isMessagePort(target) && !includes(this.sources, target)) {
+    if (!isMessagePort(target) && !this.sources.includes(target)) {
       throw this.error('APP-13', { target })
     }
 
@@ -288,7 +287,7 @@ export default class Courier {
 
     // event.source will be null in tests
     // https://github.com/jsdom/jsdom/pull/1140
-    if (event.source && !includes(this.sources, event.source)) {
+    if (event.source && !this.sources.includes(event.source)) {
       this.error('APP-15', { event })
       return
     }

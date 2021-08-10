@@ -3,7 +3,7 @@
   "version": "0.10.4",
   "main": "dist/micro-app.js",
   "types": "dist/micro-app.d.ts",
-  "browser": "dist/micro-app.umd.js",
+  "unpkg": "dist/micro-app.umd.js",
   "files": [
     "dist",
     "docs"

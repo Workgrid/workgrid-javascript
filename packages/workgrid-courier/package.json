@@ -3,7 +3,7 @@
   "version": "0.7.4",
   "main": "dist/courier.js",
   "types": "dist/courier.d.ts",
-  "browser": "dist/courier.umd.js",
+  "unpkg": "dist/courier.umd.js",
   "files": [
     "dist",
     "docs"
@@ -22,7 +22,6 @@
   },
   "dependencies": {
     "debug": "^4.3.2",
-    "lodash": "^4.17.11",
     "ms": "^2.1.1",
     "nice-try": "^2.0.0",
     "uuid": "^8.3.0"

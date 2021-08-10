@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { map, remove } from 'lodash'
-
 // Calculate the pattern on register
 // ================================================================
 
@@ -105,7 +103,7 @@ import { map, remove } from 'lodash'
 export type Handler = (...args: unknown[]) => unknown
 
 export default () => {
-  const listeners = Object.create(null)
+  const listeners: Record<string, Handler[]> = Object.create(null)
 
   return {
     listeners,
@@ -117,15 +115,15 @@ export default () => {
 
     off(type: string, handler?: Handler): void {
       if (!handler) delete listeners[type]
-      else remove(listeners[type], (value: Handler): boolean => value === handler)
+      else listeners[type] = listeners[type]?.filter((value) => value !== handler)
     },
 
     emit(type: string, ...args: unknown[]): void {
-      map(listeners[type], (handler: Handler) => handler(...args))
+      listeners[type]?.map((handler) => handler(...args))
     },
 
     invoke(type: string, callback: (handler: Handler) => unknown): void {
-      map(listeners[type], (handler: Handler) => callback(handler))
+      listeners[type]?.map((handler) => callback(handler))
     },
   }
 }
