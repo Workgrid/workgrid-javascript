@@ -17,19 +17,18 @@
 const globals = require('rollup-plugin-node-globals')
 const builtins = require('rollup-plugin-node-builtins')
 
-const resolve = require('rollup-plugin-node-resolve')
-const commonjs = require('rollup-plugin-commonjs')
+const { nodeResolve } = require('@rollup/plugin-node-resolve')
+const commonjs = require('@rollup/plugin-commonjs')
 
-const json = require('rollup-plugin-json')
-const typescript = require('rollup-plugin-typescript')
-const babel = require('rollup-plugin-babel')
+const json = require('@rollup/plugin-json')
+const ts = require('rollup-plugin-ts')
 
 const { terser } = require('rollup-plugin-terser')
 const bundleSize = require('rollup-plugin-bundle-size')
-const visualizer = require('rollup-plugin-visualizer')
+const { visualizer } = require('rollup-plugin-visualizer')
 
 const builtinModules = require('builtin-modules')
-const { _, keys, includes } = require('lodash')
+const { keys, includes } = require('lodash')
 
 const path = require('path')
 const semver = require('semver')
@@ -87,46 +86,18 @@ module.exports = (input) => {
       preserveSymlinks: true, // yarn workspaces
       external: (id) => includes([...builtinModules, ...dependencies], id.match('(@[^/]+/[^/]+|[^/]+)')[0]),
       plugins: [
-        resolve({
-          // extensions: ['.ts', '.js'],
+        nodeResolve({
           preferBuiltins: true,
         }),
-        commonjs({
-          namedExports: {
-            lodash: keys(_),
-          },
-        }),
+        commonjs(),
 
         json(),
-        typescript({
-          target: 'ESNEXT',
-          module: 'ESNEXT',
-        }),
-        babel({
-          compact: false,
-          extensions: ['.ts', '.js'],
-          exclude: [/node_modules/],
-          presets: [
-            [
-              require.resolve('@babel/preset-env'),
-              { modules: false, exclude: ['transform-typeof-symbol'], targets: { node } },
-            ],
-            // [require.resolve('@babel/preset-typescript')]
-          ],
-          plugins: [
-            // [require.resolve('@babel/plugin-proposal-class-properties')],
-            [require.resolve('babel-plugin-lodash')],
-          ],
-        }),
-        babel({
-          compact: false,
-          include: [/node_modules/],
-          presets: [
-            [
-              require.resolve('@babel/preset-env'),
-              { modules: false, exclude: ['transform-typeof-symbol'], targets: { node } },
-            ],
-          ],
+        ts({
+          browserslist: [`node ${node}`],
+          transpiler: 'babel',
+          babelConfig: {
+            plugins: [[require.resolve('babel-plugin-lodash')]],
+          },
         }),
 
         bundleSize(),
@@ -137,11 +108,11 @@ module.exports = (input) => {
       ],
     },
     // umd
-    pkg.browser && {
+    pkg.unpkg && {
       input,
       output: [
         {
-          file: pkg.browser,
+          file: pkg.unpkg,
           format: 'umd',
           name: amdName,
           sourcemap: true,
@@ -151,61 +122,32 @@ module.exports = (input) => {
       ],
       preserveSymlinks: true, // yarn workspaces
       plugins: [
-        resolve({
-          // extensions: ['.ts', '.js'],
+        nodeResolve({
           preferBuiltins: true,
           browser: true,
         }),
-        commonjs({
-          namedExports: {
-            lodash: keys(_),
-          },
-        }),
+        commonjs(),
 
         globals(),
         builtins(),
 
         json(),
-        typescript({
-          target: 'ESNEXT',
-          module: 'ESNEXT',
-        }),
-        babel({
-          compact: false,
-          runtimeHelpers: true,
-          extensions: ['.ts', '.js'],
-          exclude: [/node_modules/],
-          presets: [
-            [
-              require.resolve('@babel/preset-env'),
-              { modules: false, exclude: ['transform-typeof-symbol'], targets: { browsers } },
+        ts({
+          browserslist: browsers,
+          transpiler: 'babel',
+          babelConfig: {
+            targets: browsers,
+            plugins: [
+              [require.resolve('babel-plugin-polyfill-corejs3'), { method: 'usage-pure' }],
+              [require.resolve('babel-plugin-lodash')],
             ],
-            // ['@babel/preset-typescript']
-          ],
-          plugins: [
-            [require.resolve('@babel/plugin-transform-runtime'), { corejs: 3, useESModules: true }],
-            // [require.resolve('@babel/plugin-proposal-class-properties')],
-            [require.resolve('babel-plugin-lodash')],
-          ],
-        }),
-        babel({
-          compact: false,
-          runtimeHelpers: true,
-          include: [/node_modules/],
-          exclude: [/@babel\/runtime/, /core-js/],
-          presets: [
-            [
-              require.resolve('@babel/preset-env'),
-              { modules: false, exclude: ['transform-typeof-symbol'], targets: { browsers } },
-            ],
-          ],
-          plugins: [[require.resolve('@babel/plugin-transform-runtime'), { corejs: 3, useESModules: true }]],
+          },
         }),
 
         terser(),
         bundleSize(),
         visualizer({
-          filename: `${pkg.browser}.html`,
+          filename: `${pkg.unpkg}.html`,
           template: 'treemap',
         }),
       ],

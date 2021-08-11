@@ -72,7 +72,7 @@ export interface Event {
   /**
    * The event's data
    */
-  eventData: any
+  eventData: unknown
 }
 
 /**
@@ -229,7 +229,7 @@ export default class Connector {
   /**
    * @beta
    */
-  public async request(requestOptions: any): Promise<RequestResponse> {
+  public async request(requestOptions: Partial<RequestOptions>): Promise<RequestResponse> {
     return request(merge({}, this.requestOptions, requestOptions))
   }
 
@@ -240,7 +240,7 @@ export default class Connector {
    *
    * @beta
    */
-  public async createJobs(jobs: any[]): Promise<Job[]> {
+  public async createJobs(jobs: unknown[]): Promise<Job[]> {
     const response = await this.request({
       method: 'post',
       url: '/v2/jobs',
@@ -326,7 +326,7 @@ export default class Connector {
    *
    * @beta
    */
-  public async getSources(sourceOptions?: any): Promise<{ items: Source[] }> {
+  public async getSources(sourceOptions?: unknown): Promise<{ items: Source[] }> {
     const response = await this.request({
       method: 'get',
       url: '/v2/sources',

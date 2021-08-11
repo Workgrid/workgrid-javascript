@@ -16,7 +16,7 @@
 
 const execa = require('execa')
 const { get } = require('lodash')
-const { git, readPkg, isPublished, updateCanaryVersions } = require('./utils')
+const { /*git,*/ readPkg, isPublished, updateCanaryVersions } = require('./utils')
 
 const canary = process.argv.includes('--canary')
 const dryRun = process.argv.includes('--dry-run')

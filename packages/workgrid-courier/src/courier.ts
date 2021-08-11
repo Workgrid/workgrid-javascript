@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-import emitter from './emitter'
+import emitter, { Handler } from './emitter'
 import niceTry from 'nice-try'
 import debug from 'debug'
 import { v4 as uuid } from 'uuid'
 import ms from 'ms'
-import { assign, includes } from 'lodash'
-
-// Global is typically used as an alias for self thanks to browser compilers
-declare let global: NodeJS.Global & Window & typeof globalThis
 
 const logger = debug('courier') // default logger namespace
-const is = (object: any, type: string): boolean => Object.prototype.toString.call(object) === `[object ${type}]`
+const is = (object: unknown, type: string) => Object.prototype.toString.call(object) === `[object ${type}]`
+const isMessagePort = (object: unknown): object is MessagePort => niceTry(() => is(object, 'MessagePort')) || false
 
 // Error Codes
 // APP-10: Message could not be handled (missing `type` and `parentId`)
@@ -36,6 +33,28 @@ const is = (object: any, type: string): boolean => Object.prototype.toString.cal
 // APP-15: Message received from unexpected source
 // APP-16: Handler responded with an error
 // APP-17: Reply could not be sent (missing `id`)
+
+export { Handler }
+
+/**
+ * @beta
+ */
+export type Destination =
+  | {
+      postMessage(message: unknown, targetOrigin: string, transfer?: Transferable[]): void
+    }
+  | {
+      postMessage(message: unknown, transfer: Transferable[]): void
+      postMessage(message: unknown, options?: PostMessageOptions): void
+    }
+
+/**
+ * @beta
+ */
+export type Host = {
+  addEventListener(type: 'message', listener: (event: MessageEvent) => void): void
+  removeEventListener(type: 'message', listener: (event: MessageEvent) => void): void
+}
 
 /**
  * @beta
@@ -49,12 +68,12 @@ export interface CourierOptions {
   /**
    * Predefined list of expected message sources
    */
-  sources?: any[]
+  sources?: Destination[]
 
   /**
    * Predefined list of hosts to listen on
    */
-  hosts?: any[]
+  hosts?: Host[]
 
   /**
    * Custom log group
@@ -68,10 +87,10 @@ export interface CourierOptions {
  * @beta
  */
 export default class Courier {
-  private debug: any
+  private debug: debug.Debugger
   private timeout: number
-  private sources: any[]
-  private hosts: any[]
+  private sources: Destination[]
+  private hosts: Host[]
   private internal: ReturnType<typeof emitter>
   private emitter: ReturnType<typeof emitter>
 
@@ -98,7 +117,7 @@ export default class Courier {
   public setup(): void {
     this.debug('setup', {})
 
-    this.hosts.forEach((host: any): void => {
+    this.hosts.forEach((host) => {
       host.addEventListener('message', this.handleMessage)
     })
   }
@@ -109,7 +128,7 @@ export default class Courier {
   public teardown(): void {
     this.debug('teardown', {})
 
-    this.hosts.forEach((host: any): void => {
+    this.hosts.forEach((host) => {
       host.removeEventListener('message', this.handleMessage)
     })
   }
@@ -117,31 +136,31 @@ export default class Courier {
   /**
    * Add a message source.
    */
-  public register(source: any): void {
-    this.debug('register', { source })
+  public register(sourceOrIFrame: Destination | HTMLIFrameElement): void {
+    this.debug('register', { sourceOrIFrame })
 
-    if (!source) return
-    // if (!is(source, 'Window')) source = source.contentWindow
-    source = niceTry((): Window => source.contentWindow) || source
-    if (!includes(this.sources, source)) this.sources.push(source)
+    if (!sourceOrIFrame) return
+    // const source = !is(sourceOrIFrame, 'Window') ? sourceOrIFrame.contentWindow : sourceOrIFrame
+    const source = niceTry(() => (sourceOrIFrame as HTMLIFrameElement).contentWindow) || (sourceOrIFrame as Destination)
+    if (!this.sources.includes(source)) this.sources.push(source)
   }
 
   /**
    * Remove a message source.
    */
-  public unregister(source: any): void {
-    this.debug('unregister', { source })
+  public unregister(sourceOrIFrame: Destination | HTMLIFrameElement): void {
+    this.debug('unregister', { sourceOrIFrame })
 
-    if (!source) return
-    // if (!is(source, 'Window')) source = source.contentWindow
-    source = niceTry((): Window => source.contentWindow) || source
+    if (!sourceOrIFrame) return
+    // const source = !is(sourceOrIFrame, 'Window') ? sourceOrIFrame.contentWindow : sourceOrIFrame
+    const source = niceTry(() => (sourceOrIFrame as HTMLIFrameElement).contentWindow) || (sourceOrIFrame as Destination)
     this.sources.splice(this.sources.indexOf(source) >>> 0, 1)
   }
 
   /**
    * Start listening for an event.
    */
-  public on(type: string, handler: (...args: any[]) => any): void {
+  public on(type: string, handler: Handler): void {
     this.debug('on', { type, handler })
 
     this.emitter.on(type, handler)
@@ -150,7 +169,7 @@ export default class Courier {
   /**
    * Stop listening for an event.
    */
-  public off(type: string, handler?: (...args: any[]) => any): void {
+  public off(type: string, handler?: Handler): void {
     this.debug('off', { type, handler })
 
     this.emitter.off(type, handler)
@@ -159,7 +178,7 @@ export default class Courier {
   /**
    * Send a message (response ignored).
    */
-  public emit({ type, payload, target }: { type: string; payload?: any; target?: any }): void {
+  public emit({ type, payload, target }: { type: string; payload?: unknown; target?: Destination }) {
     this.debug('emit', { type, payload, target })
 
     const message = { type, payload }
@@ -176,10 +195,10 @@ export default class Courier {
     timeout,
   }: {
     type: string
-    payload?: any
-    target?: any
+    payload?: unknown
+    target?: Destination
     timeout?: number
-  }): Promise<any> {
+  }): Promise<unknown> {
     this.debug('send', { type, payload, target, timeout })
 
     const message = { id: uuid(), type, payload }
@@ -191,7 +210,7 @@ export default class Courier {
         reject(this.error('APP-14', { event }))
       }, timeout || this.timeout)
 
-      this.internal.on(message.id, (error: any, data: any): void => {
+      this.internal.on(message.id, (error: unknown, data: unknown): void => {
         clearTimeout(timeoutId)
         this.internal.off(message.id)
         if (!error) return resolve(data)
@@ -203,12 +222,12 @@ export default class Courier {
       if ('MessageChannel' in global) {
         const channel = new MessageChannel()
 
-        channel.port1.onmessage = (event: any): void => {
+        channel.port1.onmessage = (event): void => {
           this.debug('onmessage', { event, target, channel })
 
           // TODO: Passing a new instance of MessageEvent doesn't work in react-native :(
           // this.handleMessage(new MessageEvent('message', { data: event.data, source: target }))
-          this.handleMessage({ data: event.data, source: target })
+          this.handleMessage({ data: event.data, source: target } as MessageEvent)
         }
 
         transfer = [channel.port2]
@@ -223,11 +242,11 @@ export default class Courier {
   /**
    * Create a new error object with the given arguments, and fire an error event.
    */
-  private error(code: string, ...args: any[]): any {
+  private error(code: string, ...args: unknown[]): Error {
     this.debug('error', { code, args })
 
     const error = new Error(code)
-    assign(error, ...args)
+    Object.assign(error, ...args)
 
     this.emitter.emit('error', error)
     return error
@@ -237,18 +256,17 @@ export default class Courier {
    * Send a message to the given target, with the given data and trasferables.
    * If the target supplied is not a registered source, an error will be thrown.
    */
-  private sendMessage(data: any, target?: any, transfer?: Transferable[]): void {
+  private sendMessage(data: unknown, target?: Destination, transfer?: Transferable[]): void {
     this.debug('sendMessage', { data, target })
 
     target = target || this.sources[0]
-    // We must nice-try this one for Edge
-    const isMessagePort = niceTry((): boolean => is(target, 'MessagePort')) || false
-    if (!isMessagePort && !includes(this.sources, target)) {
+
+    if (!isMessagePort(target) && !this.sources.includes(target)) {
       throw this.error('APP-13', { target })
     }
 
     try {
-      if (isMessagePort) {
+      if (isMessagePort(target)) {
         this.debug('postMessage', { target, data })
         target.postMessage(JSON.stringify(data))
       } else {
@@ -264,13 +282,14 @@ export default class Courier {
    * Process a message event and emit or invoke to the appropriate handlers.
    * This method will be called when the registered hosts receive a message.
    */
-  public handleMessage(event: { source: any; ports?: any[] } & ({ data: any } | { nativeEvent: { data: any } })): any {
+  public handleMessage(event: MessageEvent & ({ data: unknown } | { nativeEvent: { data: unknown } })): void {
     this.debug('handleMessage', { event })
 
     // event.source will be null in tests
     // https://github.com/jsdom/jsdom/pull/1140
-    if (event.source && !includes(this.sources, event.source)) {
-      return this.error('APP-15', { event })
+    if (event.source && !this.sources.includes(event.source)) {
+      this.error('APP-15', { event })
+      return
     }
 
     // https://facebook.github.io/react-native/docs/webview#onmessage
@@ -278,7 +297,8 @@ export default class Courier {
     try {
       if (typeof data === 'string') data = JSON.parse(data)
     } catch (error) {
-      return this.error('APP-11', { event, error })
+      this.error('APP-11', { event, error })
+      return
     }
 
     // Response
@@ -289,29 +309,30 @@ export default class Courier {
 
     // Incoming
     if (data && data.type) {
-      this.emitter.invoke(
-        data.type,
-        async (handler: (...args: any[]) => any): Promise<void> => {
-          let payload
-          let error
+      this.emitter.invoke(data.type, async (handler) => {
+        let payload
+        let error
 
-          try {
-            // TODO: Passing a new instance of MessageEvent doesn't work in react-native :(
-            // payload = await handler(new MessageEvent('message', { source: event.source, data }))
-            payload = await handler({ source: event.source, data })
-          } catch (e) {
-            error = e
-          }
-
-          if (!data.id) return this.error('APP-17', { event, error, payload })
-
-          const target = (event.ports && event.ports[0]) || event.source
-          this.sendMessage({ parentId: data.id, payload, error }, target)
+        try {
+          // TODO: Passing a new instance of MessageEvent doesn't work in react-native :(
+          // payload = await handler(new MessageEvent('message', { source: event.source, data }))
+          payload = await handler({ source: event.source, data })
+        } catch (e) {
+          error = e
         }
-      )
+
+        if (!data.id) {
+          this.error('APP-17', { event, error, payload })
+          return
+        }
+
+        const target = (event.ports && event.ports[0]) || event.source
+        this.sendMessage({ parentId: data.id, payload, error }, target)
+      })
       return
     }
 
-    return this.error('APP-10', { event })
+    this.error('APP-10', { event })
+    return
   }
 }

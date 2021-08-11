@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { map, remove } from 'lodash'
-
 // Calculate the pattern on register
 // ================================================================
 
@@ -99,28 +97,33 @@ import { map, remove } from 'lodash'
 // No Wildcard Support
 // ================================================================
 
+/**
+ * @beta
+ */
+export type Handler = (...args: unknown[]) => unknown
+
 export default () => {
-  const listeners = Object.create(null)
+  const listeners: Record<string, Handler[]> = Object.create(null)
 
   return {
     listeners,
 
-    on(type: string, handler: (...args: any[]) => any): void {
+    on(type: string, handler: Handler): void {
       listeners[type] = listeners[type] || []
       listeners[type].push(handler)
     },
 
-    off(type: string, handler?: (...args: any[]) => any): void {
+    off(type: string, handler?: Handler): void {
       if (!handler) delete listeners[type]
-      else remove(listeners[type], (value: (...args: any[]) => any): boolean => value === handler)
+      else listeners[type] = listeners[type]?.filter((value) => value !== handler)
     },
 
-    emit(type: string, ...args: any[]): void {
-      map(listeners[type], (handler: (...args: any[]) => any): any => handler(...args))
+    emit(type: string, ...args: unknown[]): void {
+      listeners[type]?.map((handler) => handler(...args))
     },
 
-    invoke(type: string, callback: (...args: any[]) => any): void {
-      map(listeners[type], (handler: (...args: any[]) => any): any => callback(handler))
+    invoke(type: string, callback: (handler: Handler) => unknown): void {
+      listeners[type]?.map((handler) => callback(handler))
     },
   }
 }
