@@ -16,7 +16,7 @@
 
 import emitter, { Handler } from './emitter'
 import niceTry from 'nice-try'
-import debug from 'debug'
+import { debug } from 'debug'
 import { v4 as uuid } from 'uuid'
 import ms from 'ms'
 

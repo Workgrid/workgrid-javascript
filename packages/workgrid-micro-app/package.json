@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@juggle/resize-observer": "^3.3.0",
-    "@workgrid/courier": "^0.7.4",
+    "@workgrid/courier": "^0.7.5",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.11",
     "ms": "^2.1.1",
