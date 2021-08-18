@@ -127,6 +127,24 @@ describe('@workgrid/courier', () => {
     await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(`"APP-12"`)
   })
 
+  test('error is emitted if a message is received from a null source', async () => {
+    const errorHandler = jest.fn()
+    const courier = new Courier({ hosts: [] })
+    courier.on('error', errorHandler)
+
+    courier.handleMessage(
+      new MessageEvent('message', {
+        source: null,
+        data: 'Null Source',
+      })
+    )
+
+    expect(errorHandler).toHaveBeenCalled()
+    expect(() => {
+      throw errorHandler.mock.calls[0][0]
+    }).toThrowErrorMatchingInlineSnapshot(`"APP-15"`)
+  })
+
   test('error is emitted if a message is received from an unexpected source', async () => {
     const errorHandler = jest.fn()
     const courier = new Courier({ hosts: [] })
@@ -135,7 +153,7 @@ describe('@workgrid/courier', () => {
     const source = createSource(courier)
     courier.unregister(source)
 
-    source.postMessage('Unexpected')
+    source.postMessage('Unexpected Source')
     expect(errorHandler).toHaveBeenCalled()
     expect(() => {
       throw errorHandler.mock.calls[0][0]
