@@ -287,7 +287,7 @@ export default class Courier {
 
     // event.source will be null in tests
     // https://github.com/jsdom/jsdom/pull/1140
-    if (event.source && !this.sources.includes(event.source)) {
+    if (!event.source || !this.sources.includes(event.source)) {
       this.error('APP-15', { event })
       return
     }
