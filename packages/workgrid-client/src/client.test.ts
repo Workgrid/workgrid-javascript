@@ -27,10 +27,29 @@ const server = setupServer(
     return res(ctx.json({ data: { flag1: { value: true }, flag2: { value: null } } }))
   }),
   rest.get(`https://company-code.workgrid.com/v1/toknow`, (req, res, ctx) => {
-    return res(ctx.json({ data: { notifications: [{ title: `${req.method} ${req.url.pathname}` }] } }))
+    return res(
+      ctx.json({
+        data: {
+          notifications: [
+            {
+              title: `${req.method} ${req.url.pathname}`,
+              accepts: `${req.headers.get('accepts')}`,
+            },
+          ],
+        },
+      })
+    )
   }),
   rest.get(`https://company-code.workgrid.com/v1/usernotifications/:id`, (req, res, ctx) => {
-    return res(ctx.json({ data: { id: req.params.id, title: `${req.method} ${req.url.pathname}` } }))
+    return res(
+      ctx.json({
+        data: {
+          id: req.params.id,
+          title: `${req.method} ${req.url.pathname}`,
+          accepts: `${req.headers.get('accepts')}`,
+        },
+      })
+    )
   }),
   rest.post(`https://company-code.workgrid.com/v1/usernotifications/:id/action`, (req, res, ctx) => {
     return res(ctx.json({ data: { id: req.params.id, title: `${req.method} ${req.url.pathname}` } }))
@@ -85,6 +104,7 @@ describe('@workgrid/client', () => {
 
     expect(result).toMatchInlineSnapshot(`
       Object {
+        "accepts": "application/vnd.com.workgrid.ast+json;version=3",
         "id": "1234",
         "title": "GET /v1/usernotifications/1234",
       }
@@ -166,6 +186,7 @@ describe('@workgrid/client', () => {
       expect(result).toMatchInlineSnapshot(`
         Array [
           Object {
+            "accepts": "application/vnd.com.workgrid.ast+json;version=3",
             "title": "GET /v1/toknow",
           },
         ]
@@ -177,6 +198,7 @@ describe('@workgrid/client', () => {
 
       expect(result).toMatchInlineSnapshot(`
         Object {
+          "accepts": "application/vnd.com.workgrid.ast+json;version=3",
           "id": "1234",
           "title": "GET /v1/usernotifications/1234",
         }
