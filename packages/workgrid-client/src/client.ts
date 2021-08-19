@@ -417,7 +417,8 @@ setTypedQueryDefaults('getNotifications', (client) => ({
     const cursor = context.pageParam
 
     const response = await client.httpClient.get(`/v1/${location}`, {
-      headers: { 'x-workgrid-space': spaceId },
+      // TODO - Add a version number variable to this in the future to keep in sync
+      headers: { 'x-workgrid-space': spaceId, accepts: 'application/vnd.com.workgrid.ast+json;version=3' },
       params: { limit, cursor },
     })
     return response.data
@@ -443,7 +444,7 @@ setTypedQueryDefaults('getNotification', (client) => ({
     const { spaceId, id } = context.queryKey[1]
 
     const response = await client.httpClient.get(`/v1/usernotifications/${id}`, {
-      headers: { 'x-workgrid-space': spaceId },
+      headers: { 'x-workgrid-space': spaceId, accepts: 'application/vnd.com.workgrid.ast+json;version=3' },
     })
     return response.data
   },
