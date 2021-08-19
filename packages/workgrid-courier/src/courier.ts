@@ -225,6 +225,10 @@ export default class Courier {
         channel.port1.onmessage = (event): void => {
           this.debug('onmessage', { event, target, channel })
 
+          // sendMessage defaults target to the first registered source
+          // we need to apply the same logic here so source is consistent
+          target = target || this.sources[0]
+
           // TODO: Passing a new instance of MessageEvent doesn't work in react-native :(
           // this.handleMessage(new MessageEvent('message', { data: event.data, source: target }))
           this.handleMessage({ data: event.data, source: target } as MessageEvent)
