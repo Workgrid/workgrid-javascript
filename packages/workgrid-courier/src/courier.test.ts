@@ -19,13 +19,21 @@ import Courier from './courier'
 
 const createSource = (courier: Courier) => {
   const source = {
-    postMessage: (data: unknown): void => {
-      courier.handleMessage(
-        new MessageEvent('message', {
-          source: source as MessageEvent['source'],
-          data,
+    postMessage: (data: unknown, _targetOrigin: string, transfer?: Transferable[]): void => {
+      if (transfer && transfer.length) {
+        transfer.forEach((transferable) => {
+          if ('postMessage' in transferable) {
+            transferable.postMessage(data)
+          }
         })
-      )
+      } else {
+        courier.handleMessage(
+          new MessageEvent('message', {
+            source: source as MessageEvent['source'],
+            data,
+          })
+        )
+      }
     },
   }
 
@@ -33,7 +41,30 @@ const createSource = (courier: Courier) => {
   return source
 }
 
-describe('@workgrid/courier', () => {
+// MessageChannel is not defined in jsdom, creating a super naive mock
+class MessageChannel {
+  port1 = {
+    postMessage: (data) => {
+      if (typeof this.port2.onmessage === 'function') {
+        this.port2.onmessage(new MessageEvent('message', { data }))
+      }
+    },
+  } as MessagePort
+  port2 = {
+    postMessage: (data) => {
+      if (typeof this.port1.onmessage === 'function') {
+        this.port1.onmessage(new MessageEvent('message', { data }))
+      }
+    },
+  } as MessagePort
+}
+
+// Run the full suite of tests with and without MessagChannel
+describe.each`
+  MessageChannel
+  ${true}
+  ${false}
+`('@workgrid/courier (MessageChannel: $MessageChannel)', ({ MessageChannel: useMessageChannel }) => {
   // let Courier: Courier
   // let ms: any
 
@@ -43,10 +74,18 @@ describe('@workgrid/courier', () => {
 
     //   Courier = require('./courier').default
     //   ms = require('ms')
+
+    if (useMessageChannel) global.MessageChannel = MessageChannel
+  })
+
+  afterEach(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore - To prevent bleeding across tests, we need to unset MessageChannel, which makes typescript unhappy
+    delete global.MessageChannel
   })
 
   test('emitter is resolved by empty handler', async () => {
-    const courier = new Courier({ hosts: [] })
+    const courier = new Courier({ sources: [], hosts: [] })
     const source = createSource(courier)
 
     courier.on('hello', () => {})
@@ -56,7 +95,7 @@ describe('@workgrid/courier', () => {
   })
 
   test('emitter is resolved by sync handler', async () => {
-    const courier = new Courier({ hosts: [] })
+    const courier = new Courier({ sources: [], hosts: [] })
     const source = createSource(courier)
 
     courier.on('hello', () => 'world')
@@ -66,7 +105,7 @@ describe('@workgrid/courier', () => {
   })
 
   test('emitter is resolved by async handler', async () => {
-    const courier = new Courier({ hosts: [] })
+    const courier = new Courier({ sources: [], hosts: [] })
     const source = createSource(courier)
 
     courier.on('hello', async () => 'world')
@@ -76,7 +115,7 @@ describe('@workgrid/courier', () => {
   })
 
   test('emitter is rejected by sync handler', async () => {
-    const courier = new Courier({ hosts: [] })
+    const courier = new Courier({ sources: [], hosts: [] })
     const source = createSource(courier)
 
     courier.on('hello', () => {
@@ -88,7 +127,7 @@ describe('@workgrid/courier', () => {
   })
 
   test('emitter is rejected by async handler', async () => {
-    const courier = new Courier({ hosts: [] })
+    const courier = new Courier({ sources: [], hosts: [] })
     const source = createSource(courier)
 
     courier.on('hello', () => Promise.reject('world'))
@@ -105,8 +144,30 @@ describe('@workgrid/courier', () => {
     await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(`"APP-14"`)
   })
 
+  test('target is set as the event source (explicit)', async () => {
+    const courier = new Courier({ sources: [], hosts: [] })
+    const source = createSource(courier)
+
+    const handler = jest.fn()
+    courier.on('hello', handler)
+    await courier.send({ type: 'hello', target: source })
+
+    expect(handler).toHaveBeenCalledWith(expect.objectContaining({ source }))
+  })
+
+  test('target is set as the event source (implicit: target defaults to first registered source)', async () => {
+    const courier = new Courier({ sources: [], hosts: [] })
+    const source = createSource(courier)
+
+    const handler = jest.fn()
+    courier.on('hello', handler)
+    await courier.send({ type: 'hello' })
+
+    expect(handler).toHaveBeenCalledWith(expect.objectContaining({ source }))
+  })
+
   test('target is not a member of sources', async () => {
-    const courier = new Courier({ hosts: [] })
+    const courier = new Courier({ sources: [], hosts: [] })
     const source = createSource(courier)
 
     courier.unregister(source)
@@ -116,7 +177,7 @@ describe('@workgrid/courier', () => {
   })
 
   test('target.postMessage or JSON.stringify throws', async () => {
-    const courier = new Courier({ hosts: [] })
+    const courier = new Courier({ sources: [], hosts: [] })
     const source = createSource(courier)
 
     source.postMessage = () => {
@@ -129,7 +190,7 @@ describe('@workgrid/courier', () => {
 
   test('error is emitted if a message is received from a null source', async () => {
     const errorHandler = jest.fn()
-    const courier = new Courier({ hosts: [] })
+    const courier = new Courier({ sources: [], hosts: [] })
     courier.on('error', errorHandler)
 
     courier.handleMessage(
@@ -147,13 +208,13 @@ describe('@workgrid/courier', () => {
 
   test('error is emitted if a message is received from an unexpected source', async () => {
     const errorHandler = jest.fn()
-    const courier = new Courier({ hosts: [] })
+    const courier = new Courier({ sources: [], hosts: [] })
     courier.on('error', errorHandler)
 
     const source = createSource(courier)
     courier.unregister(source)
 
-    source.postMessage('Unexpected Source')
+    source.postMessage('Unexpected Source', '*')
     expect(errorHandler).toHaveBeenCalled()
     expect(() => {
       throw errorHandler.mock.calls[0][0]
@@ -162,12 +223,12 @@ describe('@workgrid/courier', () => {
 
   test('error is emitted if data cannot be parsed', async () => {
     const errorHandler = jest.fn()
-    const courier = new Courier({ hosts: [] })
+    const courier = new Courier({ sources: [], hosts: [] })
     courier.on('error', errorHandler)
 
     const source = createSource(courier)
 
-    source.postMessage('{ invalid: json }')
+    source.postMessage('{ invalid: json }', '*')
     expect(errorHandler).toHaveBeenCalled()
     expect(() => {
       throw errorHandler.mock.calls[0][0]
@@ -176,12 +237,12 @@ describe('@workgrid/courier', () => {
 
   test('error is emitted if data does not have type or parentId', async () => {
     const errorHandler = jest.fn()
-    const courier = new Courier({ hosts: [] })
+    const courier = new Courier({ sources: [], hosts: [] })
     courier.on('error', errorHandler)
 
     const source = createSource(courier)
 
-    source.postMessage({ missing: 'props' })
+    source.postMessage({ missing: 'props' }, '*')
     expect(errorHandler).toHaveBeenCalled()
     expect(() => {
       throw errorHandler.mock.calls[0][0]
