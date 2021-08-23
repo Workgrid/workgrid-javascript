@@ -132,7 +132,7 @@ export function useQuery<K extends keyof Queries, Q extends Query = Queries[K]>(
   options?: UseQueryOptions<Q['TQueryFnData'], Q['TError'], Q['TData']>
 ): UseQueryResult<Q['TData'], Q['TError']> {
   useWorkgridContext('useQuery') // Ensure we have a WorkgridProvider
-  return (_useCustomQuery(queryKey, options) as unknown) as UseQueryResult<Q['TData'], Q['TError']>
+  return _useCustomQuery(queryKey, options) as unknown as UseQueryResult<Q['TData'], Q['TError']>
 }
 
 /**
@@ -150,7 +150,7 @@ export function useCustomQuery<TQueryFnData = unknown, TError = unknown, TData =
 ): UseQueryResult<TData, TError> {
   useWorkgridContext('useCustomQuery') // Ensure we have a WorkgridProvider
   options = _defaultSelect(options) // Apply the default select method
-  return (_useCustomQuery(queryKey, options) as unknown) as UseQueryResult<TData, TError>
+  return _useCustomQuery(queryKey, options) as unknown as UseQueryResult<TData, TError>
 }
 
 /**

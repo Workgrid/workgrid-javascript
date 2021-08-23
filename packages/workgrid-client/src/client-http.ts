@@ -52,8 +52,6 @@ class WorkgridHTTP {
       return config
     })
 
-    instance.interceptors.response.use((response) => response.data)
-
     return instance
   }
 

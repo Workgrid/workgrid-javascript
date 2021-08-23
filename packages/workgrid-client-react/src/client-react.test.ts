@@ -34,7 +34,7 @@ import {
 
 const server = setupServer(
   rest.get(`https://company-code.workgrid.com/v1/usernotifications/:id`, (req, res, ctx) => {
-    return res(ctx.json({ data: { id: req.params.id, title: `${req.method} ${req.url.pathname}` } }))
+    return res(ctx.json({ id: req.params.id, title: `${req.method} ${req.url.pathname}` }))
   }),
   rest.put(`https://company-code.workgrid.com/v1/usernotifications/:id/view`, (req, res, ctx) => {
     return res(ctx.json({ data: { id: req.params.id, title: `${req.method} ${req.url.pathname}` } }))

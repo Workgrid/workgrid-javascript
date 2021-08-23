@@ -340,7 +340,7 @@ export interface Queries {
 setTypedQueryDefaults('getSpaces', (client) => ({
   queryFn: async () => {
     const response = await client.httpClient.get(`/v1/userspaces`)
-    return response.data
+    return response.data.data /* unwrap jsend */
   },
 }))
 
@@ -370,7 +370,7 @@ setTypedQueryDefaults('me', (client) => ({
         }
       `,
     })
-    return response.data.currentUser
+    return response.data.data /* unwrap jsend */.currentUser
   },
 }))
 
@@ -391,7 +391,7 @@ setTypedQueryDefaults('getFlags', (client) => ({
     const response = await client.httpClient.post(`/v1/flags`, {
       headers: { 'x-workgrid-space': spaceId },
     })
-    return mapValues(response.data, 'value')
+    return mapValues(response.data.data /* unwrap jsend */, 'value')
   },
 }))
 
@@ -465,7 +465,7 @@ setTypedMutationDefaults('actionNotification', (client) => ({
     const response = await client.httpClient.post(`/v1/usernotifications/${id}/action`, data, {
       headers: { 'x-workgrid-space': spaceId },
     })
-    return response.data
+    return response.data.data /* unwrap jsend */
   },
 }))
 
@@ -484,7 +484,7 @@ setTypedMutationDefaults('deleteNotification', (client) => ({
     const response = await client.httpClient.delete(`/v1/usernotifications/${id}`, {
       headers: { 'x-workgrid-space': spaceId },
     })
-    return response.data
+    return response.data.data /* unwrap jsend */
   },
 }))
 
@@ -513,7 +513,7 @@ setTypedQueryDefaults('getActivity', (client) => ({
       headers: { 'x-workgrid-space': spaceId },
       params: { limit, cursor },
     })
-    return response.data
+    return response.data.data /* unwrap jsend */
   },
   getNextPageParam: (lastPage) => {
     return lastPage.cursor
@@ -543,7 +543,7 @@ setTypedQueryDefaults('getApps', (client) => ({
       headers: { 'x-workgrid-space': spaceId },
       params: { limit, cursor },
     })
-    return response.data
+    return response.data.data /* unwrap jsend */
   },
   getNextPageParam: (lastPage) => {
     return lastPage.cursor
@@ -570,7 +570,7 @@ setTypedMutationDefaults('notificationViewed', (client) => ({
     const response = await client.httpClient.put(`/v1/usernotifications/${id}/view`, undefined, {
       headers: { 'x-workgrid-space': spaceId },
     })
-    return response.data
+    return response.data.data /* unwrap jsend */
   },
 }))
 
@@ -589,6 +589,6 @@ setTypedMutationDefaults('notificationDetailViewed', (client) => ({
     const response = await client.httpClient.put(`/v1/usernotifications/${id}/view-detail`, undefined, {
       headers: { 'x-workgrid-space': spaceId },
     })
-    return response.data
+    return response.data.data /* unwrap jsend */
   },
 }))
