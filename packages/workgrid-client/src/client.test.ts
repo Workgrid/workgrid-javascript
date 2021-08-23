@@ -29,25 +29,21 @@ const server = setupServer(
   rest.get(`https://company-code.workgrid.com/v1/toknow`, (req, res, ctx) => {
     return res(
       ctx.json({
-        data: {
-          notifications: [
-            {
-              title: `${req.method} ${req.url.pathname}`,
-              Accept: `${req.headers.get('Accept')}`,
-            },
-          ],
-        },
+        notifications: [
+          {
+            title: `${req.method} ${req.url.pathname}`,
+            Accept: `${req.headers.get('Accept')}`,
+          },
+        ],
       })
     )
   }),
   rest.get(`https://company-code.workgrid.com/v1/usernotifications/:id`, (req, res, ctx) => {
     return res(
       ctx.json({
-        data: {
-          id: req.params.id,
-          title: `${req.method} ${req.url.pathname}`,
-          Accept: `${req.headers.get('Accept')}`,
-        },
+        id: req.params.id,
+        title: `${req.method} ${req.url.pathname}`,
+        Accept: `${req.headers.get('Accept')}`,
       })
     )
   }),
