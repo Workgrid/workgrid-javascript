@@ -33,7 +33,7 @@ const server = setupServer(
           notifications: [
             {
               title: `${req.method} ${req.url.pathname}`,
-              accepts: `${req.headers.get('accepts')}`,
+              Accept: `${req.headers.get('Accept')}`,
             },
           ],
         },
@@ -46,7 +46,7 @@ const server = setupServer(
         data: {
           id: req.params.id,
           title: `${req.method} ${req.url.pathname}`,
-          accepts: `${req.headers.get('accepts')}`,
+          Accept: `${req.headers.get('Accept')}`,
         },
       })
     )
@@ -104,7 +104,7 @@ describe('@workgrid/client', () => {
 
     expect(result).toMatchInlineSnapshot(`
       Object {
-        "accepts": "application/vnd.com.workgrid.ast+json;version=3",
+        "Accept": "application/vnd.com.workgrid.ast+json;version=3",
         "id": "1234",
         "title": "GET /v1/usernotifications/1234",
       }
@@ -186,7 +186,7 @@ describe('@workgrid/client', () => {
       expect(result).toMatchInlineSnapshot(`
         Array [
           Object {
-            "accepts": "application/vnd.com.workgrid.ast+json;version=3",
+            "Accept": "application/vnd.com.workgrid.ast+json;version=3",
             "title": "GET /v1/toknow",
           },
         ]
@@ -198,7 +198,7 @@ describe('@workgrid/client', () => {
 
       expect(result).toMatchInlineSnapshot(`
         Object {
-          "accepts": "application/vnd.com.workgrid.ast+json;version=3",
+          "Accept": "application/vnd.com.workgrid.ast+json;version=3",
           "id": "1234",
           "title": "GET /v1/usernotifications/1234",
         }
