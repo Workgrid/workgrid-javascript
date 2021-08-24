@@ -370,7 +370,7 @@ setTypedQueryDefaults('me', (client) => ({
         }
       `,
     })
-    return response.data.data /* unwrap jsend */.currentUser
+    return response.data.data.currentUser /* unwrap jsend */
   },
 }))
 
@@ -391,7 +391,7 @@ setTypedQueryDefaults('getFlags', (client) => ({
     const response = await client.httpClient.post(`/v1/flags`, {
       headers: { 'x-workgrid-space': spaceId },
     })
-    return mapValues(response.data.data /* unwrap jsend */, 'value')
+    return mapValues(response.data.data, 'value') /* unwrap jsend */
   },
 }))
 
