@@ -31,7 +31,7 @@ const server = setupServer(
       ctx.json({
         notifications: [
           {
-            title: `${req.method} ${req.url.pathname}`,
+            title: `${req.method} ${req.url.pathname}${req.url.search}`,
             Accept: `${req.headers.get('Accept')}`,
           },
         ],
@@ -183,7 +183,7 @@ describe('@workgrid/client', () => {
         Array [
           Object {
             "Accept": "application/vnd.com.workgrid.ast+json;version=3",
-            "title": "GET /v1/toknow",
+            "title": "GET /v1/toknow?orderBy=date",
           },
         ]
       `)

@@ -419,7 +419,7 @@ setTypedQueryDefaults('getNotifications', (client) => ({
     const response = await client.httpClient.get(`/v1/${location}`, {
       // TODO - Add a version number variable to this in the future to keep in sync
       headers: { 'x-workgrid-space': spaceId, Accept: 'application/vnd.com.workgrid.ast+json;version=3' },
-      params: { limit, cursor },
+      params: { limit, cursor, orderBy: 'date' },
     })
     return response.data
   },
