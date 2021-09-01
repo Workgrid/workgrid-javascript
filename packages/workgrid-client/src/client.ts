@@ -348,7 +348,7 @@ setTypedQueryDefaults('getSpaces', (client) => ({
 // ================================================================================================================================
 
 /** @beta */
-export type Me = { id: string; name: { familyName: string; givenName: string } }
+export type Me = { id: string; displayName: string }
 
 /** @beta */
 export interface Queries {
@@ -362,10 +362,7 @@ setTypedQueryDefaults('me', (client) => ({
         query currentUser($authContext: AuthContext!) {
           currentUser(authContext: $authContext) {
             id
-            name {
-              familyName
-              givenName
-            }
+            displayName
           }
         }
       `,

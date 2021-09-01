@@ -66,9 +66,7 @@ const server = setupServer(
     return res(ctx.json({ data: { id: req.params.id, title: `${req.method} ${req.url.pathname}` } }))
   }),
   rest.post(`https://company-code.workgrid.com/v1/graphql`, (req, res, ctx) => {
-    return res(
-      ctx.json({ data: { currentUser: { id: '123124', name: { familyName: 'familyName', givenName: 'givenName' } } } })
-    )
+    return res(ctx.json({ data: { currentUser: { id: '123124', displayName: 'displayName' } } }))
   })
 )
 
@@ -156,11 +154,8 @@ describe('@workgrid/client', () => {
 
       expect(result).toMatchInlineSnapshot(`
         Object {
+          "displayName": "displayName",
           "id": "123124",
-          "name": Object {
-            "familyName": "familyName",
-            "givenName": "givenName",
-          },
         }
       `)
     })
