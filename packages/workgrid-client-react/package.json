@@ -1,0 +1,43 @@
+{
+  "name": "@workgrid/client-react",
+  "version": "0.0.1",
+  "main": "dist/client-react.js",
+  "types": "dist/client-react.d.ts",
+  "files": [
+    "dist",
+    "docs"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist docs temp",
+    "build": "yarn clean && rollup -c",
+    "prepack": "yarn api:extract && yarn api:document",
+    "postbuild": "tsc --emitDeclarationOnly",
+    "type-check": "tsc --noEmit",
+    "api:extract": "api-extractor run",
+    "api:document": "api-documenter markdown -i temp -o docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Workgrid/workgrid-javascript"
+  },
+  "dependencies": {
+    "@testing-library/react-hooks": "^5.1.0",
+    "@workgrid/client": "^0.0.1",
+    "react-query": "^3.12.2"
+  },
+  "devDependencies": {
+    "@types/react": "^16.14.5",
+    "msw": "^0.27.1",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.0.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "./eslint.config.js"
+    ]
+  },
+  "license": "ISC"
+}

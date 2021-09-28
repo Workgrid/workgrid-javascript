@@ -54,5 +54,15 @@
       "./eslint.config.js"
     ]
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "resolutions": {
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-test-renderer": "^16.0.0",
+    "@types/react": "^16.0.0",
+    "@types/react-dom": "^16.0.0",
+    "@types/react-test-renderer": "^16.0.0",
+    "debug": "^4.0.0",
+    "typescript": "^4.2.0"
+  }
 }
