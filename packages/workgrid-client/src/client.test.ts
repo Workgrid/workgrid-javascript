@@ -27,25 +27,31 @@ const server = setupServer(
     return res(ctx.json({ data: { flag1: { value: true }, flag2: { value: null } } }))
   }),
   rest.get(`https://company-code.workgrid.com/v1/toknow`, (req, res, ctx) => {
-    return res(
-      ctx.json({
-        notifications: [
-          {
-            title: `${req.method} ${req.url.pathname}${req.url.search}`,
-            Accept: `${req.headers.get('Accept')}`,
-          },
-        ],
-      })
-    )
+    if (req.headers.get('accept') === 'application/vnd.com.workgrid.ast+json;version=3') {
+      return res(
+        ctx.json({
+          notifications: [
+            {
+              title: `${req.method} ${req.url.pathname}${req.url.search}`,
+            },
+          ],
+        })
+      )
+    }
+
+    return res(ctx.status(400))
   }),
   rest.get(`https://company-code.workgrid.com/v1/usernotifications/:id`, (req, res, ctx) => {
-    return res(
-      ctx.json({
-        id: req.params.id,
-        title: `${req.method} ${req.url.pathname}`,
-        Accept: `${req.headers.get('Accept')}`,
-      })
-    )
+    if (req.headers.get('accept') === 'application/vnd.com.workgrid.ast+json;version=3') {
+      return res(
+        ctx.json({
+          id: req.params.id,
+          title: `${req.method} ${req.url.pathname}`,
+        })
+      )
+    }
+
+    return res(ctx.status(400))
   }),
   rest.post(`https://company-code.workgrid.com/v1/usernotifications/:id/action`, (req, res, ctx) => {
     return res(ctx.json({ data: { id: req.params.id, title: `${req.method} ${req.url.pathname}` } }))
@@ -86,11 +92,25 @@ describe('@workgrid/client', () => {
   beforeEach(() => {
     client = new WorkgridClient({
       context: {
-        userAgent: navigator.userAgent,
+        userAgent: 'user-agent',
+        clientAgent: 'client-agent',
         token: 'token',
         companyCode: 'company-code',
       },
     })
+  })
+
+  test('httpClient', async () => {
+    server.use(
+      rest.get(`https://company-code.workgrid.com/v1/echo`, (req, res, ctx) => {
+        return res(ctx.json({ headers: req.headers.getAllHeaders() }))
+      })
+    )
+
+    const result = await client.httpClient.get('/v1/echo')
+
+    expect(result.data.headers['user-agent']).toEqual('user-agent')
+    expect(result.data.headers['x-client-agent']).toMatch(/^@workgrid\/client\/\d\.\d\.\d client-agent$/)
   })
 
   test('query', async () => {
@@ -98,7 +118,6 @@ describe('@workgrid/client', () => {
 
     expect(result).toMatchInlineSnapshot(`
       Object {
-        "Accept": "application/vnd.com.workgrid.ast+json;version=3",
         "id": "1234",
         "title": "GET /v1/usernotifications/1234",
       }
@@ -177,7 +196,6 @@ describe('@workgrid/client', () => {
       expect(result).toMatchInlineSnapshot(`
         Array [
           Object {
-            "Accept": "application/vnd.com.workgrid.ast+json;version=3",
             "title": "GET /v1/toknow?orderBy=date",
           },
         ]
@@ -189,7 +207,6 @@ describe('@workgrid/client', () => {
 
       expect(result).toMatchInlineSnapshot(`
         Object {
-          "Accept": "application/vnd.com.workgrid.ast+json;version=3",
           "id": "1234",
           "title": "GET /v1/usernotifications/1234",
         }
