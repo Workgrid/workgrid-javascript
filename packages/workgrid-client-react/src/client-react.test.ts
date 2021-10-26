@@ -58,7 +58,7 @@ describe('@workgrid/client-react', () => {
   beforeEach(() => {
     client = new WorkgridClient({
       context: {
-        userAgent: navigator.userAgent,
+        userAgent: 'user-agent',
         token: 'token',
         companyCode: 'company-code',
       },
