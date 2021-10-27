@@ -46,8 +46,8 @@ class WorkgridHTTP {
       config.headers['authorization'] = `Bearer ${token}`
 
       // Explicitly setting the user-agent in the browser logs an error
-      if (typeof process !== 'undefined') config.headers['user-agent'] = userAgent
-      config.headers['x-client-agent'] = clientAgent
+      if (userAgent && typeof process !== 'undefined') config.headers['user-agent'] = userAgent
+      config.headers['x-workgrid-client'] = clientAgent
 
       return config
     })
