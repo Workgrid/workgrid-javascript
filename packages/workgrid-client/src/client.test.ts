@@ -110,7 +110,7 @@ describe('@workgrid/client', () => {
     const result = await client.httpClient.get('/v1/echo')
 
     expect(result.data.headers['user-agent']).toEqual('user-agent')
-    expect(result.data.headers['x-client-agent']).toMatch(/^@workgrid\/client\/\d\.\d\.\d client-agent$/)
+    expect(result.data.headers['x-workgrid-client']).toMatch(/^@workgrid\/client\/\d\.\d\.\d client-agent$/)
   })
 
   test('query', async () => {
