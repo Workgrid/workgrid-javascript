@@ -4,6 +4,6 @@
     "rootDir": "./src",
     "outDir": "./dist",
 
-    "lib": ["es6", "dom"]
+    "lib": ["es2021", "dom"]
   }
 }
