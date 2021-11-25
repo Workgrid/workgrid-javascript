@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-import request, { RequestOptions, RequestResponse /*, RequestError*/ } from './request'
+import request, { OAuthOptions, RequestOptions, RequestResponse /*, RequestError*/ } from './request'
 import validate from '@workgrid/webhook-validation'
 import { merge } from 'lodash'
 
-// TODO: Figure out why rollup crashes
-// export { RequestResponse, RequestError }
+export { OAuthOptions, RequestOptions, RequestResponse /*, RequestError*/ }
 
 /**
  * Interface representing a job
