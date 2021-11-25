@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/microapp",
-  "version": "0.10.6",
+  "version": "0.11.0",
   "main": "dist/microapp.js",
   "types": "dist/microapp.d.ts",
   "unpkg": "dist/microapp.umd.js",
@@ -21,7 +21,7 @@
     "url": "https://github.com/Workgrid/workgrid-javascript"
   },
   "dependencies": {
-    "@workgrid/courier": "^0.7.7",
+    "@workgrid/courier": "^0.8.0",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.11",
     "ms": "^2.1.1"

@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/courier",
-  "version": "0.7.7",
+  "version": "0.8.0",
   "main": "dist/courier.js",
   "types": "dist/courier.d.ts",
   "unpkg": "dist/courier.umd.js",
