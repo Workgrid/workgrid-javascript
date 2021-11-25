@@ -27,6 +27,14 @@ describe('@workgrid/microapp', () => {
 
     // Microapp = require('./microapp').default
     // Courier = require('@workgrid/courier').default
+
+    globalThis.ResizeObserver = require('@juggle/resize-observer').ResizeObserver
+  })
+
+  afterEach(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore - To prevent bleeding across tests, we need to unset MessageChannel, which makes typescript unhappy
+    delete globalThis.ResizeObserver
   })
 
   describe('constructor', () => {
