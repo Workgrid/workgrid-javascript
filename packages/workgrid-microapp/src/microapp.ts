@@ -19,8 +19,6 @@ import queue from './queue'
 import Courier from '@workgrid/courier'
 import jwtDecode from 'jwt-decode'
 import { throttle } from 'lodash'
-import { ResizeObserver } from '@juggle/resize-observer'
-import pAny from 'p-any'
 
 const EVENTS = {
   READY: 'ready',
@@ -194,7 +192,7 @@ class Microapp {
    */
   public async ready(): Promise<unknown> {
     // Sigh.. don't ask me why Android can't do the cascade variety
-    return pAny([this.serialReady(), this.cascadeReady()])
+    return Promise.any([this.serialReady(), this.cascadeReady()])
   }
 
   private serialReady(attempt = 1): Promise<unknown> {
@@ -214,7 +212,7 @@ class Microapp {
       }
     }, READY_INTERVAL)
 
-    return pAny(sendPromises).then(() => {
+    return Promise.any(sendPromises).then(() => {
       clearInterval(interval)
     })
   }
