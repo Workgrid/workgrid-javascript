@@ -16,4 +16,4 @@
 
 import config from 'shared/rollup.config'
 
-export default config('src/micro-app.ts')
+export default config('src/microapp.ts')

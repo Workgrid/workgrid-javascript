@@ -1,9 +1,9 @@
 {
-  "name": "@workgrid/micro-app",
+  "name": "@workgrid/microapp",
   "version": "0.10.6",
-  "main": "dist/micro-app.js",
-  "types": "dist/micro-app.d.ts",
-  "unpkg": "dist/micro-app.umd.js",
+  "main": "dist/microapp.js",
+  "types": "dist/microapp.d.ts",
+  "unpkg": "dist/microapp.umd.js",
   "files": [
     "dist",
     "docs"
