@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import request, { RequestOptions, RequestResponse /*, RequestError*/ } from '@workgrid/request'
+import request, { RequestOptions, RequestResponse /*, RequestError*/ } from './request'
 import validate from '@workgrid/webhook-validation'
 import { merge } from 'lodash'
 
