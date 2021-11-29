@@ -75,13 +75,13 @@ describe.each`
     //   Courier = require('./courier').default
     //   ms = require('ms')
 
-    if (useMessageChannel) global.MessageChannel = MessageChannel
+    if (useMessageChannel) globalThis.MessageChannel = MessageChannel
   })
 
   afterEach(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore - To prevent bleeding across tests, we need to unset MessageChannel, which makes typescript unhappy
-    delete global.MessageChannel
+    delete globalThis.MessageChannel
   })
 
   test('emitter is resolved by empty handler', async () => {

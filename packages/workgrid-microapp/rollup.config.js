@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 
-module.exports = {
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    project: require.resolve('./tsconfig.eslint.json'),
-  },
-  env: {
-    es6: true,
-    node: true,
-  },
-}
+import config from 'shared/rollup.config'
+
+export default config('src/microapp.ts')

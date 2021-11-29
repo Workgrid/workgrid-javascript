@@ -14,25 +14,33 @@
  * limitations under the License.
  */
 
-import MicroApp from './micro-app'
+import Microapp from './microapp'
 import Courier from '@workgrid/courier'
 
-describe('@workgrid/micro-app', () => {
-  // let MicroApp
+describe('@workgrid/microapp', () => {
+  // let Microapp
   // let Courier
 
   beforeEach(() => {
     jest.resetModules()
     jest.resetAllMocks()
 
-    // MicroApp = require('./micro-app').default
+    // Microapp = require('./microapp').default
     // Courier = require('@workgrid/courier').default
+
+    globalThis.ResizeObserver = require('@juggle/resize-observer').ResizeObserver
+  })
+
+  afterEach(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore - To prevent bleeding across tests, we need to unset MessageChannel, which makes typescript unhappy
+    delete globalThis.ResizeObserver
   })
 
   describe('constructor', () => {
     test('will create a new instance of courier', () => {
-      const microApp = new MicroApp()
-      expect(microApp.courier).toBeInstanceOf(Courier)
+      const microapp = new Microapp()
+      expect(microapp.courier).toBeInstanceOf(Courier)
     })
   })
 })

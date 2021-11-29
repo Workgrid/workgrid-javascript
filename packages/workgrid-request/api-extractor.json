@@ -1,4 +1,0 @@
-{
-  "extends": "shared/api-extractor.json",
-  "mainEntryPointFilePath": "dist/request.d.ts"
-}

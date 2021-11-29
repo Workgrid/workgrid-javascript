@@ -1,0 +1,4 @@
+{
+  "extends": "shared/api-extractor.json",
+  "mainEntryPointFilePath": "dist/microapp.d.ts"
+}

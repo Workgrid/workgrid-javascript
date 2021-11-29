@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-jest.mock('@workgrid/request')
+jest.mock('./request')
 jest.mock('@workgrid/webhook-validation')
 
 import Connector from './connector'
 
-import request from '@workgrid/request'
+import request from './request'
 import webhookValidation from '@workgrid/webhook-validation'
 
 describe('@workgrid/connector', () => {

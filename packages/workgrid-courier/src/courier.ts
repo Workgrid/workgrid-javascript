@@ -101,8 +101,8 @@ export default class Courier {
     this.debug('constructor', { timeout, sources, hosts })
 
     this.timeout = timeout || ms('10 seconds')
-    this.sources = sources || [global.window.parent]
-    this.hosts = hosts || [global.window]
+    this.sources = sources || [globalThis.window.parent]
+    this.hosts = hosts || [globalThis.window]
 
     this.internal = emitter()
     this.emitter = emitter()
@@ -219,7 +219,7 @@ export default class Courier {
 
       let transfer: Transferable[] = []
 
-      if ('MessageChannel' in global) {
+      if ('MessageChannel' in globalThis) {
         const channel = new MessageChannel()
 
         channel.port1.onmessage = (event): void => {

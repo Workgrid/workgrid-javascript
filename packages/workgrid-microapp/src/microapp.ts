@@ -19,8 +19,6 @@ import queue from './queue'
 import Courier from '@workgrid/courier'
 import jwtDecode from 'jwt-decode'
 import { throttle } from 'lodash'
-import { ResizeObserver } from '@juggle/resize-observer'
-import pAny from 'p-any'
 
 const EVENTS = {
   READY: 'ready',
@@ -47,7 +45,7 @@ const isExpired = (token: string): boolean => {
 /**
  * @beta
  */
-export interface MicroAppOptions {
+export interface MicroappOptions {
   /**
    * The target audience for the user token
    */
@@ -65,11 +63,11 @@ export interface MicroAppOptions {
 }
 
 /**
- * Create a new instance of the Micro App library.
+ * Create a new instance of the Microapp library.
  *
  * @beta
  */
-class MicroApp {
+class Microapp {
   private audience?: string
   private id?: string
   public courier: Courier
@@ -77,7 +75,7 @@ class MicroApp {
   private ro: ResizeObserver
   private token?: string
 
-  public constructor({ audience, onError, id }: MicroAppOptions = {}) {
+  public constructor({ audience, onError, id }: MicroappOptions = {}) {
     if (audience) console && console.warn('Providing an audience is deprecated')
 
     this.audience = audience
@@ -152,7 +150,7 @@ class MicroApp {
 
   /**
    * Show the detail with the given url and optional title.
-   * The page shown must also be configured as a micro app, otherwise an error will be thrown.
+   * The page shown must also be configured as a microapp, otherwise an error will be thrown.
    */
   public showDetail({ url, title }: { url: string; title?: string }): void {
     if (!url) throw new Error('URL is required to show details')
@@ -194,7 +192,7 @@ class MicroApp {
    */
   public async ready(): Promise<unknown> {
     // Sigh.. don't ask me why Android can't do the cascade variety
-    return pAny([this.serialReady(), this.cascadeReady()])
+    return Promise.any([this.serialReady(), this.cascadeReady()])
   }
 
   private serialReady(attempt = 1): Promise<unknown> {
@@ -214,10 +212,10 @@ class MicroApp {
       }
     }, READY_INTERVAL)
 
-    return pAny(sendPromises).then(() => {
+    return Promise.any(sendPromises).then(() => {
       clearInterval(interval)
     })
   }
 }
 
-export default MicroApp
+export default Microapp

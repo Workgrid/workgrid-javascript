@@ -1,9 +1,9 @@
 {
-  "name": "@workgrid/micro-app",
-  "version": "0.10.6",
-  "main": "dist/micro-app.js",
-  "types": "dist/micro-app.d.ts",
-  "unpkg": "dist/micro-app.umd.js",
+  "name": "@workgrid/microapp",
+  "version": "0.11.0",
+  "main": "dist/microapp.js",
+  "types": "dist/microapp.d.ts",
+  "unpkg": "dist/microapp.umd.js",
   "files": [
     "dist",
     "docs"
@@ -11,7 +11,7 @@
   "scripts": {
     "clean": "rm -rf dist docs temp",
     "build": "yarn clean && rollup -c",
-    "prepack": "yarn api:extract && yarn api:document",
+    "postbuild": "yarn api:extract && yarn api:document",
     "type-check": "tsc --noEmit",
     "api:extract": "api-extractor run",
     "api:document": "api-documenter markdown -i temp -o docs"
@@ -21,14 +21,13 @@
     "url": "https://github.com/Workgrid/workgrid-javascript"
   },
   "dependencies": {
-    "@juggle/resize-observer": "^3.3.0",
-    "@workgrid/courier": "^0.7.7",
+    "@workgrid/courier": "^0.8.0",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.11",
-    "ms": "^2.1.1",
-    "p-any": "^3.0.0"
+    "ms": "^2.1.1"
   },
   "devDependencies": {
+    "@juggle/resize-observer": "^3.3.0",
     "@types/lodash": "^4.14.149",
     "@types/ms": "^0.7.31"
   },
