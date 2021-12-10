@@ -589,3 +589,38 @@ setTypedMutationDefaults('notificationDetailViewed', (client) => ({
     return response.data.data /* unwrap jsend */
   },
 }))
+
+// askApi
+// ================================================================================================================================
+
+/** @beta */
+export interface Mutations {
+  ask: Mutation<
+    ['ask'],
+    {
+      spaceId: string
+      utterance: string
+      channel: string
+      locale: string
+      id?: string
+      botId?: string
+      botAliasId?: string
+    },
+    Notification
+  >
+}
+
+setTypedMutationDefaults('ask', (client) => ({
+  mutationFn: async (variables) => {
+    const { spaceId, utterance, channel, locale } = variables
+
+    const response = await client.httpClient.post(
+      '/v2/ask',
+      { utterance, channel, locale },
+      {
+        headers: { 'x-workgrid-space': spaceId },
+      }
+    )
+    return response.data /* unwrap jsend */
+  },
+}))

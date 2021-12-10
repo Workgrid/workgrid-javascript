@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/client",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "dist/client.js",
   "types": "dist/client.d.ts",
   "files": [
