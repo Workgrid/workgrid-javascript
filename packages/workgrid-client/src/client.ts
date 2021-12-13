@@ -375,7 +375,16 @@ setTypedQueryDefaults('me', (client) => ({
 // ================================================================================================================================
 
 /** @beta */
-export type Discover = { id: string; displayName: string }
+export type Discover = {
+  items: [
+    {
+      botId: string
+      botAliasId: string
+      locale: string
+      intents: [{ id: string; name: string; category: string; prompt: string }]
+    }
+  ]
+}
 
 /** @beta */
 export interface Queries {
