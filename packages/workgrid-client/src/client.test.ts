@@ -77,8 +77,6 @@ const server = setupServer(
   rest.post(`https://company-code.workgrid.com/v2/ask`, (req, res, ctx) => {
     return res(
       ctx.json({
-        items: [{}],
-        cursor: 'cursor-string',
         text: "Why couldn't the pony speak?",
         actions: ['laugh', 'cringe'],
         suggestions: ['ask another'],
@@ -305,10 +303,6 @@ describe('@workgrid/client', () => {
           "actions": Array [
             "laugh",
             "cringe",
-          ],
-          "cursor": "cursor-string",
-          "items": Array [
-            Object {},
           ],
           "suggestions": Array [
             "ask another",
