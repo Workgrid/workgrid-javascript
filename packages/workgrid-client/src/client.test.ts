@@ -23,7 +23,7 @@ const server = setupServer(
   rest.get(`https://company-code.workgrid.com/v1/discover`, (req, res, ctx) => {
     return res(
       ctx.json({
-        data: [
+        items: [
           {
             botId: 'botId',
             botAliasId: 'botAliasId',
@@ -225,33 +225,35 @@ describe('@workgrid/client', () => {
       const result = await client.query(['discover', { spaceId: 'space-id' }])
 
       expect(result).toMatchInlineSnapshot(`
-        Array [
-          Object {
-            "botAliasId": "botAliasId",
-            "botId": "botId",
-            "intents": Array [
-              Object {
-                "category": "smalltalk",
-                "id": "intentId1",
-                "name": "Greeting",
-                "prompt": "Hello",
-              },
-              Object {
-                "category": "smalltalk",
-                "id": "intentId2",
-                "name": "Joke",
-                "prompt": "Tell me a Joke",
-              },
-              Object {
-                "category": "smalltalk",
-                "id": "intentId3",
-                "name": "Thanks",
-                "prompt": "Thanks",
-              },
-            ],
-            "locale": "en_US",
-          },
-        ]
+        Object {
+          "items": Array [
+            Object {
+              "botAliasId": "botAliasId",
+              "botId": "botId",
+              "intents": Array [
+                Object {
+                  "category": "smalltalk",
+                  "id": "intentId1",
+                  "name": "Greeting",
+                  "prompt": "Hello",
+                },
+                Object {
+                  "category": "smalltalk",
+                  "id": "intentId2",
+                  "name": "Joke",
+                  "prompt": "Tell me a Joke",
+                },
+                Object {
+                  "category": "smalltalk",
+                  "id": "intentId3",
+                  "name": "Thanks",
+                  "prompt": "Thanks",
+                },
+              ],
+              "locale": "en_US",
+            },
+          ],
+        }
       `)
     })
 

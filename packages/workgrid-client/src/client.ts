@@ -388,7 +388,7 @@ setTypedQueryDefaults('discover', (client) => ({
     const response = await client.httpClient.get(`/v1/discover`, {
       headers: { 'x-workgrid-space': spaceId },
     })
-    return response.data.data
+    return response.data
   },
 }))
 
