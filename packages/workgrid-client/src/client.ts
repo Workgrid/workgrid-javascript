@@ -371,6 +371,27 @@ setTypedQueryDefaults('me', (client) => ({
   },
 }))
 
+// discover
+// ================================================================================================================================
+
+/** @beta */
+export type Discover = { id: string; displayName: string }
+
+/** @beta */
+export interface Queries {
+  discover: Query<['discover', { spaceId: string }], Discover>
+}
+
+setTypedQueryDefaults('discover', (client) => ({
+  queryFn: async (context) => {
+    const { spaceId } = context.queryKey[1]
+    const response = await client.httpClient.get(`/v1/discover`, {
+      headers: { 'x-workgrid-space': spaceId },
+    })
+    return response.data.data
+  },
+}))
+
 // getFlags
 // ================================================================================================================================
 

@@ -20,6 +20,39 @@ import { rest } from 'msw'
 import WorkgridClient from './client'
 
 const server = setupServer(
+  rest.get(`https://company-code.workgrid.com/v1/discover`, (req, res, ctx) => {
+    return res(
+      ctx.json({
+        data: [
+          {
+            botId: 'botId',
+            botAliasId: 'botAliasId',
+            locale: 'en_US',
+            intents: [
+              {
+                id: 'intentId1',
+                name: 'Greeting',
+                category: 'smalltalk',
+                prompt: 'Hello',
+              },
+              {
+                id: 'intentId2',
+                name: 'Joke',
+                category: 'smalltalk',
+                prompt: 'Tell me a Joke',
+              },
+              {
+                id: 'intentId3',
+                name: 'Thanks',
+                category: 'smalltalk',
+                prompt: 'Thanks',
+              },
+            ],
+          },
+        ],
+      })
+    )
+  }),
   rest.get(`https://company-code.workgrid.com/v1/userspaces`, (req, res, ctx) => {
     return res(ctx.json({ data: [{ id: 'space1', name: 'Space 1', default: true }] }))
   }),
@@ -185,6 +218,40 @@ describe('@workgrid/client', () => {
           "displayName": "displayName",
           "id": "123124",
         }
+      `)
+    })
+
+    test('discover', async () => {
+      const result = await client.query(['discover', { spaceId: 'space-id' }])
+
+      expect(result).toMatchInlineSnapshot(`
+        Array [
+          Object {
+            "botAliasId": "botAliasId",
+            "botId": "botId",
+            "intents": Array [
+              Object {
+                "category": "smalltalk",
+                "id": "intentId1",
+                "name": "Greeting",
+                "prompt": "Hello",
+              },
+              Object {
+                "category": "smalltalk",
+                "id": "intentId2",
+                "name": "Joke",
+                "prompt": "Tell me a Joke",
+              },
+              Object {
+                "category": "smalltalk",
+                "id": "intentId3",
+                "name": "Thanks",
+                "prompt": "Thanks",
+              },
+            ],
+            "locale": "en_US",
+          },
+        ]
       `)
     })
 
