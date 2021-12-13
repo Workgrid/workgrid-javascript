@@ -291,12 +291,15 @@ describe('@workgrid/client', () => {
     })
 
     test('ask', async () => {
-      const result = await client.mutate('ask', {
-        spaceId: 'space-id',
-        utterance: 'Tell me a joke',
-        channel: 'msteams',
-        locale: 'en-US',
-      })
+      const result = await client.query([
+        'ask',
+        {
+          spaceId: 'space-id',
+          utterance: 'Tell me a joke',
+          channel: 'msteams',
+          locale: 'en-US',
+        },
+      ])
 
       expect(result).toMatchInlineSnapshot(`
         Object {

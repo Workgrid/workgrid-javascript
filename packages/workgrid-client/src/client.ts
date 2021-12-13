@@ -593,26 +593,34 @@ setTypedMutationDefaults('notificationDetailViewed', (client) => ({
 // askApi
 // ================================================================================================================================
 
+export type AskResponse = {
+  actions?: string[]
+  suggestions?: string[]
+  text: string
+}
+
 /** @beta */
-export interface Mutations {
-  ask: Mutation<
-    ['ask'],
-    {
-      spaceId: string
-      utterance: string
-      channel: string
-      locale: string
-      id?: string
-      botId?: string
-      botAliasId?: string
-    },
-    Notification
+export interface Queries {
+  ask: Query<
+    [
+      'ask',
+      {
+        spaceId: string
+        utterance: string
+        channel: string
+        locale: string
+        id?: string
+        botId?: string
+        botAliasId?: string
+      }
+    ],
+    AskResponse
   >
 }
 
-setTypedMutationDefaults('ask', (client) => ({
-  mutationFn: async (variables) => {
-    const { spaceId, utterance, channel, locale } = variables
+setTypedQueryDefaults('ask', (client) => ({
+  queryFn: async (context) => {
+    const { spaceId, utterance, channel, locale } = context.queryKey[1]
 
     const response = await client.httpClient.post(
       '/v2/ask',
@@ -621,6 +629,6 @@ setTypedMutationDefaults('ask', (client) => ({
         headers: { 'x-workgrid-space': spaceId },
       }
     )
-    return response.data /* unwrap jsend */
+    return response.data
   },
 }))
