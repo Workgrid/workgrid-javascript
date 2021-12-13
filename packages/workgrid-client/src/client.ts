@@ -593,6 +593,7 @@ setTypedMutationDefaults('notificationDetailViewed', (client) => ({
 // askApi
 // ================================================================================================================================
 
+/** @beta */
 export type AskResponse = {
   actions?: string[]
   suggestions?: string[]
