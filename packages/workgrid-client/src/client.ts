@@ -589,3 +589,47 @@ setTypedMutationDefaults('notificationDetailViewed', (client) => ({
     return response.data.data /* unwrap jsend */
   },
 }))
+
+// askApi
+// ================================================================================================================================
+
+/** @beta */
+export type AskResponse = {
+  actions?: string[]
+  suggestions?: string[]
+  text: string
+}
+
+/** @beta */
+export interface Queries {
+  ask: Query<
+    [
+      'ask',
+      {
+        spaceId: string
+        utterance: string
+        channel: string
+        locale: string
+        id?: string
+        botId?: string
+        botAliasId?: string
+      }
+    ],
+    AskResponse
+  >
+}
+
+setTypedQueryDefaults('ask', (client) => ({
+  queryFn: async (context) => {
+    const { spaceId, utterance, channel, locale } = context.queryKey[1]
+
+    const response = await client.httpClient.post(
+      '/v2/ask',
+      { utterance, channel, locale },
+      {
+        headers: { 'x-workgrid-space': spaceId },
+      }
+    )
+    return response.data
+  },
+}))

@@ -73,6 +73,15 @@ const server = setupServer(
   }),
   rest.post(`https://company-code.workgrid.com/v1/graphql`, (req, res, ctx) => {
     return res(ctx.json({ data: { currentUser: { id: '123124', displayName: 'displayName' } } }))
+  }),
+  rest.post(`https://company-code.workgrid.com/v2/ask`, (req, res, ctx) => {
+    return res(
+      ctx.json({
+        text: "Why couldn't the pony speak?",
+        actions: ['laugh', 'cringe'],
+        suggestions: ['ask another'],
+      })
+    )
   })
 )
 
@@ -277,6 +286,31 @@ describe('@workgrid/client', () => {
         Object {
           "id": "1234",
           "title": "PUT /v1/usernotifications/1234/view",
+        }
+      `)
+    })
+
+    test('ask', async () => {
+      const result = await client.query([
+        'ask',
+        {
+          spaceId: 'space-id',
+          utterance: 'Tell me a joke',
+          channel: 'msteams',
+          locale: 'en-US',
+        },
+      ])
+
+      expect(result).toMatchInlineSnapshot(`
+        Object {
+          "actions": Array [
+            "laugh",
+            "cringe",
+          ],
+          "suggestions": Array [
+            "ask another",
+          ],
+          "text": "Why couldn't the pony speak?",
         }
       `)
     })
