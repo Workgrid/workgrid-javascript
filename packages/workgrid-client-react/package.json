@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/client-react",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "dist/client-react.js",
   "types": "dist/client-react.d.ts",
   "files": [
