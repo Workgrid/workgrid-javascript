@@ -375,17 +375,11 @@ setTypedQueryDefaults('me', (client) => ({
 // ================================================================================================================================
 
 /** @beta */
-export type Item = { [key: string]: string }
-
-/** @beta */
-export type Discover = {
-  items: Item[]
-  cursor?: string
-}
+export type DiscoverPage = { items: Record<string, unknown>[] }
 
 /** @beta */
 export interface Queries {
-  discover: Query<['discover', { spaceId: string }], Discover>
+  discover: Query<['discover', { spaceId: string }], DiscoverPage, unknown, DiscoverPage['items']>
 }
 
 setTypedQueryDefaults('discover', (client) => ({
@@ -395,6 +389,9 @@ setTypedQueryDefaults('discover', (client) => ({
       headers: { 'x-workgrid-space': spaceId },
     })
     return response.data
+  },
+  select: (data) => {
+    return flatMap(data.pages, (page) => page.items)
   },
 }))
 

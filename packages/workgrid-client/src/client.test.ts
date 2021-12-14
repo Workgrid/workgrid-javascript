@@ -52,7 +52,6 @@ const server = setupServer(
             ],
           },
         ],
-        cursor: 'cursor',
       })
     )
   }),
@@ -228,41 +227,38 @@ describe('@workgrid/client', () => {
       const result = await client.query(['discover', { spaceId: 'space-id' }])
 
       expect(result).toMatchInlineSnapshot(`
-        Object {
-          "cursor": "cursor",
-          "items": Array [
-            Object {
-              "botAliasId": "botAliasId",
-              "botId": "botId",
-              "from": Object {
-                "iconUrl": "Url of the Conversational App icon",
-                "name": "Name of Conversational App",
-              },
-              "intents": Array [
-                Object {
-                  "category": "smalltalk",
-                  "id": "intentId1",
-                  "name": "Greeting",
-                  "prompt": "Hello",
-                },
-                Object {
-                  "category": "smalltalk",
-                  "id": "intentId2",
-                  "name": "Joke",
-                  "prompt": "Tell me a Joke",
-                },
-                Object {
-                  "category": "smalltalk",
-                  "id": "intentId3",
-                  "name": "Thanks",
-                  "prompt": "Thanks",
-                },
-              ],
-              "locale": "en_US",
-              "title": "Conversational App Title",
+        Array [
+          Object {
+            "botAliasId": "botAliasId",
+            "botId": "botId",
+            "from": Object {
+              "iconUrl": "Url of the Conversational App icon",
+              "name": "Name of Conversational App",
             },
-          ],
-        }
+            "intents": Array [
+              Object {
+                "category": "smalltalk",
+                "id": "intentId1",
+                "name": "Greeting",
+                "prompt": "Hello",
+              },
+              Object {
+                "category": "smalltalk",
+                "id": "intentId2",
+                "name": "Joke",
+                "prompt": "Tell me a Joke",
+              },
+              Object {
+                "category": "smalltalk",
+                "id": "intentId3",
+                "name": "Thanks",
+                "prompt": "Thanks",
+              },
+            ],
+            "locale": "en_US",
+            "title": "Conversational App Title",
+          },
+        ]
       `)
     })
 
