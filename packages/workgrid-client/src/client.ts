@@ -381,9 +381,12 @@ export type Discover = {
       botId: string
       botAliasId: string
       locale: string
+      title?: string
+      from?: { name: string; iconUrl: string }
       intents: [{ id: string; name: string; category: string; prompt: string }]
     }
   ]
+  cursor?: string
 }
 
 /** @beta */

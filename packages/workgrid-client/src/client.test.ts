@@ -28,6 +28,8 @@ const server = setupServer(
             botId: 'botId',
             botAliasId: 'botAliasId',
             locale: 'en_US',
+            title: 'Conversational App Title',
+            from: { name: 'Name of Conversational App', iconUrl: 'Url of the Conversational App icon' },
             intents: [
               {
                 id: 'intentId1',
@@ -50,6 +52,7 @@ const server = setupServer(
             ],
           },
         ],
+        cursor: 'cursor',
       })
     )
   }),
@@ -226,10 +229,15 @@ describe('@workgrid/client', () => {
 
       expect(result).toMatchInlineSnapshot(`
         Object {
+          "cursor": "cursor",
           "items": Array [
             Object {
               "botAliasId": "botAliasId",
               "botId": "botId",
+              "from": Object {
+                "iconUrl": "Url of the Conversational App icon",
+                "name": "Name of Conversational App",
+              },
               "intents": Array [
                 Object {
                   "category": "smalltalk",
@@ -251,6 +259,7 @@ describe('@workgrid/client', () => {
                 },
               ],
               "locale": "en_US",
+              "title": "Conversational App Title",
             },
           ],
         }
