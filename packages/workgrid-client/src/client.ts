@@ -371,6 +371,30 @@ setTypedQueryDefaults('me', (client) => ({
   },
 }))
 
+// discover
+// ================================================================================================================================
+
+/** @beta */
+export type DiscoverPage = { items: Record<string, unknown>[] }
+
+/** @beta */
+export interface Queries {
+  discover: Query<['discover', { spaceId: string }], DiscoverPage, unknown, DiscoverPage['items']>
+}
+
+setTypedQueryDefaults('discover', (client) => ({
+  queryFn: async (context) => {
+    const { spaceId } = context.queryKey[1]
+    const response = await client.httpClient.get(`/v1/discover`, {
+      headers: { 'x-workgrid-space': spaceId },
+    })
+    return response.data
+  },
+  select: (data) => {
+    return flatMap(data.pages, (page) => page.items)
+  },
+}))
+
 // getFlags
 // ================================================================================================================================
 
