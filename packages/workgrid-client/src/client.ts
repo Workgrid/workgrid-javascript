@@ -409,7 +409,7 @@ export interface Queries {
 setTypedQueryDefaults('getFlags', (client) => ({
   queryFn: async (context) => {
     const { spaceId } = context.queryKey[1]
-    const response = await client.httpClient.post(`/v1/flags`, {
+    const response = await client.httpClient.post(`/v1/flags`, null, {
       headers: { 'x-workgrid-space': spaceId },
     })
     return mapValues(response.data.data, 'value') /* unwrap jsend */

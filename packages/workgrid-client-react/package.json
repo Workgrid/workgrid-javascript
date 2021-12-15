@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@testing-library/react-hooks": "^5.1.0",
-    "@workgrid/client": "^0.0.6",
+    "@workgrid/client": "^0.0.7",
     "react-query": "^3.12.2"
   },
   "devDependencies": {
