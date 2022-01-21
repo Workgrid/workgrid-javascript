@@ -645,11 +645,11 @@ export interface Queries {
 
 setTypedQueryDefaults('ask', (client) => ({
   queryFn: async (context) => {
-    const { spaceId, utterance, channel, locale } = context.queryKey[1]
+    const { spaceId, utterance, channel, locale, botId, botAliasId } = context.queryKey[1]
 
     const response = await client.httpClient.post(
       '/v2/ask',
-      { utterance, channel, locale },
+      { utterance, channel, locale, ...(botId ? { botId, botAliasId } : null) },
       {
         headers: { 'x-workgrid-space': spaceId },
       }

@@ -112,7 +112,7 @@ const server = setupServer(
   rest.post(`https://company-code.workgrid.com/v2/ask`, (req, res, ctx) => {
     return res(
       ctx.json({
-        text: "Why couldn't the pony speak?",
+        text: JSON.stringify(req.body),
         actions: ['laugh', 'cringe'],
         suggestions: ['ask another'],
       })
@@ -384,7 +384,33 @@ describe('@workgrid/client', () => {
           "suggestions": Array [
             "ask another",
           ],
-          "text": "Why couldn't the pony speak?",
+          "text": "{\\"utterance\\":\\"Tell me a joke\\",\\"channel\\":\\"msteams\\",\\"locale\\":\\"en-US\\"}",
+        }
+      `)
+    })
+    test('ask with ids', async () => {
+      const result = await client.query([
+        'ask',
+        {
+          spaceId: 'space-id',
+          utterance: 'Tell me a joke',
+          channel: 'msteams',
+          locale: 'en-US',
+          botId: '123456',
+          botAliasId: '123456',
+        },
+      ])
+
+      expect(result).toMatchInlineSnapshot(`
+        Object {
+          "actions": Array [
+            "laugh",
+            "cringe",
+          ],
+          "suggestions": Array [
+            "ask another",
+          ],
+          "text": "{\\"utterance\\":\\"Tell me a joke\\",\\"channel\\":\\"msteams\\",\\"locale\\":\\"en-US\\",\\"botId\\":\\"123456\\",\\"botAliasId\\":\\"123456\\"}",
         }
       `)
     })
