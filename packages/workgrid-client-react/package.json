@@ -1,6 +1,6 @@
 {
   "name": "@workgrid/client-react",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "dist/client-react.js",
   "types": "dist/client-react.d.ts",
   "files": [
@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@testing-library/react-hooks": "^5.1.0",
-    "@workgrid/client": "^0.0.7",
+    "@workgrid/client": "^0.0.8",
     "react-query": "^3.12.2"
   },
   "devDependencies": {
