@@ -618,7 +618,7 @@ setTypedMutationDefaults('notificationDetailViewed', (client) => ({
 // ================================================================================================================================
 
 /** @beta */
-export type promptResponse = {
+export type PromptResponse = {
   botId: string
   botAliasId: string
   appId?: string
@@ -628,7 +628,7 @@ export type promptResponse = {
 export type AskResponse = {
   actions?: string[]
   suggestions?: string[]
-  prompt?: promptResponse
+  prompt?: PromptResponse
   text: string
 }
 
