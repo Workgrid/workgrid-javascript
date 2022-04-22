@@ -618,9 +618,17 @@ setTypedMutationDefaults('notificationDetailViewed', (client) => ({
 // ================================================================================================================================
 
 /** @beta */
+export type promptResponse = {
+  botId: string
+  botAliasId: string
+  appId?: string
+  type: string
+}
+/** @beta */
 export type AskResponse = {
   actions?: string[]
   suggestions?: string[]
+  prompt?: promptResponse
   text: string
 }
 
@@ -634,7 +642,7 @@ export interface Queries {
         utterance: string
         channel: string
         locale: string
-        id?: string
+        appId?: string
         botId?: string
         botAliasId?: string
       }
@@ -645,11 +653,11 @@ export interface Queries {
 
 setTypedQueryDefaults('ask', (client) => ({
   queryFn: async (context) => {
-    const { spaceId, utterance, channel, locale, botId, botAliasId } = context.queryKey[1]
+    const { spaceId, utterance, channel, locale, botId, botAliasId, appId } = context.queryKey[1]
 
     const response = await client.httpClient.post(
       '/v2/ask',
-      { utterance, channel, locale, ...(botId ? { botId, botAliasId } : null) },
+      { utterance, channel, locale, ...(botId ? { botId, botAliasId } : null), ...(appId ? { appId } : null) },
       {
         headers: { 'x-workgrid-space': spaceId },
       }
