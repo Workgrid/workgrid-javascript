@@ -471,6 +471,25 @@ setTypedQueryDefaults('getNotification', (client) => ({
   },
 }))
 
+// getNotificationDetail
+// ================================================================================================================================
+
+/** @beta */
+export interface Queries {
+  getNotificationDetail: Query<['getNotificationDetail', { spaceId: string; id: string }], Notification>
+}
+
+setTypedQueryDefaults('getNotificationDetail', (client) => ({
+  queryFn: async (context) => {
+    const { spaceId, id } = context.queryKey[1]
+
+    const response = await client.httpClient.get(`/v1/usernotifications/${id}/detail`, {
+      headers: { 'x-workgrid-space': spaceId, Accept: 'application/vnd.com.workgrid.ast+json;version=3' },
+    })
+    return response.data
+  },
+}))
+
 // actionNotification
 // ================================================================================================================================
 

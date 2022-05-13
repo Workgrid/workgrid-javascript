@@ -88,6 +88,20 @@ const server = setupServer(
 
     return res(ctx.status(400))
   }),
+  rest.get(`https://company-code.workgrid.com/v1/usernotifications/:id/detail`, (req, res, ctx) => {
+    if (req.headers.get('accept') === 'application/vnd.com.workgrid.ast+json;version=3') {
+      return res(
+        ctx.json([
+          {
+            type: 'TextBlock',
+            text: `${req.params.id}`,
+          },
+        ])
+      )
+    }
+
+    return res(ctx.status(400))
+  }),
   rest.post(`https://company-code.workgrid.com/v1/usernotifications/:id/action`, (req, res, ctx) => {
     return res(ctx.json({ data: { id: req.params.id, title: `${req.method} ${req.url.pathname}` } }))
   }),
@@ -293,6 +307,19 @@ describe('@workgrid/client', () => {
           "id": "1234",
           "title": "GET /v1/usernotifications/1234",
         }
+      `)
+    })
+
+    test('getNotificationDetail', async () => {
+      const result = await client.query(['getNotificationDetail', { spaceId: 'space-id', id: '1234' }])
+
+      expect(result).toMatchInlineSnapshot(`
+        Array [
+          Object {
+            "text": "1234",
+            "type": "TextBlock",
+          },
+        ]
       `)
     })
 

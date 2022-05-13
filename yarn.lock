@@ -1682,6 +1682,14 @@
   resolved "https://registry.yarnpkg.com/@wessberg/stringutil/-/stringutil-1.0.19.tgz#baadcb6f4471fe2d46462a7d7a8294e4b45b29ad"
   integrity sha512-9AZHVXWlpN8Cn9k5BC/O0Dzb9E9xfEMXzYrNunwvkUTvuK7xgQPVRZpLo+jWCOZ5r8oBa8NIrHuPEu1hzbb6bg==
 
+"@workgrid/client@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@workgrid/client/-/client-0.0.9.tgz#77c64bc3d044c5f81f6e1c307733abce8562a16b"
+  integrity sha512-PN/QhhUfnLUDlbK897rWz8wyno3tDafMf658A73ObOk5sf0lMupu++d6X0uyU1Vcj6/QY+4vUapOimyXCyrwJw==
+  dependencies:
+    lodash "^4.17.11"
+    react-query "^3.12.2"
+
 abab@^2.0.3, abab@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.5.tgz#c0b678fb32d60fc1219c784d6a826fe385aeb79a"
