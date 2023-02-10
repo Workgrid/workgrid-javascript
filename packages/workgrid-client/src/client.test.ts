@@ -131,6 +131,39 @@ const server = setupServer(
         suggestions: ['ask another'],
       })
     )
+  }),
+  rest.post(`https://company-code.workgrid.com/graphql`, (req, res, ctx) => {
+    return res(
+      ctx.json({
+        data: {
+          me: {
+            id: '12345',
+            space: {
+              id: '17dacf8d-ee8d-45ff-9d6b-f984e789c4e3',
+              apps: {
+                edges: [
+                  {
+                    node: {
+                      entrypoint: 'f19b6a81-7648-4c72-97df-87f45e24191f',
+                      title: 'Intranet Admin Tools',
+                    },
+                  },
+                  {
+                    node: {
+                      entrypoint: '2b4d2ae8-fde4-4c8a-b4f1-8e349c3fcf68',
+                      title: 'Quick Links',
+                    },
+                  },
+                ],
+                pageInfo: {
+                  hasNextPage: false,
+                },
+              },
+            },
+          },
+        },
+      })
+    )
   })
 )
 
@@ -200,6 +233,63 @@ describe('@workgrid/client', () => {
       Object {
         "id": "1234",
         "title": "PUT /v1/usernotifications/1234/view",
+      }
+    `)
+  })
+
+  test('graphql', async () => {
+    const query = `
+            query appsQuery($spaceId: ID!) {
+              me {
+                space(spaceId: $spaceId) {
+                  id,
+                  apps {
+                    edges {
+                      node {
+                        entrypoint,
+                        title
+                      }
+                    },
+                    pageInfo {
+                      hasNextPage
+                    }
+                  }
+                }
+              }
+            }`
+
+    const variables = {
+      spaceId: '17dacf8d-ee8d-45ff-9d6b-f984e789c4e3',
+    }
+    const result = await client.mutate('graphql', { query, variables })
+
+    expect(result).toMatchInlineSnapshot(`
+      Object {
+        "me": Object {
+          "id": "12345",
+          "space": Object {
+            "apps": Object {
+              "edges": Array [
+                Object {
+                  "node": Object {
+                    "entrypoint": "f19b6a81-7648-4c72-97df-87f45e24191f",
+                    "title": "Intranet Admin Tools",
+                  },
+                },
+                Object {
+                  "node": Object {
+                    "entrypoint": "2b4d2ae8-fde4-4c8a-b4f1-8e349c3fcf68",
+                    "title": "Quick Links",
+                  },
+                },
+              ],
+              "pageInfo": Object {
+                "hasNextPage": false,
+              },
+            },
+            "id": "17dacf8d-ee8d-45ff-9d6b-f984e789c4e3",
+          },
+        },
       }
     `)
   })
