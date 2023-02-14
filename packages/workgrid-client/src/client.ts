@@ -528,6 +528,29 @@ setTypedMutationDefaults('deleteNotification', (client) => ({
   },
 }))
 
+// graphql
+
+// ================================================================================================================================
+
+/** @beta */
+export interface Mutations {
+  graphql: Mutation<['graphql'], { query: string; variables: unknown }, unknown>
+}
+
+setTypedMutationDefaults('graphql', (client) => ({
+  mutationFn: async (params) => {
+    const { query, variables } = params
+
+    const data = {
+      query,
+      variables,
+    }
+
+    const response = await client.httpClient.post('graphql', data)
+    return response.data.data /* unwrap graphql */
+  },
+}))
+
 // getActivity
 // ================================================================================================================================
 
