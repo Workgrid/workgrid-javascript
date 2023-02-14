@@ -238,25 +238,27 @@ describe('@workgrid/client', () => {
   })
 
   test('graphql', async () => {
-    const query = `
-            query appsQuery($spaceId: ID!) {
-              me {
-                space(spaceId: $spaceId) {
-                  id,
-                  apps {
-                    edges {
-                      node {
-                        entrypoint,
-                        title
-                      }
-                    },
-                    pageInfo {
-                      hasNextPage
-                    }
-                  }
+    const gql = String.raw
+    const query = gql`
+      query appsQuery($spaceId: ID!) {
+        me {
+          space(spaceId: $spaceId) {
+            id
+            apps {
+              edges {
+                node {
+                  entrypoint
+                  title
                 }
               }
-            }`
+              pageInfo {
+                hasNextPage
+              }
+            }
+          }
+        }
+      }
+    `
 
     const variables = {
       spaceId: '17dacf8d-ee8d-45ff-9d6b-f984e789c4e3',

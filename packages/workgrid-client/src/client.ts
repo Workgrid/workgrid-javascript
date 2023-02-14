@@ -547,7 +547,7 @@ setTypedMutationDefaults('graphql', (client) => ({
     }
 
     const response = await client.httpClient.post('graphql', data)
-    return response.data.data /* unwrap jsend */
+    return response.data.data /* unwrap graphql */
   },
 }))
 
