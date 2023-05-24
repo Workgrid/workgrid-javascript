@@ -363,6 +363,10 @@ setTypedQueryDefaults('me', (client) => ({
           currentUser(authContext: $authContext) {
             id
             displayName
+            name {
+              givenName
+              familyName
+            }
           }
         }
       `,
