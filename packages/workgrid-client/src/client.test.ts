@@ -127,6 +127,7 @@ const server = setupServer(
           currentUser: {
             id: '123124',
             displayName: 'displayName',
+            userName: 'userName',
             name: {
               familyName: 'test',
               givenName: 'testName',
@@ -342,6 +343,7 @@ describe('@workgrid/client', () => {
             "familyName": "test",
             "givenName": "testName",
           },
+          "userName": "userName",
         }
       `)
     })
